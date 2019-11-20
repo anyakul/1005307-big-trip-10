@@ -1,6 +1,5 @@
 'use strict';
 
-
 // Шаблон маршрута поездки
 const createTripInfoTemplate = () => {
   return (
@@ -226,7 +225,7 @@ const eventList = tripEvents.querySelector(`.trip-days`);
 const CARD_COUNT = 3;
 
 new Array(CARD_COUNT)
-  .fill('')
+  .fill(``)
   .forEach(
       () => render(eventList, createCardTemplate(), `beforeend`)
   );
