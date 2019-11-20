@@ -162,8 +162,8 @@ const createAddNewEventTemplate = () => {
 const createEventListTemplate = () => {
   return (
     `<ul class="trip-days"></ul>`
-  )
-}
+  );
+};
 
 // Шаблон карточки события
 const createCardTemplate = () => {
@@ -207,26 +207,26 @@ const render = (container, template, place) => {
 };
 
 // Отрисовка элементов хедера (маршрута, меню и фильтров)
-const pageHeader = document.querySelector('.page-header');
-const tripControls = pageHeader.querySelector('.trip-controls');
-const tripInfo = pageHeader.querySelector('.trip-info');
+const pageHeader = document.querySelector(`.page-header`);
+const tripControls = pageHeader.querySelector(`.trip-controls`);
+const tripInfo = pageHeader.querySelector(`.trip-info`);
 
-render(tripInfo, createTripInfoTemplate(), 'beforebegin');
-render(tripControls, createMenuTemplate(), 'beforeend');
-render(tripControls, createFiltersTemplate(), 'beforeend');
+render(tripInfo, createTripInfoTemplate(), `beforebegin`);
+render(tripControls, createMenuTemplate(), `beforeend`);
+render(tripControls, createFiltersTemplate(), `beforeend`);
 
 // Отрисовка элементов main (формы добавления нового события и списка событий)
-const pageMain = document.querySelector('.page-main');
-const tripEvents = pageMain.querySelector('.trip-events');
+const pageMain = document.querySelector(`.page-main`);
+const tripEvents = pageMain.querySelector(`.trip-events`);
 
-render(tripEvents, createAddNewEventTemplate(), 'beforeend');
-render(tripEvents, createEventListTemplate(), 'beforeend');
+render(tripEvents, createAddNewEventTemplate(), `beforeend`);
+render(tripEvents, createEventListTemplate(), `beforeend`);
 
-const eventList = tripEvents.querySelector('.trip-days');
+const eventList = tripEvents.querySelector(`.trip-days`);
 const CARD_COUNT = 3;
 
 new Array(CARD_COUNT)
   .fill('')
   .forEach(
-      () => render(eventList, createCardTemplate(), 'beforeend')
+      () => render(eventList, createCardTemplate(), `beforeend`)
   );
