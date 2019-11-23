@@ -1,5 +1,5 @@
 // Шаблон карточки события
-export const createCardTemplate = () => {
+const createCardTemplate = () => {
   return (
     `<li class="trip-events__item">
       <div class="event">
@@ -33,3 +33,10 @@ export const createCardTemplate = () => {
     </li>`
   );
 };
+
+const CARD_COUNT = 3;
+
+export const cardTemplates = new Array(CARD_COUNT)
+  .fill(``)
+  .map(createCardTemplate)
+  .join(``);

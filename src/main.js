@@ -16,8 +16,8 @@ import {createEventFormTemplate} from './components/event-form';
 // шаблон информиции о дне
 import {createDaysInfoTemplate} from './components/days';
 
-// шаблон картички события
-import {createCardTemplate} from './components/event-card';
+//  Шаблон карточки события
+import {cardTemplates} from './components/event-card';
 
 // Шаблон списка дней
 const createTripsDayTemplate = () => {
@@ -77,13 +77,7 @@ render(day, createDaysInfoTemplate(), `beforeend`);
 
 // Шаблон списка событий дня
 render(day, createEventsListTemplate(), `beforeend`);
-const tripEventList = pageMain.querySelector(`.trip-events__list`);
 
 // Добавление карточек событий
-const CARD_COUNT = 3;
-
-new Array(CARD_COUNT)
-  .fill(``)
-  .forEach(
-      () => render(tripEventList, createCardTemplate(), `beforeend`)
-  );
+const tripEventList = pageMain.querySelector(`.trip-events__list`);
+render(tripEventList, cardTemplates, `beforeend`);
