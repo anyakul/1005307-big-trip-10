@@ -40,6 +40,9 @@ const createEventsListTemplate = () => {
   );
 };
 
+//  Шаблон карточки события
+import {generateEvent} from './mock/trip-event';
+
 // Функция для рендеринга компонентов
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
@@ -81,3 +84,5 @@ render(day, createEventsListTemplate(), `beforeend`);
 // Добавление карточек событий
 const tripEventList = pageMain.querySelector(`.trip-events__list`);
 render(tripEventList, cardTemplates, `beforeend`);
+
+console.log(generateEvent());
