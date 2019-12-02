@@ -1,29 +1,31 @@
 // Шаблон карточки события
-const createCardTemplate = () => {
+export const createCardTemplate = (card) => {
+  const {type, city, photo, description, price, dateStart, dateFinish, timeStart, timeFinish, diffTime, addOption} = card;
+
   return (
     `<li class="trip-events__item">
       <div class="event">
         <div class="event__type">
-          <img class="event__type-icon" width="42" height="42" src="img/icons/taxi.png" alt="Event type icon">
+          <img class="event__type-icon" width="42" height="42" src="./img/icons/${type}.png" alt="Event type icon">
         </div>
         <h3 class="event__title">Taxi to airport</h3>
         <div class="event__schedule">
           <p class="event__time">
-            <time class="event__start-time" datetime="2019-03-18T10:30">10:30</time>
+            <time class="event__start-time" datetime="${dateStart}">${timeStart}</time>
             &mdash;
-            <time class="event__end-time" datetime="2019-03-18T11:00">11:00</time>
+            <time class="event__end-time" datetime="${dateFinish}">${timeFinish}</time>
           </p>
-          <p class="event__duration">1H 30M</p>
+          <p class="event__duration">${diffTime}</p>
         </div>
         <p class="event__price">
-          &euro;&nbsp;<span class="event__price-value">20</span>
+          &euro;&nbsp;<span class="event__price-value">${price}</span>
         </p>
         <h4 class="visually-hidden">Offers:</h4>
         <ul class="event__selected-offers">
           <li class="event__offer">
-            <span class="event__offer-title">Order Uber</span>
+            <span class="event__offer-title">${addOption} ${addOption}</span>
             &plus;
-            &euro;&nbsp;<span class="event__offer-price">20</span>
+            &euro;&nbsp;<span class="event__offer-price">${addOption}</span>
            </li>
         </ul>
         <button class="event__rollup-btn" type="button">
@@ -33,10 +35,3 @@ const createCardTemplate = () => {
     </li>`
   );
 };
-
-const CARD_COUNT = 3;
-
-export const cardTemplates = new Array(CARD_COUNT)
-  .fill(``)
-  .map(createCardTemplate)
-  .join(``);

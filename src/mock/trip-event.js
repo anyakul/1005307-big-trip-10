@@ -9,11 +9,10 @@ const EventTypes = [
   `Transport`,
   `Drive`,
   `Flight`,
-  `Check`,
+  `Check-in`,
   `Sightseeing`,
   `Restaurant`
 ];
-
 
 // Города
 const Cities = [
@@ -55,6 +54,22 @@ const Price = {
   MAX: 1000,
 };
 
+// Время начала
+const timesStart = [
+  `10.00`,
+  `11.00`,
+  `12.00`,
+  `13.00`
+];
+
+// Время окончания
+const timesFinish = [
+  `15.00`,
+  `16.00`,
+  `17.00`,
+  `18.00`
+];
+
 // Дополнительные опции
 const additionalOptions = [
   {
@@ -88,27 +103,42 @@ import {getRandomArrayItem} from '../util';
 import {getRandomArray} from '../util';
 import {getRandomIntegerNumber} from '../util';
 
-// Функция создания случайной даты
-const getRandomDate = () => {
-  const targetDate = new Date();
-  const sign = Math.random() > 0.5 ? 1 : -1;
-  const diffValue = sign * getRandomIntegerNumber(0, 7);
+// время события
 
-  targetDate.setDate(targetDate.getDate() + diffValue);
-
-  return targetDate;
+const getRandomDate = (start, end) => {
+  return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
 };
+
+const getTime = (date) => {
+  return ((date.getHours() < 10) ? (`0` + date.getHours()) : (date.getHours())) 
+  + ":" + ((date.getMinutes() < 10) ? (`0` + date.getMinutes()) : (date.getMinutes())) 
+}
+
+const getDay = (date) => {
+  return (date.getDate());// + ":" + date.getMonth());
+}
 
 // Функция генерации событий
 const generateEvent = () => {
+  let dateStart = getRandomDate(new Date(2019, 1, 1), new Date(2020, 12, 31));
+  let dateFinish = getRandomDate(dateStart, new Date(2020, 12, 31));
+  let timeStart = getTime(dateStart);
+  let timeFinish = getTime(dateFinish);
+  let diff = new Date(+(dateStart - dateFinish));
   return {
-    eventType: getRandomArrayItem(EventTypes),
+    type: getRandomArrayItem(EventTypes),
     city: getRandomArrayItem(Cities),
     photo: `http://picsum.photos/300/150?r=${getRandomIntegerNumber(PhotoId.MIN, PhotoId.MAX)}`,
     description: getRandomArray(Description, DescriptionSentenceNumber.MIN, DescriptionSentenceNumber.MAX),
     price: getRandomIntegerNumber(Price.MIN, Price.MAX),
-    date: getRandomDate(),
-    addOption: getRandomArray(additionalOptions, AdditionalOptionsNumber.MIN, AdditionalOptionsNumber.MAX),
+    dateStart: dateStart,
+    dateFinish: dateFinish,
+    timeStart,
+    timeFinish,
+   // diffTime: getTime(diff),
+    day: getDay(dateStart),
+   // diff = diff ,
+   // addOptionType: getRandomArray(additionalOptions, AdditionalOptionsNumber.MIN, AdditionalOptionsNumber.MAX),
   };
 };
 

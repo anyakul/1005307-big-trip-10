@@ -17,7 +17,8 @@ import {createEventFormTemplate} from './components/event-form';
 import {createDaysInfoTemplate} from './components/days';
 
 //  Шаблон карточки события
-import {cardTemplates} from './components/event-card';
+import {createCardTemplate} from './components/event-card';
+
 
 // Шаблон списка дней
 const createTripsDayTemplate = () => {
@@ -42,6 +43,9 @@ const createEventsListTemplate = () => {
 
 //  Шаблон карточки события
 import {generateEvent} from './mock/trip-event';
+
+//  Шаблон карточки события
+import {generateEvents} from './mock/trip-event';
 
 // Функция для рендеринга компонентов
 const render = (container, template, place) => {
@@ -76,13 +80,32 @@ render(tripDays, createDaysTemplate(), `beforeend`);
 
 // Информация о дне <div class="day__info">...</div>
 const day = pageMain.querySelector(`.day`);
-render(day, createDaysInfoTemplate(), `beforeend`);
+
 
 // Шаблон списка событий дня
+render(day, createDaysInfoTemplate(), `beforeend`);
 render(day, createEventsListTemplate(), `beforeend`);
 
-// Добавление карточек событий
-const tripEventList = pageMain.querySelector(`.trip-events__list`);
-render(tripEventList, cardTemplates, `beforeend`);
 
-console.log(generateEvent());
+// Добавление карточек событий
+const CARD_COUNT = 5;
+const SHOWING_EVENTS_COUNT_ON_START = 1;
+
+const events = generateEvents(CARD_COUNT);
+const tripEventList = pageMain.querySelector(`.trip-events__list`);
+
+events.slice(1, CARD_COUNT).forEach((events) => render(tripEventList, createCardTemplate(events), `beforeend`));
+
+//events.slice(1, CARD_COUNT).forEach((events) => render(day, createDaysInfoTemplate(events), `beforeend`));
+
+/*
+const cardTemplates = new Array(CARD_COUNT)
+  .fill(``)
+  .map(createCardTemplate)
+  .join(``);
+*/
+
+//render(tripEventList, events, `beforeend`);
+
+console.log(events);
+console.log(createCardTemplate(events));
