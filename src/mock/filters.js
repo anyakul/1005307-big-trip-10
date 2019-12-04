@@ -1,7 +1,7 @@
 import {filters} from '../const';
 
 // Функция генерации меню
-export const generateFilters = () => {
+const generateFilters = () => {
   return {
     firstPoint: filters[0],
     secondPoint: filters[1],

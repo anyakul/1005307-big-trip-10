@@ -1,7 +1,7 @@
 import {menu} from '../const';
 
 // Функция генерации меню
-export const generateMenu = () => {
+const generateMenu = () => {
   return {
     firstPoint: menu[0],
     secondPoint: menu[1],

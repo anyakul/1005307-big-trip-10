@@ -76,22 +76,6 @@ export const extraOptions = [
   }
 ];
 
-export const extraOptionsNumber = {
-  MIN: 0,
-  MAX: 2
-};
-
-export const menu = [
-  `table`,
-  `stats`
-];
-
-export const filters = [
-  `Everything`,
-  `Futute`,
-  `Past`
-];
-
 export const MONTH_NAMES = [
   `January`,
   `February`,
@@ -105,4 +89,15 @@ export const MONTH_NAMES = [
   `October`,
   `November`,
   `December`,
+];
+
+export const menu = [
+  `table`,
+  `stats`
+];
+
+export const filters = [
+  `Everything`,
+  `Futute`,
+  `Past`
 ];
