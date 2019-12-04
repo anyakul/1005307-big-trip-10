@@ -57,28 +57,25 @@ export const extraOptions = [
   {
     type: `Add`,
     name: `luggage`,
-    price: `10 €`,
+    price: `10`,
   },
   {
     type: `Switch to`,
     name: `comfort class`,
-    price: `+150 €`,
+    price: `150`,
   },
   {
     type: `Add`,
     name: `meal`,
-    price: `+2 €`,
+    price: `2`,
   },
   {
     type: `Choose`,
     name: `seats`,
-    price: `+9 €`
+    price: `9`
   }
 ];
-/*
-// Соответствие дополнительных функций типу события
-export const 
-*/
+
 export const extraOptionsNumber = {
   MIN: 0,
   MAX: 2

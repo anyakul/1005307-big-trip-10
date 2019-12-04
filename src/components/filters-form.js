@@ -21,4 +21,4 @@ export const createFiltersTemplate = (menu) => {
       <button class="visually-hidden" type="submit">Accept filter</button>
     </form>`
   );
-}
+};

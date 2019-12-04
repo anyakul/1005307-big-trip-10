@@ -1,8 +1,8 @@
 // Шаблон карточки события
 const generateExtraServicesMarkup = (options) => {
   return Array.from(options)
-    .map((options) => {
-      const {type, name, price} = options;
+    .map((extraOption) => {
+      const {type, name, price} = extraOption;
 
       return (
         `<li class="event__offer">
@@ -18,7 +18,7 @@ const generateExtraServicesMarkup = (options) => {
 export const createCardTemplate = (card) => {
   const {type, city, price, dateStart, dateFinish, timeStart, timeFinish, diffTime, extraServices} = card;
   let services = generateExtraServicesMarkup(extraServices);
-  
+
   return (
     `<li class="trip-events__item">
       <div class="event">

@@ -1,5 +1,4 @@
 import {menu} from '../const';
-import {getRandomArrayItem, getRandomArray, getRandomIntegerNumber} from '../util';
 
 // Функция генерации меню
 export const generateMenu = () => {
