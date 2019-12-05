@@ -39,7 +39,7 @@ const generateExtraServices = (options) => {
   const result = new Set();
 
   if (Math.random() >= 0.5) {
-    for (let i = 0; i <= getRandomIntegerNumber(0, 2); i++) {
+    for (let i = 0; i <= getRandomIntegerNumber(0, 3); i++) {
       result.add(getRandomArrayItem(options));
     }
   }
@@ -49,26 +49,35 @@ const generateExtraServices = (options) => {
 
 // Функция генерации событий
 const generateEvent = () => {
-  let dateStart = getRandomDate(new Date(2019, 1, 1), new Date(2020, 12, 31));
-  let dateFinish = getRandomDate(dateStart, new Date(2020, 12, 31));
-  let timeStart = getTime(dateStart);
-  let timeFinish = getTime(dateFinish);
+  let dateFrom = getRandomDate(new Date(2019, 1, 1), new Date(2020, 12, 31));
+  let dateTo = getRandomDate(dateFrom, new Date(2020, 12, 31));
+  let timeFrom = getTime(dateFrom);
+  let timeTo = getTime(dateTo);
+
   return {
     type: getRandomArrayItem(EventTypes),
-    city: getRandomArrayItem(Cities),
-    photos: generateEventPhotos(getRandomIntegerNumber(2, 7)),
-    description: getRandomArray(Description, DescriptionSentenceNumber.MIN, DescriptionSentenceNumber.MAX),
-    price: getRandomIntegerNumber(Price.MIN, Price.MAX),
-    dateStart,
-    dateFinish,
-    timeStart,
-    timeFinish,
-    diffTime: new Date(Math.round(dateStart / 1000)) - (Math.round(dateFinish / 1000)),
-    day: getDay(dateStart),
-    month: MONTH_NAMES[getMonth(dateStart)],
-    extraServices: generateExtraServices(extraOptions),
+    dateFrom,
+    dateTo,
+    day: getDay(dateFrom),
+    month: MONTH_NAMES[getMonth(dateFrom)],
+    timeFrom,
+    timeTo,
+    diffTime: new Date(Math.round(dateFrom / 1000)) - (Math.round(dateTo / 1000)),
+    destination: {
+      name: getRandomArrayItem(Cities),
+      description: getRandomArray(Description, DescriptionSentenceNumber.MIN, DescriptionSentenceNumber.MAX),
+      pictures: [
+        {
+          src: generateEventPhotos(getRandomIntegerNumber(2, 7)),
+          description: getRandomArray(Description, DescriptionSentenceNumber.MIN),
+        },
+      ]
+    },
+    basePrice: getRandomIntegerNumber(Price.MIN, Price.MAX),
+    offers: generateExtraServices(extraOptions),
   };
 };
+
 
 const generateEvents = (count) => {
   return new Array(count)
