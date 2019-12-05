@@ -23,7 +23,7 @@ export const createCardTemplate = (card) => {
     `<li class="trip-events__item">
       <div class="event">
         <div class="event__type">
-          <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
+          <img class="event__type-icon" width="42" height="42" src="./img/icons/${type}.png" alt="Event type icon">
         </div>
         <h3 class="event__title">${type} to ${city}</h3>
         <div class="event__schedule">
