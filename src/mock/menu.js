@@ -1,4 +1,4 @@
-import {menu} from '../const';
+import {menu} from '../constants';
 
 // Функция генерации меню
 const generateMenu = () => {

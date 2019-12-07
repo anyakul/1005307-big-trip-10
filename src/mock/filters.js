@@ -1,4 +1,4 @@
-import {filters} from '../const';
+import {filters} from '../constants';
 
 // Функция генерации меню
 const generateFilters = () => {

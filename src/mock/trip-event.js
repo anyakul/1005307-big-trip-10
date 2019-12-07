@@ -1,83 +1,79 @@
 // МОКИ ДЛЯ ТОЧЕК МАРШРУТА
-import {EventTypes, Cities, PhotoId, Description, DescriptionSentenceNumber,
-  Price, extraOptions, MONTH_NAMES} from '../const';
+import {EVENT_TYPES} from '../constants';
 
-import {getRandomArrayItem, getRandomArray, getRandomIntegerNumber} from '../util';
-
-// Время события
-
-const getRandomDate = (start, end) => {
-  return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+// Функция получения рандомного числа
+const getRandomIntegerNumber = (min = 0, max = 9) => {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
-const getTime = (date) => {
-  return ((date.getHours() < 10) ? (`0` + date.getHours()) : (date.getHours()))
-  + `:` + ((date.getMinutes() < 10) ? (`0` + date.getMinutes()) : (date.getMinutes()));
+// Функция получения рандомного элемента из массива
+const getRandomArrayItem = (array) => {
+  return array[getRandomIntegerNumber(0, array.length - 1)];
 };
 
-const getDay = (date) => {
-  return ((date.getDate() < 10) ? (`0` + date.getDate()) : (date.getDate()));
+// Функция получения массива рандомной длины
+const getRandomArrayLength = (min = 0, max = 9) => {
+  return new Array(getRandomIntegerNumber(min, max)).fill(null);
 };
 
-const getMonth = (date) => {
-  return date.getMonth();
+// функции получения фотографий
+const getRandomPhoto = () => {
+  return `http://picsum.photos/300/150?r=${Math.random()}`;
 };
 
-const generateEventPhotos = (count) => {
-  const photos = [];
+const getRandomPicture = () => ({
+  src: getRandomPhoto(),
+  description: `Event photo`,
+});
 
-  new Array(count)
-    .fill(``)
-    .forEach(() => {
-      photos.push(`http://picsum.photos/300/150?r=${Math.random(PhotoId.MAX, PhotoId.MIN)}`);
-    });
+// Функция получения направления
+const getRandomDestination = () => ({
+  name: `[destination name]`,
+  description: `[destination description]`,
+  pictures: getRandomArrayLength(0, 5).map(getRandomPicture),
+});
 
-  return photos;
+// функция получения рандомного булевого значения
+const getRandomBoolean = (chance = 0.5) => {
+  return Math.random() > chance;
 };
 
-const generateExtraServices = (options) => {
-  const result = new Set();
+// Фунуция получения предложений
+const getRandomOffer = () => ({
+  title: `Offer title`,
+  price: getRandomIntegerNumber(80, 200),
+  accepted: getRandomBoolean(),
+});
 
-  if (Math.random() >= 0.5) {
-    for (let i = 0; i <= getRandomIntegerNumber(0, 3); i++) {
-      result.add(getRandomArrayItem(options));
-    }
-  }
-
-  return result;
+// Функция получения времени
+const Time = {
+  MINUTE: 60000,
 };
+
+const makeEventDatesGenerator = ({Y, M, D}) => {
+  let dateStart = Date.UTC(Y, M, D);
+  return (minutes) => ({
+    dateFrom: dateStart,
+    dateTo: (dateStart = +dateStart + Time.MINUTE * minutes),
+  });
+};
+
+const getEventDates = makeEventDatesGenerator({Y: 2019, M: 12, D: 7});
 
 // Функция генерации событий
 const generateEvent = () => {
-  let dateFrom = getRandomDate(new Date(2019, 1, 1), new Date(2020, 12, 31));
-  let dateTo = getRandomDate(dateFrom, new Date(2020, 12, 31));
-  let timeFrom = getTime(dateFrom);
-  let timeTo = getTime(dateTo);
-
+  const {dateFrom, dateTo} = getEventDates(getRandomIntegerNumber(30, 60 * 32));
   return {
-    type: getRandomArrayItem(EventTypes),
-    dateFrom,
-    dateTo,
-    day: getDay(dateFrom),
-    month: MONTH_NAMES[getMonth(dateFrom)],
-    timeFrom,
-    timeTo,
-    diffTime: new Date(Math.round(dateFrom / 1000)) - (Math.round(dateTo / 1000)),
-    destination: {
-      name: getRandomArrayItem(Cities),
-      description: getRandomArray(Description, DescriptionSentenceNumber.MIN, DescriptionSentenceNumber.MAX),
-      pictures: [
-        {
-          src: generateEventPhotos(getRandomIntegerNumber(2, 7)),
-          description: getRandomArray(Description, DescriptionSentenceNumber.MIN),
-        },
-      ]
-    },
-    basePrice: getRandomIntegerNumber(Price.MIN, Price.MAX),
-    offers: generateExtraServices(extraOptions),
+    type: getRandomArrayItem(EVENT_TYPES),
+    dateFromUnix: dateFrom,
+    dateToUnix: dateTo,
+    destination: getRandomDestination(),
+    picture: getRandomPicture(),
+    basePrice: getRandomIntegerNumber(100, 1000),
+    offers: getRandomArrayLength(0, 3).map(getRandomOffer),
+    isFavorite: getRandomBoolean(),
   };
 };
-
 
 const generateEvents = (count) => {
   return new Array(count)

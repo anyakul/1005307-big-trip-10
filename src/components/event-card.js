@@ -1,12 +1,14 @@
+import {showTime, showFullDate} from '../utils';
+
 // Шаблон карточки события
 const generateExtraServicesMarkup = (options) => {
   return Array.from(options)
     .map((offers) => {
-      const {type, name, price} = offers;
+      const {title, price} = offers;
 
       return (
         `<li class="event__offer">
-          <span class="event__offer-title">${type} ${name}</span>
+          <span class="event__offer-title">${title}</span>
           &plus;
           &euro;&nbsp;<span class="event__offer-price">${price}</span>
          </li>`
@@ -16,8 +18,14 @@ const generateExtraServicesMarkup = (options) => {
 };
 
 export const createCardTemplate = (card) => {
-  const {type, destination, basePrice, dateFrom, dateTo, timeFrom, timeTo, diffTime, offers} = card;
+  const {type, destination, dateFromUnix, dateToUnix, basePrice, offers} = card;
+  const diffTimeUnix = dateToUnix - dateFromUnix;
   let services = generateExtraServicesMarkup(offers);
+  let timeFrom = showTime(dateFromUnix);
+  let timeTo = showTime(dateToUnix);
+  let diffTime = showTime(diffTimeUnix);
+  let fullDateFrom = showFullDate(dateFromUnix);
+  let fullDateTo = showFullDate(dateToUnix);
 
   return (
     `<li class="trip-events__item">
@@ -28,9 +36,9 @@ export const createCardTemplate = (card) => {
         <h3 class="event__title">${type} to ${destination.name}</h3>
         <div class="event__schedule">
           <p class="event__time">
-            <time class="event__start-time" datetime="${dateFrom}">${timeFrom}</time>
+            <time class="event__start-time" datetime="${fullDateFrom}">${timeFrom}</time>
             &mdash;
-            <time class="event__end-time" datetime="${dateTo}">${timeTo}</time>
+            <time class="event__end-time" datetime="${fullDateTo}">${timeTo}</time>
           </p>
           <p class="event__duration">${diffTime}</p>
         </div>
@@ -38,9 +46,7 @@ export const createCardTemplate = (card) => {
           &euro;&nbsp;<span class="event__price-value">${basePrice}</span>
         </p>
         <h4 class="visually-hidden">Offers:</h4>
-        <ul class="event__selected-offers">
-          ${services}
-        </ul>
+        <ul class="event__selected-offers">${services}</ul>
         <button class="event__rollup-btn" type="button">
           <span class="visually-hidden">Open event</span>
         </button>
