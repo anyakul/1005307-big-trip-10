@@ -1,4 +1,5 @@
 import {showTime, showFullDate} from '../utils';
+import {eventTypeToPreposition} from '../constants';
 
 // Шаблон карточки события
 const generateExtraServicesMarkup = (options) => {
@@ -17,6 +18,10 @@ const generateExtraServicesMarkup = (options) => {
     .join(`\n`);
 };
 
+const getEventPreposition = function (type) {
+  return eventTypeToPreposition[type];
+};
+
 export const createCardTemplate = (card) => {
   const {type, destination, dateFromUnix, dateToUnix, basePrice, offers} = card;
   const diffTimeUnix = dateToUnix - dateFromUnix;
@@ -26,6 +31,7 @@ export const createCardTemplate = (card) => {
   let diffTime = showTime(diffTimeUnix);
   let fullDateFrom = showFullDate(dateFromUnix);
   let fullDateTo = showFullDate(dateToUnix);
+  let preposition = getEventPreposition(type);
 
   return (
     `<li class="trip-events__item">
@@ -33,7 +39,7 @@ export const createCardTemplate = (card) => {
         <div class="event__type">
           <img class="event__type-icon" width="42" height="42" src="./img/icons/${type}.png" alt="Event type icon">
         </div>
-        <h3 class="event__title">${type} to ${destination.name}</h3>
+        <h3 class="event__title">${type} ${preposition} ${destination.name}</h3>
         <div class="event__schedule">
           <p class="event__time">
             <time class="event__start-time" datetime="${fullDateFrom}">${timeFrom}</time>
