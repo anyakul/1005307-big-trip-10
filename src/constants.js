@@ -7,7 +7,7 @@ export const EVENT_TYPES = [
   `Transport`,
   `Drive`,
   `Flight`,
-  `Checkin`,
+  `Check-in`,
   `Sightseeing`,
   `Restaurant`
 ];
@@ -25,14 +25,14 @@ export const filters = [
 
 // Словарь типов событий и предлогов
 export const eventTypeToPreposition = {
-  Taxi: `to`,
-  Bus: `to`,
-  Train: `to`,
-  Ship: `to`,
-  Transport: `to`,
-  Drive: `to`,
-  Flight: `to`,
-  Checkin: `into`,
-  Sightseeing: `at`,
-  Restaurant: `in`
+  'Taxi': 'to',
+  'Bus': 'to',
+  'Train': 'to',
+  'Ship': 'to',
+  'Transport': 'to',
+  'Drive': 'to',
+  'Flight': 'to',
+  'Check-in': 'to',
+  'Sightseeing': 'at',
+  'Restaurant': 'in'
 };
