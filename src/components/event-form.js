@@ -1,5 +1,7 @@
+import {createElement} from '../utils';
+
 // Шаблон формы редактирования события
-export const createEventFormTemplate = () => {
+const createEventFormTemplate = () => {
 
   return (
     `<form class="trip-events__item event event--edit" action="#" method="post">
@@ -164,3 +166,26 @@ export const createEventFormTemplate = () => {
     </form>`
   );
 };
+
+export default class EventFormComponent {
+  constructor(card) {
+    this._card = card;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createEventFormTemplate(this._card);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

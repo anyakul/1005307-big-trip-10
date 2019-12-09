@@ -31,10 +31,8 @@ import DayInfoComponent from './components/day-info';
 import TripEventsListComponent from './components/events-list';
 import EventsCardComponent from './components/event-card';
 
-/*
-
-import {createEventFormTemplate} from './components/event-form';
-*/
+// Форма редактирования события
+import EventFormComponent from './components/event-form';
 
 // Генерация событий дня
 const CARD_COUNT = 5;
@@ -66,10 +64,6 @@ menu.slice(1, MENU_COUNT).forEach((menuItem) => render(tripControls, new SiteMen
 const pageMain = document.querySelector(`.page-main`);
 const tripEvents = pageMain.querySelector(`.trip-events`);
 
-/*
-// форма создания или редактирования события
-events.slice(1, 2).forEach((eventsItem) => render(tripEvents, createEventFormTemplate(eventsItem), `beforeend`));
-*/
 
 render(tripEvents, new TripDaysListComponent().getElement(), RenderPosition.BEFOREEND);
 const tripDaysList = pageMain.querySelector(`.trip-days`);
@@ -90,3 +84,8 @@ events.slice(1, EVENT_COUNT).forEach((eventItem) => render(day, new DayInfoCompo
 
 // Сортировка событий
 render(tripEvents, new SortComponent().getElement(), RenderPosition.AFTERBEGIN);
+
+
+// форма создания или редактирования события
+render(tripEvents, new EventFormComponent().getElement(), `beforeend`);
+
