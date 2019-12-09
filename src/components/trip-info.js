@@ -1,5 +1,5 @@
 // Шаблон маршрута поездки
-import {showDate} from '../utils';
+import {showDate, createElement} from '../utils';
 
 export const createTripInfoTemplate = (card) => {
 
@@ -14,3 +14,26 @@ export const createTripInfoTemplate = (card) => {
      </div>`
   );
 };
+
+export default class TripInfoComponent {
+  constructor(card) {
+    this._card = card;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createTripInfoTemplate(this._card);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

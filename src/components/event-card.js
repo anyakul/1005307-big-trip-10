@@ -1,4 +1,4 @@
-import {showTime, showFullDate} from '../utils';
+import {showTime, showFullDate, createElement} from '../utils';
 import {eventTypeToPreposition} from '../constants';
 
 // Шаблон карточки события
@@ -60,3 +60,27 @@ export const createCardTemplate = (card) => {
     </li>`
   );
 };
+
+
+export default class eventsCardComponent {
+  constructor(card) {
+    this._card = card;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createCardTemplate(this._card);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

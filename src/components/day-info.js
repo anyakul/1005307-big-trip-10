@@ -1,7 +1,6 @@
-// Информация о дне поездки
-import {showDate} from '../utils';
+import {createElement, showDate} from '../utils';
 
-export const createDayInfoTemplate = (card) => {
+const createDayInfoTemplate = (card) => {
 
   const {dateFromUnix} = card;
   const date = showDate(dateFromUnix);
@@ -13,3 +12,26 @@ export const createDayInfoTemplate = (card) => {
     </div>`
   );
 };
+
+export default class DayInfoComponent {
+  constructor(card) {
+    this._card = card;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createDayInfoTemplate(this._card);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

@@ -1,14 +1,40 @@
-import {render} from './utils';
+import {RenderPosition, render} from './utils';
 import {generateEvents} from './mock/trip-event';
-import {createTripInfoTemplate} from './components/trip-info';
-import {createMenuTemplate} from './components/menu';
-import {generateMenuPoints} from './mock/menu';
+
+// ХЕДЕР
+
+// Общая цена
+import TotalPriceComponent from './components/total-price';
+
+// Информация о городах поездки
+import TripInfoComponent from './components/trip-info';
+
+// Фильтры
 import {generateFiltersPoints} from './mock/filters';
-import {createFiltersTemplate} from './components/filters-form';
-import {createSortEventsTemplate} from './components/sort-events';
+import FiltersComponent from './components/filters-form';
+
+// Меню
+import SiteMenuComponent from './components/menu';
+import {generateMenuPoints} from './mock/menu';
+
+// MAIN
+import TripDaysListComponent from './components/trip-days-list';
+import DayComponent from './components/day';
+
+// Сортировка
+import SortComponent from './components/sort-events';
+
+// Информация о дне
+import DayInfoComponent from './components/day-info';
+
+// События дня
+import TripEventsListComponent from './components/events-list';
+import EventsCardComponent from './components/event-card';
+
+/*
+
 import {createEventFormTemplate} from './components/event-form';
-import {createDayInfoTemplate} from './components/day-info';
-import {createCardTemplate} from './components/event-card';
+*/
 
 // Генерация событий дня
 const CARD_COUNT = 5;
@@ -17,56 +43,50 @@ const events = generateEvents(CARD_COUNT);
 // ОТРИСОВКА ХЕДЕРА
 const pageHeader = document.querySelector(`.page-header`);
 const tripControls = pageHeader.querySelector(`.trip-controls`);
+const tripInfo = pageHeader.querySelector(`.trip-info`);
+const TRIP_COUNT = 2;
+const FILTERS_COUNT = 2;
+const MENU_COUNT = 2;
+
+// Общая сумма поездки
+events.slice(1, TRIP_COUNT).forEach((eventItem) => render(tripInfo, new TotalPriceComponent(eventItem).getElement(), RenderPosition.BEFOREEND));
 
 // Информация о городах поездки
-const TRIP_COUNT = 2;
-const tripInfo = pageHeader.querySelector(`.trip-info`);
-events.slice(1, TRIP_COUNT).forEach((eventItem) => render(tripInfo, createTripInfoTemplate(eventItem), `beforebegin`));
-
-// Меню
-const MENU_COUNT = 2;
-const menu = generateMenuPoints(MENU_COUNT);
-menu.slice(1, MENU_COUNT).forEach((menuItem) => render(tripControls, createMenuTemplate(menuItem), `beforeend`));
+events.slice(1, TRIP_COUNT).forEach((eventItem) => render(tripInfo, new TripInfoComponent(eventItem).getElement(), RenderPosition.BEFOREEND));
 
 // Фильтры
-const FILTERS_COUNT = 2;
 const filters = generateFiltersPoints(FILTERS_COUNT);
-filters.slice(1, FILTERS_COUNT).forEach((filtersItem) => render(tripControls, createFiltersTemplate(filtersItem), `beforeend`));
+filters.slice(1, FILTERS_COUNT).forEach((filtersItem) => render(tripControls, new FiltersComponent(filtersItem).getElement(), RenderPosition.BEFOREEND));
+
+// Меню
+const menu = generateMenuPoints(MENU_COUNT);
+menu.slice(1, MENU_COUNT).forEach((menuItem) => render(tripControls, new SiteMenuComponent(menuItem).getElement(), RenderPosition.BEFOREEND));
 
 // ОТРИСОВКА MAIN
 const pageMain = document.querySelector(`.page-main`);
 const tripEvents = pageMain.querySelector(`.trip-events`);
 
-// Сортировка событий
-render(tripEvents, createSortEventsTemplate(), `beforeend`);
-
+/*
 // форма создания или редактирования события
 events.slice(1, 2).forEach((eventsItem) => render(tripEvents, createEventFormTemplate(eventsItem), `beforeend`));
+*/
 
-// Список дней
-const createTripsDayTemplate = () => {
-  return (`<ul class="trip-days"></ul>`);
-};
-render(tripEvents, createTripsDayTemplate(), `beforeend`);
+render(tripEvents, new TripDaysListComponent().getElement(), RenderPosition.BEFOREEND);
+const tripDaysList = pageMain.querySelector(`.trip-days`);
+render(tripDaysList, new DayComponent().getElement(), RenderPosition.BEFOREEND);
 
-// Список дней
-const createDaysTemplate = () => {
-  return (`<li class="trip-days__item day"></li>`);
-};
-const tripDays = pageMain.querySelector(`.trip-days`);
-render(tripDays, createDaysTemplate(), `beforeend`);
-
-// Информация о дне
 const day = pageMain.querySelector(`.day`);
-const EVENT_COUNT = 2;
-events.slice(1, EVENT_COUNT).forEach((eventsItem) => render(day, createDayInfoTemplate(eventsItem), `beforeend`));
 
 // Список событий дня
-const createEventsListTemplate = () => {
-  return (`<ul class="trip-events__list"></ul>`);
-};
-render(day, createEventsListTemplate(), `beforeend`);
+render(day, new TripEventsListComponent().getElement(), RenderPosition.BEFOREEND);
 
 // Добавление карточек событий
 const tripEventList = pageMain.querySelector(`.trip-events__list`);
-events.slice(1, CARD_COUNT).forEach((eventsItem) => render(tripEventList, createCardTemplate(eventsItem), `beforeend`));
+events.slice(1, CARD_COUNT).forEach((eventsItem) => render(tripEventList, new EventsCardComponent(eventsItem).getElement(), RenderPosition.BEFOREEND));
+
+// Информация о дне
+const EVENT_COUNT = 2;
+events.slice(1, EVENT_COUNT).forEach((eventItem) => render(day, new DayInfoComponent(eventItem).getElement(), RenderPosition.BEFOREEND));
+
+// Сортировка событий
+render(tripEvents, new SortComponent().getElement(), RenderPosition.AFTERBEGIN);

@@ -1,5 +1,7 @@
+import {createElement} from '../utils';
+
 // Шаблон меню
-export const createMenuTemplate = (menu) => {
+const createMenuTemplate = (menu) => {
   const {firstPoint, secondPoint} = menu;
   return (
     `<nav class="trip-controls__trip-tabs  trip-tabs">
@@ -8,3 +10,26 @@ export const createMenuTemplate = (menu) => {
     </nav>`
   );
 };
+
+export default class SiteMenuComponent {
+  constructor(menu) {
+    this._menu = menu;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createMenuTemplate(this._menu);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
