@@ -29,7 +29,7 @@ import DayInfoComponent from './components/day-info';
 
 // События дня
 import TripEventsListComponent from './components/events-list';
-import EventsCardComponent from './components/event-card';
+import EventCardComponent from './components/event-card';
 
 // Форма редактирования события
 import EventFormComponent from './components/event-form';
@@ -74,9 +74,30 @@ const day = pageMain.querySelector(`.day`);
 // Список событий дня
 render(day, new TripEventsListComponent().getElement(), RenderPosition.BEFOREEND);
 
-// Добавление карточек событий
+// форма редактирования события b карточки событий
 const tripEventList = pageMain.querySelector(`.trip-events__list`);
-events.slice(1, CARD_COUNT).forEach((eventsItem) => render(tripEventList, new EventsCardComponent(eventsItem).getElement(), RenderPosition.BEFOREEND));
+
+const renderEvent = (card) => {
+  const eventComponent = new EventCardComponent(card);
+  const eventEditComponent = new EventFormComponent(card);
+
+  const editButton = eventComponent.getElement().querySelector(`.event__rollup-btn`);
+  editButton.addEventListener(`click`, () => {
+    tripEventList.replaceChild(eventEditComponent.getElement(), eventComponent.getElement());
+  });
+
+  const editForm = eventEditComponent.getElement().querySelector(`.event__save-btn`);
+  editForm.addEventListener(`submit`, () => {
+    tripEventList.replaceChild(eventComponent.getElement(), eventEditComponent.getElement());
+  });
+
+  render(tripEventList, eventComponent.getElement(), RenderPosition.BEFOREEND);
+};
+
+events.slice(0, CARD_COUNT)
+  .forEach((eventItem) => {
+    renderEvent(eventItem);
+  });
 
 // Информация о дне
 const EVENT_COUNT = 2;
@@ -84,8 +105,3 @@ events.slice(1, EVENT_COUNT).forEach((eventItem) => render(day, new DayInfoCompo
 
 // Сортировка событий
 render(tripEvents, new SortComponent().getElement(), RenderPosition.AFTERBEGIN);
-
-
-// форма создания или редактирования события
-render(tripEvents, new EventFormComponent().getElement(), `beforeend`);
-
