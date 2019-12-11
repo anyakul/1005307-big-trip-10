@@ -86,14 +86,14 @@ export const generateTripDays = (cards) => {
   let currentCards = [];
 
   cards.forEach((card, i) => {
-    let prevCard = i > 0 ? card[i - 1] : null;
+    let prevCard = i > 0 ? cards[i - 1] : null;
 
-    if (prevCard && card.startDate.getDate() !== prevCard.startDate.getDate()) {
+    if (prevCard && card.dateFromUnix.getDate() !== prevCard.dateFromUnix.getDate()) {
       tripDays.push(currentCards);
       currentCards = [];
     }
     currentCards.push(card);
-    if (i === card.length - 1) {
+    if (i === cards.length - 1) {
       tripDays.push(currentCards);
     }
   });

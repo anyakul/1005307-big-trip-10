@@ -33,9 +33,9 @@ import EventFormComponent from './components/event-form';
 
 // Генерация событий дня
 const CARD_COUNT = 5;
-const events = generateEvents(CARD_COUNT);
-events.sort((a, b) => Date.parse(a.startDate) > Date.parse(b.startDate) ? 1 : -1);
-const tripDays = generateTripDays(events);
+const cards = generateEvents(CARD_COUNT);
+cards.sort((a, b) => Date.parse(a.startDate) > Date.parse(b.startDate) ? 1 : -1);
+const tripDays = generateTripDays(cards);
 
 // ОТРИСОВКА ХЕДЕРА
 const pageHeader = document.querySelector(`.page-header`);
@@ -49,8 +49,12 @@ const MENU_COUNT = 2;
 // Информация о стоимости поездки
 tripInfoCost.textContent = getTripInfoCost(tripDays);
 
+console.log(getTripInfoCost(tripDays));
+console.log(tripDays);
+console.log(cards);
+
 // Информация о городах поездки
-events.slice(1, TRIP_COUNT).forEach((eventItem) => render(tripInfo, new TripInfoComponent(eventItem).getElement(), RenderPosition.BEFOREEND));
+cards.slice(1, TRIP_COUNT).forEach((eventItem) => render(tripInfo, new TripInfoComponent(eventItem).getElement(), RenderPosition.BEFOREEND));
 
 // Фильтры
 const filters = generateFiltersPoints(FILTERS_COUNT);
@@ -94,11 +98,11 @@ const renderEvent = (card) => {
   render(tripEventList, eventComponent.getElement(), RenderPosition.BEFOREEND);
 };
 
-events.slice(0, CARD_COUNT).forEach(renderEvent);
+cards.slice(0, CARD_COUNT).forEach(renderEvent);
 
 // Информация о дне
 const EVENT_COUNT = 2;
-events.slice(1, EVENT_COUNT).forEach((eventItem) => render(day, new DayInfoComponent(eventItem).getElement(), RenderPosition.BEFOREEND));
+cards.slice(1, EVENT_COUNT).forEach((eventItem) => render(day, new DayInfoComponent(eventItem).getElement(), RenderPosition.BEFOREEND));
 
 // Сортировка событий
 render(tripEvents, new SortComponent().getElement(), RenderPosition.AFTERBEGIN);
