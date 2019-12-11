@@ -61,7 +61,7 @@ export const createCardTemplate = (card) => {
   );
 };
 
-export default class eventCardComponent {
+export default class EventCardComponent {
   constructor(card) {
     this._card = card;
     this._element = null;

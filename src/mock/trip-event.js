@@ -75,10 +75,36 @@ const generateEvent = () => {
   };
 };
 
-const generateEvents = (count) => {
+export const generateEvents = (count) => {
   return new Array(count)
     .fill(``)
     .map(generateEvent);
 };
 
-export {generateEvents};
+export const generateTripDays = (cards) => {
+  let tripDays = [];
+  let currentCards = [];
+
+  cards.forEach((card, i) => {
+    let prevCard = i > 0 ? card[i - 1] : null;
+
+    if (prevCard && card.startDate.getDate() !== prevCard.startDate.getDate()) {
+      tripDays.push(currentCards);
+      currentCards = [];
+    }
+    currentCards.push(card);
+    if (i === card.length - 1) {
+      tripDays.push(currentCards);
+    }
+  });
+
+  return tripDays;
+};
+
+export const getTripInfoCost = (tripDays) => {
+  const eventCards = tripDays.flat();
+  let tripInfoCost = eventCards.reduce((sum, eventCard) => {
+    return sum + eventCard.basePrice;
+  }, 0);
+  return tripInfoCost;
+};

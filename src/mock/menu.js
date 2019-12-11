@@ -1,10 +1,10 @@
-import {menu} from '../constants';
+import {MENU_TYPES} from '../constants';
 
 // Функция генерации меню
 const generateMenu = () => {
   return {
-    firstPoint: menu[0],
-    secondPoint: menu[1],
+    firstPoint: MENU_TYPES[0],
+    secondPoint: MENU_TYPES[1],
   };
 };
 

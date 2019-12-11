@@ -2,7 +2,7 @@ import {createElement} from '../utils';
 
 // Список дней
 const createTripDaysTemplate = () => {
-  return (`<ul class="trip-days"></ul>`);
+  return `<ul class="trip-days"></ul>`;
 };
 
 export default class TripDaysListComponent {

@@ -12,7 +12,12 @@ export const EVENT_TYPES = [
   `Restaurant`
 ];
 
-export const filters = [
+export const MENU_TYPES = [
+  `table`,
+  `stats`
+];
+
+export const FILTERS_TYPES = [
   `Everything`,
   `Futute`,
   `Past`
@@ -31,8 +36,3 @@ export const eventTypeToPreposition = {
   'Sightseeing': `at`,
   'Restaurant': `in`
 };
-
-export const menu = [
-  `table`,
-  `stats`
-];
