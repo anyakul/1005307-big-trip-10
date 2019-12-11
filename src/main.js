@@ -26,16 +26,15 @@ import DayInfoComponent from './components/day-info';
 // События дня
 import TripEventsListComponent from './components/events-list';
 import EventCardComponent from './components/event-card';
-import {getTripInfoCost, generateTripDays, generateEvents} from './mock/trip-event';
+import {getTripInfoCost, generateEvents} from './mock/trip-event';
 
 // Форма редактирования события
 import EventFormComponent from './components/event-form';
 
 // Генерация событий дня
 const CARD_COUNT = 5;
-const cards = generateEvents(CARD_COUNT);
-cards.sort((a, b) => Date.parse(a.startDate) > Date.parse(b.startDate) ? 1 : -1);
-const tripDays = generateTripDays(cards);
+const events = generateEvents(CARD_COUNT);
+events.sort((a, b) => Date.parse(a.startDate) > Date.parse(b.startDate) ? 1 : -1);
 
 // ОТРИСОВКА ХЕДЕРА
 const pageHeader = document.querySelector(`.page-header`);
@@ -47,14 +46,10 @@ const FILTERS_COUNT = 2;
 const MENU_COUNT = 2;
 
 // Информация о стоимости поездки
-tripInfoCost.textContent = getTripInfoCost(tripDays);
-
-console.log(getTripInfoCost(tripDays));
-console.log(tripDays);
-console.log(cards);
+tripInfoCost.textContent = getTripInfoCost(events);
 
 // Информация о городах поездки
-cards.slice(1, TRIP_COUNT).forEach((eventItem) => render(tripInfo, new TripInfoComponent(eventItem).getElement(), RenderPosition.BEFOREEND));
+events.slice(1, TRIP_COUNT).forEach((eventItem) => render(tripInfo, new TripInfoComponent(eventItem).getElement(), RenderPosition.BEFOREEND));
 
 // Фильтры
 const filters = generateFiltersPoints(FILTERS_COUNT);
@@ -98,11 +93,11 @@ const renderEvent = (card) => {
   render(tripEventList, eventComponent.getElement(), RenderPosition.BEFOREEND);
 };
 
-cards.slice(0, CARD_COUNT).forEach(renderEvent);
+events.slice(0, CARD_COUNT).forEach(renderEvent);
 
 // Информация о дне
 const EVENT_COUNT = 2;
-cards.slice(1, EVENT_COUNT).forEach((eventItem) => render(day, new DayInfoComponent(eventItem).getElement(), RenderPosition.BEFOREEND));
+events.slice(1, EVENT_COUNT).forEach((eventItem) => render(day, new DayInfoComponent(eventItem).getElement(), RenderPosition.BEFOREEND));
 
 // Сортировка событий
 render(tripEvents, new SortComponent().getElement(), RenderPosition.AFTERBEGIN);
