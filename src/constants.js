@@ -12,12 +12,12 @@ export const EVENT_TYPES = [
   `Restaurant`
 ];
 
-export const menu = [
+export const MENU_TYPES = [
   `table`,
   `stats`
 ];
 
-export const filters = [
+export const FILTERS_TYPES = [
   `Everything`,
   `Futute`,
   `Past`

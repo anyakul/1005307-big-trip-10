@@ -75,10 +75,16 @@ const generateEvent = () => {
   };
 };
 
-const generateEvents = (count) => {
+export const generateEvents = (count) => {
   return new Array(count)
     .fill(``)
     .map(generateEvent);
 };
 
-export {generateEvents};
+export const getTripInfoCost = (tripDays) => {
+  const eventCards = tripDays.flat();
+  let tripInfoCost = eventCards.reduce((sum, eventCard) => {
+    return sum + eventCard.basePrice;
+  }, 0);
+  return tripInfoCost;
+};

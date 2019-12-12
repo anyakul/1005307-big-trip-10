@@ -1,11 +1,11 @@
-import {filters} from '../constants';
+import {FILTERS_TYPES} from '../constants';
 
 // Функция генерации меню
 const generateFilters = () => {
   return {
-    firstPoint: filters[0],
-    secondPoint: filters[1],
-    thirdPoint: filters[2],
+    firstPoint: FILTERS_TYPES[0],
+    secondPoint: FILTERS_TYPES[1],
+    thirdPoint: FILTERS_TYPES[2],
   };
 };
 
