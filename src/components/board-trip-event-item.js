@@ -1,17 +1,16 @@
 import {createElement} from '../utils';
 
-// Список дней
-const createTripDaysTemplate = () => {
-  return `<ul class="trip-days"></ul>`;
+const createBoardEventItemTemplate = () => {
+  return `<li class="trip-events__item"></li>`;
 };
 
-export default class TripDaysListComponent {
+export default class BoardEventItemComponent {
   constructor() {
     this._element = null;
   }
 
   getTemplate() {
-    return createTripDaysTemplate();
+    return createBoardEventItemTemplate();
   }
 
   getElement() {

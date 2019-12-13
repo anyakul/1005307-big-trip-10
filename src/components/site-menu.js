@@ -1,8 +1,9 @@
+// Меню
 import {createElement} from '../utils';
 
-// Шаблон меню
-const createMenuTemplate = (menu) => {
+const createSiteMenuTemplate = (menu) => {
   const {firstPoint, secondPoint} = menu;
+
   return (
     `<nav class="trip-controls__trip-tabs  trip-tabs">
       <a class="trip-tabs__btn  trip-tabs__btn--active" href="#">${firstPoint}</a>
@@ -18,7 +19,7 @@ export default class SiteMenuComponent {
   }
 
   getTemplate() {
-    return createMenuTemplate(this._menu);
+    return createSiteMenuTemplate(this._menu);
   }
 
   getElement() {

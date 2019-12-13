@@ -1,17 +1,19 @@
 import {createElement} from '../utils';
 
-// Список событий дня
-const createEventsListTemplate = () => {
-  return `<ul class="trip-events__list"></ul>`;
+// Шаблон сообщения об отсутствии точек маршрута
+const createNoEventsTemplate = () => {
+  return (
+    `<p class="trip-events__msg">Click New Event to create your first point</p>`
+  );
 };
 
-export default class EventsListComponent {
+export default class NoEventsComponent {
   constructor() {
     this._element = null;
   }
 
   getTemplate() {
-    return createEventsListTemplate();
+    return createNoEventsTemplate();
   }
 
   getElement() {
@@ -26,4 +28,3 @@ export default class EventsListComponent {
     this._element = null;
   }
 }
-

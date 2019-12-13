@@ -1,8 +1,9 @@
+// Фильтры
 import {createElement} from '../utils';
 
-// Шаблон фильтров
-const createFiltersTemplate = (filters) => {
+const createFiltersFormTemplate = (filters) => {
   const {firstPoint, secondPoint, thirdPoint} = filters;
+
   return (
     `<form class="trip-filters" action="#" method="get">
       <div class="trip-filters__filter">
@@ -22,14 +23,14 @@ const createFiltersTemplate = (filters) => {
   );
 };
 
-export default class FiltersComponent {
+export default class FiltersFormComponent {
   constructor(filters) {
     this._filters = filters;
     this._element = null;
   }
 
   getTemplate() {
-    return createFiltersTemplate(this._filters);
+    return createFiltersFormTemplate(this._filters);
   }
 
   getElement() {

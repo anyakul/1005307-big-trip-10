@@ -1,35 +1,39 @@
-import {RenderPosition, render} from './utils';
+import {RenderPosition, render, isEscKey} from './utils';
 
 // ХЕДЕР
 
-// Информация о городах поездки
+// Маршрут поездки
 import TripInfoComponent from './components/trip-info';
 
 // Фильтры
 import {generateFiltersPoints} from './mock/filters';
-import FiltersComponent from './components/filters-form';
+import FiltersFormComponent from './components/filters-form';
 
 // Меню
-import SiteMenuComponent from './components/menu';
+import SiteMenuComponent from './components/site-menu';
 import {generateMenuPoints} from './mock/menu';
 
 // MAIN
-import TripDaysListComponent from './components/trip-days-list';
-import DayComponent from './components/day';
+import BoardTripDaysListComponent from './components/board-trip-days-list';
+import BoardDayComponent from './components/board-day';
 
-// Сортировка
-import SortComponent from './components/sort-events';
+// Форма сортировки
+import SortFormComponent from './components/sort-form';
 
 // Информация о дне
 import DayInfoComponent from './components/day-info';
 
 // События дня
-import TripEventsListComponent from './components/events-list';
+import BoardEventsListComponent from './components/board-events-list';
+import BoardEventItemComponent from './components/board-event-item';
 import EventCardComponent from './components/event-card';
 import {getTripInfoCost, generateEvents} from './mock/trip-event';
 
 // Форма редактирования события
-import EventFormComponent from './components/event-form';
+import EditEventFormComponent from './components/edit-event-form';
+
+// Сообщения об отсутствии точек маршрута
+import NoEventsComponent from './components/no-events';
 
 // Генерация событий дня
 const CARD_COUNT = 5;
@@ -53,7 +57,7 @@ events.slice(1, TRIP_COUNT).forEach((eventItem) => render(tripInfo, new TripInfo
 
 // Фильтры
 const filters = generateFiltersPoints(FILTERS_COUNT);
-filters.slice(1, FILTERS_COUNT).forEach((filtersItem) => render(tripControls, new FiltersComponent(filtersItem).getElement(), RenderPosition.BEFOREEND));
+filters.slice(1, FILTERS_COUNT).forEach((filtersItem) => render(tripControls, new FiltersFormComponent(filtersItem).getElement(), RenderPosition.BEFOREEND));
 
 // Меню
 const menu = generateMenuPoints(MENU_COUNT);
@@ -63,41 +67,67 @@ menu.slice(1, MENU_COUNT).forEach((menuItem) => render(tripControls, new SiteMen
 const pageMain = document.querySelector(`.page-main`);
 const tripEvents = pageMain.querySelector(`.trip-events`);
 
-render(tripEvents, new TripDaysListComponent().getElement(), RenderPosition.BEFOREEND);
-const tripDaysList = pageMain.querySelector(`.trip-days`);
-render(tripDaysList, new DayComponent().getElement(), RenderPosition.BEFOREEND);
+render(tripEvents, new BoardTripDaysListComponent().getElement(), RenderPosition.BEFOREEND);
+const boardTripDaysList = tripEvents.querySelector(`.trip-days`);
+render(boardTripDaysList, new BoardDayComponent().getElement(), RenderPosition.BEFOREEND);
 
-const day = pageMain.querySelector(`.day`);
+const day = boardTripDaysList.querySelector(`.day`);
 
 // Список событий дня
-render(day, new TripEventsListComponent().getElement(), RenderPosition.BEFOREEND);
+render(day, new BoardEventsListComponent().getElement(), RenderPosition.BEFOREEND);
 
 // форма редактирования события и карточки событий
-const tripEventList = pageMain.querySelector(`.trip-events__list`);
+const boardTripEventList = pageMain.querySelector(`.trip-events__list`);
+render(boardTripEventList, new BoardEventItemComponent().getElement(), RenderPosition.BEFOREEND);
+const boardEventItem = boardTripEventList.querySelector(`.trip-events__item`);
 
-const renderEvent = (card) => {
+const renderEvent = (eventListElement, card) => {
+  const onEscKeyDown = (evt) => {
+
+    if (isEscKey(evt)) {
+      replaceEventToEdit();
+      document.removeEventListener(`keydown`, onEscKeyDown);
+    }
+  };
   const eventComponent = new EventCardComponent(card);
-  const eventEditComponent = new EventFormComponent(card);
+  const eventEditComponent = new EditEventFormComponent(card);
+
+  const replaceEditToEvent = () => {
+    boardEventItem.replaceChild(eventEditComponent.getElement(), eventComponent.getElement());
+  };
+
+  const replaceEventToEdit = () => {
+    boardEventItem.replaceChild(eventComponent.getElement(), eventEditComponent.getElement());
+  };
 
   const editButton = eventComponent.getElement().querySelector(`.event__rollup-btn`);
   editButton.addEventListener(`click`, () => {
-    tripEventList.replaceChild(eventEditComponent.getElement(), eventComponent.getElement());
+    replaceEditToEvent();
+    document.addEventListener(`keydown`, onEscKeyDown);
   });
 
   const editForm = eventEditComponent.getElement();
   editForm.addEventListener(`submit`, (evt) => {
     evt.preventDefault();
-    tripEventList.replaceChild(eventComponent.getElement(), eventEditComponent.getElement());
+    replaceEventToEdit();
   });
 
-  render(tripEventList, eventComponent.getElement(), RenderPosition.BEFOREEND);
+  render(eventListElement, eventComponent.getElement(), RenderPosition.BEFOREEND);
 };
 
-events.slice(0, CARD_COUNT).forEach(renderEvent);
+const isAllEventsArchived = events.every((eventItem) => eventItem.isArchive);
+
+if (isAllEventsArchived) {
+  render(tripEvents, new NoEventsComponent().getElement(), RenderPosition.BEFOREEND);
+} else {
+  render(tripEvents, new SortFormComponent().getElement(), RenderPosition.AFTERBEGIN);
+
+  events.slice(0, CARD_COUNT)
+    .forEach((eventItem) => {
+      renderEvent(boardEventItem, eventItem);
+    });
+}
 
 // Информация о дне
 const EVENT_COUNT = 2;
 events.slice(1, EVENT_COUNT).forEach((eventItem) => render(day, new DayInfoComponent(eventItem).getElement(), RenderPosition.BEFOREEND));
-
-// Сортировка событий
-render(tripEvents, new SortComponent().getElement(), RenderPosition.AFTERBEGIN);

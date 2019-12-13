@@ -1,6 +1,6 @@
+// Генерация фильтров
 import {FILTERS_TYPES} from '../constants';
 
-// Функция генерации меню
 const generateFilters = () => {
   return {
     firstPoint: FILTERS_TYPES[0],

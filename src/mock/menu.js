@@ -1,6 +1,6 @@
+// Генерация меню
 import {MENU_TYPES} from '../constants';
 
-// Функция генерации меню
 const generateMenu = () => {
   return {
     firstPoint: MENU_TYPES[0],
