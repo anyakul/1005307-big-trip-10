@@ -71,10 +71,10 @@ render(tripEvents, new BoardTripDaysComponent().getElement(), RenderPosition.BEF
 const boardTripDaysList = tripEvents.querySelector(`.trip-days`);
 render(boardTripDaysList, new BoardDayComponent().getElement(), RenderPosition.BEFOREEND);
 
-const day = boardTripDaysList.querySelector(`.day`);
+const boardDay = boardTripDaysList.querySelector(`.day`);
 
 // Список событий дня
-render(day, new BoardEventsListComponent().getElement(), RenderPosition.BEFOREEND);
+render(boardDay, new BoardEventsListComponent().getElement(), RenderPosition.BEFOREEND);
 
 // форма редактирования события и карточки событий
 const boardTripEventList = pageMain.querySelector(`.trip-events__list`);
@@ -130,4 +130,4 @@ if (isAllEventsArchived) {
 
 // Информация о дне
 const EVENT_COUNT = 2;
-events.slice(1, EVENT_COUNT).forEach((eventItem) => render(day, new DayInfoComponent(eventItem).getElement(), RenderPosition.BEFOREEND));
+events.slice(1, EVENT_COUNT).forEach((eventItem) => render(boardDay, new DayInfoComponent(eventItem).getElement(), RenderPosition.BEFOREEND));
