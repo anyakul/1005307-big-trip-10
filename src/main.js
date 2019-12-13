@@ -14,18 +14,18 @@ import SiteMenuComponent from './components/site-menu';
 import {generateMenuPoints} from './mock/menu';
 
 // MAIN
-import BoardTripDaysListComponent from './components/board-trip-days-list';
+import BoardTripDaysComponent from './components/board-trip-days';
 import BoardDayComponent from './components/board-day';
 
 // Форма сортировки
-import SortFormComponent from './components/sort-form';
+import SortFormComponent from './components/sort-events-form';
 
 // Информация о дне
 import DayInfoComponent from './components/day-info';
 
 // События дня
 import BoardEventsListComponent from './components/board-events-list';
-import BoardEventItemComponent from './components/board-event-item';
+import BoardEventsItemComponent from './components/board-events-item';
 import EventCardComponent from './components/event-card';
 import {getTripInfoCost, generateEvents} from './mock/trip-event';
 
@@ -67,7 +67,7 @@ menu.slice(1, MENU_COUNT).forEach((menuItem) => render(tripControls, new SiteMen
 const pageMain = document.querySelector(`.page-main`);
 const tripEvents = pageMain.querySelector(`.trip-events`);
 
-render(tripEvents, new BoardTripDaysListComponent().getElement(), RenderPosition.BEFOREEND);
+render(tripEvents, new BoardTripDaysComponent().getElement(), RenderPosition.BEFOREEND);
 const boardTripDaysList = tripEvents.querySelector(`.trip-days`);
 render(boardTripDaysList, new BoardDayComponent().getElement(), RenderPosition.BEFOREEND);
 
@@ -78,7 +78,7 @@ render(day, new BoardEventsListComponent().getElement(), RenderPosition.BEFOREEN
 
 // форма редактирования события и карточки событий
 const boardTripEventList = pageMain.querySelector(`.trip-events__list`);
-render(boardTripEventList, new BoardEventItemComponent().getElement(), RenderPosition.BEFOREEND);
+render(boardTripEventList, new BoardEventsItemComponent().getElement(), RenderPosition.BEFOREEND);
 const boardEventItem = boardTripEventList.querySelector(`.trip-events__item`);
 
 const renderEvent = (eventListElement, card) => {

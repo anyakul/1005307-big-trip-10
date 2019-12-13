@@ -5,7 +5,7 @@ const createBoardTripDaysTemplate = () => {
   return `<ul class="trip-days"></ul>`;
 };
 
-export default class BoardTripDaysListComponent {
+export default class BoardTripDaysComponent {
   constructor() {
     this._element = null;
   }
