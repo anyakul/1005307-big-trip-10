@@ -1,17 +1,17 @@
+// Событие дня
 import {createElement} from '../utils';
 
-// Список событий дня
-const createEventsListTemplate = () => {
-  return `<ul class="trip-events__list"></ul>`;
+const createBoardEventsItemTemplate = () => {
+  return `<li class="trip-events__item"></li>`;
 };
 
-export default class EventsListComponent {
+export default class BoardEventsItemComponent {
   constructor() {
     this._element = null;
   }
 
   getTemplate() {
-    return createEventsListTemplate();
+    return createBoardEventsItemTemplate();
   }
 
   getElement() {
@@ -26,4 +26,3 @@ export default class EventsListComponent {
     this._element = null;
   }
 }
-

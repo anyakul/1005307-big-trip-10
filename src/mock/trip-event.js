@@ -81,6 +81,7 @@ export const generateEvents = (count) => {
     .map(generateEvent);
 };
 
+// Функция подсчета стоимости поездки
 export const getTripInfoCost = (tripDays) => {
   const eventCards = tripDays.flat();
   let tripInfoCost = eventCards.reduce((sum, eventCard) => {

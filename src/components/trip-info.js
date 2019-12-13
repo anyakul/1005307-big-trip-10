@@ -1,8 +1,7 @@
-// Шаблон маршрута поездки
+// Маршрут поездки
 import {showDate, createElement} from '../utils';
 
 const createTripInfoTemplate = (card) => {
-
   const {dateFromUnix, dateToUnix, destination} = card;
   let dateFrom = showDate(dateFromUnix);
   let dateTo = showDate(dateToUnix);

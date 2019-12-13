@@ -1,7 +1,7 @@
+// Форма сортировки
 import {createElement} from '../utils';
 
-// Шаблон формы сортировки
-const createSortEventsTemplate = () => {
+const createSortEventsFormTemplate = () => {
   return (
     `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
       <span class="trip-sort__item  trip-sort__item--day">Day</span>
@@ -32,13 +32,13 @@ const createSortEventsTemplate = () => {
   );
 };
 
-export default class SortComponent {
+export default class SortEventsFormComponent {
   constructor() {
     this._element = null;
   }
 
   getTemplate() {
-    return createSortEventsTemplate();
+    return createSortEventsFormTemplate();
   }
 
   getElement() {

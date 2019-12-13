@@ -1,7 +1,7 @@
+// Информация о дне
 import {createElement, showDate} from '../utils';
 
 const createDayInfoTemplate = (card) => {
-
   const {dateFromUnix} = card;
   const date = showDate(dateFromUnix);
 
