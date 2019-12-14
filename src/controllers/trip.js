@@ -59,8 +59,7 @@ export default class BoardController {
     this._container = container;
 
     this._noEventsComponent = new NoEventsComponent();
-    this._sortFormComponent = new SortEventsFormComponent();
-    this._eventsComponent = new EventCardComponent();
+    this._sortEventsFormComponent = new SortEventsFormComponent();
     this._tripDaysComponent = new BoardTripDaysComponent();
     this._dayComponent = new BoardDayComponent();
     this._eventsListComponent = new BoardEventsListComponent();
@@ -73,7 +72,7 @@ export default class BoardController {
       render(container, new NoEventsComponent().getElement(), RenderPosition.BEFOREEND);
       return;
     }
-    render(container, this._sortFormComponent, RenderPosition.BEFOREEND);
+    render(container, this._sortEventsFormComponent, RenderPosition.BEFOREEND);
     render(container, this._tripDaysComponent, RenderPosition.BEFOREEND);
 
     const boardTripDays = container.querySelector(`.trip-days`);
