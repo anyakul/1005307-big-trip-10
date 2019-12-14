@@ -53,7 +53,7 @@ const renderEvent = (eventListElement, card) => {
 
 const DAYS_COUNT = 2;
 
-export default class BoardController {
+export default class TripController {
 
   constructor(container) {
     this._container = container;
