@@ -18,14 +18,13 @@ import BoardTripDaysComponent from './components/board-trip-days';
 import BoardDayComponent from './components/board-day';
 
 // Форма сортировки
-import SortFormComponent from './components/sort-events-form';
+import SortEventsFormComponent from './components/sort-events-form';
 
 // Информация о дне
 import DayInfoComponent from './components/day-info';
 
 // События дня
 import BoardEventsListComponent from './components/board-events-list';
-import BoardEventsItemComponent from './components/board-events-item';
 import EventCardComponent from './components/event-card';
 import {getTripInfoCost, generateEvents} from './mock/trip-event';
 
@@ -34,6 +33,45 @@ import EditEventFormComponent from './components/edit-event-form';
 
 // Сообщения об отсутствии точек маршрута
 import NoEventsComponent from './components/no-events';
+
+// форма редактирования события и карточки событий
+
+
+const renderEvent = (eventListElement, card) => {
+  const onEscKeyDown = (evt) => {
+
+    if (isEscKey(evt)) {
+      replaceEventToEdit();
+      document.removeEventListener(`keydown`, onEscKeyDown);
+    }
+  };
+
+  const replaceEditToEvent = () => {
+    eventListElement.replaceChild(eventEditComponent.getElement(), eventComponent.getElement());
+  };
+
+  const replaceEventToEdit = () => {
+    eventListElement.replaceChild(eventComponent.getElement(), eventEditComponent.getElement());
+  };
+
+  const eventComponent = new EventCardComponent(card);
+  const editButton = eventComponent.getElement().querySelector(`.event__rollup-btn`);
+
+  editButton.addEventListener(`click`, () => {
+    replaceEditToEvent();
+    document.addEventListener(`keydown`, onEscKeyDown);
+  });
+
+  const eventEditComponent = new EditEventFormComponent(card);
+  const editForm = eventEditComponent.getElement();
+
+  editForm.addEventListener(`submit`, (evt) => {
+    evt.preventDefault();
+    replaceEventToEdit();
+  });
+
+  render(eventListElement, eventComponent.getElement(), RenderPosition.BEFOREEND);
+};
 
 // Генерация событий дня
 const CARD_COUNT = 5;
@@ -48,6 +86,7 @@ const tripInfoCost = pageHeader.querySelector(`.trip-info__cost-value`);
 const TRIP_COUNT = 2;
 const FILTERS_COUNT = 2;
 const MENU_COUNT = 2;
+const EVENT_COUNT = 2;
 
 // Информация о стоимости поездки
 tripInfoCost.textContent = getTripInfoCost(events);
@@ -67,67 +106,31 @@ menu.slice(1, MENU_COUNT).forEach((menuItem) => render(tripControls, new SiteMen
 const pageMain = document.querySelector(`.page-main`);
 const tripEvents = pageMain.querySelector(`.trip-events`);
 
-render(tripEvents, new BoardTripDaysComponent().getElement(), RenderPosition.BEFOREEND);
-const boardTripDaysList = tripEvents.querySelector(`.trip-days`);
-render(boardTripDaysList, new BoardDayComponent().getElement(), RenderPosition.BEFOREEND);
-
-const boardDay = boardTripDaysList.querySelector(`.day`);
-
 // Список событий дня
-render(boardDay, new BoardEventsListComponent().getElement(), RenderPosition.BEFOREEND);
-
-// форма редактирования события и карточки событий
-const boardTripEventList = pageMain.querySelector(`.trip-events__list`);
-render(boardTripEventList, new BoardEventsItemComponent().getElement(), RenderPosition.BEFOREEND);
-const boardEventItem = boardTripEventList.querySelector(`.trip-events__item`);
-
-const renderEvent = (eventListElement, card) => {
-  const onEscKeyDown = (evt) => {
-
-    if (isEscKey(evt)) {
-      replaceEventToEdit();
-      document.removeEventListener(`keydown`, onEscKeyDown);
-    }
-  };
-  const eventComponent = new EventCardComponent(card);
-  const eventEditComponent = new EditEventFormComponent(card);
-
-  const replaceEditToEvent = () => {
-    boardEventItem.replaceChild(eventEditComponent.getElement(), eventComponent.getElement());
-  };
-
-  const replaceEventToEdit = () => {
-    boardEventItem.replaceChild(eventComponent.getElement(), eventEditComponent.getElement());
-  };
-
-  const editButton = eventComponent.getElement().querySelector(`.event__rollup-btn`);
-  editButton.addEventListener(`click`, () => {
-    replaceEditToEvent();
-    document.addEventListener(`keydown`, onEscKeyDown);
-  });
-
-  const editForm = eventEditComponent.getElement();
-  editForm.addEventListener(`submit`, (evt) => {
-    evt.preventDefault();
-    replaceEventToEdit();
-  });
-
-  render(eventListElement, eventComponent.getElement(), RenderPosition.BEFOREEND);
-};
-
 const isAllEventsArchived = events.every((eventItem) => eventItem.isArchive);
 
-if (isAllEventsArchived) {
-  render(tripEvents, new NoEventsComponent().getElement(), RenderPosition.BEFOREEND);
-} else {
-  render(tripEvents, new SortFormComponent().getElement(), RenderPosition.AFTERBEGIN);
+const renderBoard = (boardComponent, eventItems) => {
+  if (isAllEventsArchived) {
+    render(boardComponent.getElement(), new NoEventsComponent().getElement(), RenderPosition.BEFOREEND);
+    return;
+  }
+
+  render(boardComponent, new BoardTripDaysComponent().getElement(), RenderPosition.BEFOREEND);
+  render(boardComponent, new SortEventsFormComponent().getElement(), RenderPosition.BEFOREEND);
+
+  const boardTripDays = boardComponent.querySelector(`.trip-days`);
+  render(boardTripDays, new BoardDayComponent().getElement(), RenderPosition.BEFOREEND);
+
+  const boardDay = boardTripDays.querySelector(`.day`);
+  render(boardDay, new BoardEventsListComponent().getElement(), RenderPosition.BEFOREEND);
+
+  const boardEventsList = boardDay.querySelector(`.trip-events__list`);
 
   events.slice(0, CARD_COUNT)
     .forEach((eventItem) => {
-      renderEvent(boardEventItem, eventItem);
+      renderEvent(boardEventsList, eventItem);
     });
-}
+  eventItems.slice(1, EVENT_COUNT).forEach((eventItem) => render(boardDay, new DayInfoComponent(eventItem).getElement(), RenderPosition.AFTERBEGIN));
+};
 
-// Информация о дне
-const EVENT_COUNT = 2;
-events.slice(1, EVENT_COUNT).forEach((eventItem) => render(boardDay, new DayInfoComponent(eventItem).getElement(), RenderPosition.BEFOREEND));
+renderBoard(tripEvents, events);
