@@ -1,5 +1,5 @@
 // Фильтры
-import {createElement} from '../utils';
+import AbstractComponent from './abstract-component.js';
 
 const createFiltersFormTemplate = (filters) => {
   const {firstPoint, secondPoint, thirdPoint} = filters;
@@ -23,25 +23,14 @@ const createFiltersFormTemplate = (filters) => {
   );
 };
 
-export default class FiltersFormComponent {
+export default class FiltersFormComponent extends AbstractComponent {
   constructor(filters) {
+    super();
+
     this._filters = filters;
-    this._element = null;
   }
 
   getTemplate() {
     return createFiltersFormTemplate(this._filters);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

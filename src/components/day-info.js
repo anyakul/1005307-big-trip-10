@@ -1,5 +1,6 @@
 // Информация о дне
-import {createElement, showDate} from '../utils';
+import {showDate} from '../utils';
+import AbstractComponent from './abstract-component.js';
 
 const createDayInfoTemplate = (card) => {
   const {dateFromUnix} = card;
@@ -13,25 +14,14 @@ const createDayInfoTemplate = (card) => {
   );
 };
 
-export default class DayInfoComponent {
+export default class DayInfoComponent extends AbstractComponent {
   constructor(card) {
+    super();
+
     this._card = card;
-    this._element = null;
   }
 
   getTemplate() {
     return createDayInfoTemplate(this._card);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

@@ -1,5 +1,5 @@
 // Форма редактирования события
-import {createElement} from '../utils';
+import AbstractComponent from './abstract-component.js';
 
 const createEditEventFormTemplate = () => {
   return (
@@ -168,25 +168,8 @@ const createEditEventFormTemplate = () => {
   );
 };
 
-export default class EditEventFormComponent {
-  constructor(card) {
-    this._card = card;
-    this._element = null;
-  }
-
+export default class EditEventFormComponent extends AbstractComponent {
   getTemplate() {
-    return createEditEventFormTemplate(this._card);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
+    return createEditEventFormTemplate();
   }
 }
