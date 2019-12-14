@@ -1,4 +1,5 @@
-import {RenderPosition, render, isEscKey} from './utils';
+import {isEscKey} from './utils/key-board';
+import {RenderPosition, render, replace} from './utils/render';
 
 // ХЕДЕР
 
@@ -35,8 +36,6 @@ import EditEventFormComponent from './components/edit-event-form';
 import NoEventsComponent from './components/no-events';
 
 // форма редактирования события и карточки событий
-
-
 const renderEvent = (eventListElement, card) => {
   const onEscKeyDown = (evt) => {
 
@@ -47,30 +46,23 @@ const renderEvent = (eventListElement, card) => {
   };
 
   const replaceEditToEvent = () => {
-    eventListElement.replaceChild(eventEditComponent.getElement(), eventComponent.getElement());
+    replace(eventEditComponent, eventComponent);
+    document.addEventListener(`keydown`, onEscKeyDown);
   };
 
   const replaceEventToEdit = () => {
-    eventListElement.replaceChild(eventComponent.getElement(), eventEditComponent.getElement());
+    replace(eventComponent, eventEditComponent);
   };
 
   const eventComponent = new EventCardComponent(card);
   const editButton = eventComponent.getElement().querySelector(`.event__rollup-btn`);
 
-  editButton.addEventListener(`click`, () => {
-    replaceEditToEvent();
-    document.addEventListener(`keydown`, onEscKeyDown);
-  });
+  eventComponent.setEditButtonClickHandler(replaceEditToEvent);
 
   const eventEditComponent = new EditEventFormComponent(card);
-  const editForm = eventEditComponent.getElement();
+  eventEditComponent.setSubmitHandler(replaceEventToEdit);
 
-  editForm.addEventListener(`submit`, (evt) => {
-    evt.preventDefault();
-    replaceEventToEdit();
-  });
-
-  render(eventListElement, eventComponent.getElement(), RenderPosition.BEFOREEND);
+  render(eventListElement, eventComponent, RenderPosition.BEFOREEND);
 };
 
 // Генерация событий дня
@@ -88,19 +80,19 @@ const FILTERS_COUNT = 2;
 const MENU_COUNT = 2;
 const EVENT_COUNT = 2;
 
+// Информация о городах поездки
+events.slice(1, TRIP_COUNT).forEach((eventItem) => render(tripInfo, new TripInfoComponent(eventItem), RenderPosition.AFTERBEGIN));
+
 // Информация о стоимости поездки
 tripInfoCost.textContent = getTripInfoCost(events);
 
-// Информация о городах поездки
-events.slice(1, TRIP_COUNT).forEach((eventItem) => render(tripInfo, new TripInfoComponent(eventItem).getElement(), RenderPosition.BEFOREEND));
+// Меню
+const menu = generateMenuPoints(MENU_COUNT);
+menu.slice(1, MENU_COUNT).forEach((menuItem) => render(tripControls, new SiteMenuComponent(menuItem), RenderPosition.BEFOREEND));
 
 // Фильтры
 const filters = generateFiltersPoints(FILTERS_COUNT);
-filters.slice(1, FILTERS_COUNT).forEach((filtersItem) => render(tripControls, new FiltersFormComponent(filtersItem).getElement(), RenderPosition.BEFOREEND));
-
-// Меню
-const menu = generateMenuPoints(MENU_COUNT);
-menu.slice(1, MENU_COUNT).forEach((menuItem) => render(tripControls, new SiteMenuComponent(menuItem).getElement(), RenderPosition.BEFOREEND));
+filters.slice(1, FILTERS_COUNT).forEach((filtersItem) => render(tripControls, new FiltersFormComponent(filtersItem), RenderPosition.BEFOREEND));
 
 // ОТРИСОВКА MAIN
 const pageMain = document.querySelector(`.page-main`);
@@ -114,15 +106,15 @@ const renderBoard = (boardComponent, eventItems) => {
     render(boardComponent.getElement(), new NoEventsComponent().getElement(), RenderPosition.BEFOREEND);
     return;
   }
-
-  render(boardComponent, new BoardTripDaysComponent().getElement(), RenderPosition.BEFOREEND);
-  render(boardComponent, new SortEventsFormComponent().getElement(), RenderPosition.BEFOREEND);
+  render(boardComponent, new SortEventsFormComponent(), RenderPosition.BEFOREEND);
+  render(boardComponent, new BoardTripDaysComponent(), RenderPosition.BEFOREEND);
+  
 
   const boardTripDays = boardComponent.querySelector(`.trip-days`);
-  render(boardTripDays, new BoardDayComponent().getElement(), RenderPosition.BEFOREEND);
+  render(boardTripDays, new BoardDayComponent(), RenderPosition.BEFOREEND);
 
   const boardDay = boardTripDays.querySelector(`.day`);
-  render(boardDay, new BoardEventsListComponent().getElement(), RenderPosition.BEFOREEND);
+  render(boardDay, new BoardEventsListComponent(), RenderPosition.BEFOREEND);
 
   const boardEventsList = boardDay.querySelector(`.trip-events__list`);
 
@@ -130,7 +122,7 @@ const renderBoard = (boardComponent, eventItems) => {
     .forEach((eventItem) => {
       renderEvent(boardEventsList, eventItem);
     });
-  eventItems.slice(1, EVENT_COUNT).forEach((eventItem) => render(boardDay, new DayInfoComponent(eventItem).getElement(), RenderPosition.AFTERBEGIN));
+  eventItems.slice(1, EVENT_COUNT).forEach((eventItem) => render(boardDay, new DayInfoComponent(eventItem), RenderPosition.AFTERBEGIN));
 };
 
 renderBoard(tripEvents, events);

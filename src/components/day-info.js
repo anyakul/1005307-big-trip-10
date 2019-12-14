@@ -1,5 +1,5 @@
 // Информация о дне
-import {showDate} from '../utils';
+import {showDate} from '../utils/date';
 import AbstractComponent from './abstract-component.js';
 
 const createDayInfoTemplate = (card) => {
