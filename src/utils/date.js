@@ -20,4 +20,4 @@ export const showFullDate = (unixTimestamp) => {
   const date = showDate(unixTimestamp);
   const time = showTime(unixTimestamp);
   return date + ` ` + time;
-}
+};
