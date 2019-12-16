@@ -1,29 +1,12 @@
 // Список событий дня
-import {createElement} from '../utils';
+import AbstractComponent from './abstract-component.js';
 
 const createBoardEventsListTemplate = () => {
   return `<ul class="trip-events__list"></ul>`;
 };
 
-export default class BoardEventsListComponent {
-  constructor() {
-    this._element = null;
-  }
-
+export default class BoardEventsListComponent extends AbstractComponent {
   getTemplate() {
     return createBoardEventsListTemplate();
   }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
-  }
 }
-

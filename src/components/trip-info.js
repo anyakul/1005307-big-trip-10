@@ -1,5 +1,6 @@
 // Маршрут поездки
-import {showDate, createElement} from '../utils';
+import {showDate} from '../utils/date';
+import AbstractComponent from './abstract-component';
 
 const createTripInfoTemplate = (card) => {
   const {dateFromUnix, dateToUnix, destination} = card;
@@ -14,25 +15,14 @@ const createTripInfoTemplate = (card) => {
   );
 };
 
-export default class TripInfoComponent {
+export default class TripInfoComponent extends AbstractComponent {
   constructor(card) {
+    super();
+
     this._card = card;
-    this._element = null;
   }
 
   getTemplate() {
     return createTripInfoTemplate(this._card);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

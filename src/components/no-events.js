@@ -1,30 +1,14 @@
-import {createElement} from '../utils';
+// Сообщение об отсутствии точек маршрута
+import AbstractComponent from './abstract-component.js';
 
-// Шаблон сообщения об отсутствии точек маршрута
 const createNoEventsTemplate = () => {
   return (
     `<p class="trip-events__msg">Click New Event to create your first point</p>`
   );
 };
 
-export default class NoEventsComponent {
-  constructor() {
-    this._element = null;
-  }
-
+export default class NoEventsComponent extends AbstractComponent {
   getTemplate() {
     return createNoEventsTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

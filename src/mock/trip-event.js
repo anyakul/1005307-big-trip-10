@@ -75,7 +75,7 @@ const generateEvent = () => {
   };
 };
 
-export const generateEvents = (count) => {
+const generateEvents = (count) => {
   return new Array(count)
     .fill(``)
     .map(generateEvent);
@@ -89,3 +89,6 @@ export const getTripInfoCost = (tripDays) => {
   }, 0);
   return tripInfoCost;
 };
+
+export const CARD_COUNT = 5;
+export const events = generateEvents(CARD_COUNT);

@@ -1,5 +1,6 @@
-import {showTime, showFullDate, createElement} from '../utils';
+import {showTime, showFullDate} from '../utils/date';
 import {eventTypeToPreposition} from '../constants';
+import AbstractComponent from './abstract-component';
 
 // Шаблон карточки события
 const generateExtraServicesMarkup = (options) => {
@@ -61,25 +62,19 @@ export const createCardTemplate = (card) => {
   );
 };
 
-export default class EventCardComponent {
+export default class EventCardComponent extends AbstractComponent {
   constructor(card) {
+    super();
+
     this._card = card;
-    this._element = null;
   }
 
   getTemplate() {
     return createCardTemplate(this._card);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
+  setEditButtonClickHandler(handler) {
+    this.getElement().querySelector(`.event__rollup-btn`)
+      .addEventListener(`click`, handler);
   }
 }
