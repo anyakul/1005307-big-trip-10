@@ -18,14 +18,17 @@ import TripController from './controllers/trip.js';
 import {getTripInfoCost} from './mock/trip-event';
 import {events} from './mock/trip-event';
 
+const TRIP_COUNT = 2;
+const FILTERS_COUNT = 2;
+const MENU_COUNT = 2;
+
 // ОТРИСОВКА ХЕДЕРА
 const pageHeader = document.querySelector(`.page-header`);
 const tripControls = pageHeader.querySelector(`.trip-controls`);
 const tripInfo = pageHeader.querySelector(`.trip-info`);
 const tripInfoCost = pageHeader.querySelector(`.trip-info__cost-value`);
-const TRIP_COUNT = 2;
-const FILTERS_COUNT = 2;
-const MENU_COUNT = 2;
+const pageMain = document.querySelector(`.page-main`);
+const tripEvents = pageMain.querySelector(`.trip-events`);
 
 // Информация о городах поездки
 events.slice(1, TRIP_COUNT).forEach((eventItem) => render(tripInfo, new TripInfoComponent(eventItem), RenderPosition.AFTERBEGIN));
@@ -42,7 +45,6 @@ const filters = generateFiltersPoints(FILTERS_COUNT);
 filters.slice(1, FILTERS_COUNT).forEach((filtersItem) => render(tripControls, new FiltersFormComponent(filtersItem), RenderPosition.BEFOREEND));
 
 // ОТРИСОВКА MAIN
-const pageMain = document.querySelector(`.page-main`);
-const tripEvents = pageMain.querySelector(`.trip-events`);
+
 const tripController = new TripController(tripEvents);
 tripController.render(events);

@@ -1,5 +1,5 @@
 // Элемент списка день
-import AbstractComponent from './abstract-component.js';
+import AbstractComponent from './abstract-component';
 
 const createBoardDayTemplate = () => {
   return `<li class="trip-days__item day"></li>`;

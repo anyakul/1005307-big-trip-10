@@ -1,3 +1,4 @@
+
 // Тип точки маршрута
 export const EVENT_TYPES = [
   `Taxi`,
@@ -11,6 +12,12 @@ export const EVENT_TYPES = [
   `Sightseeing`,
   `Restaurant`
 ];
+
+export const SortTypes = {
+  EVENT: `event`,
+  TIME: `time`,
+  PRICE: `price`,
+};
 
 export const MENU_TYPES = [
   `table`,
