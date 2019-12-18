@@ -98,9 +98,17 @@ export default class TripController {
         case SortTypes.PRICE:
           sortedEvents = events.sort((a, b) => b.basePrice - a.basePrice);
           break;
-      }
+
+      case SortTypes.TIME:
+          sortedEvents = events.slice().sort((a, b) => {
+            const durationFirst = a.dateToUnix - a.dateFromUnix;
+            const durationSecond = b.dateToUnix - b.dateFromUnix;
+
+            return durationSecond - durationFirst;
+          });
       boardEventsList.innerHTML = ``;
       showEvents(sortedEvents, boardEventsList);
-    });
+      };
+    })
   }
 }
