@@ -1,6 +1,12 @@
 // МОКИ ДЛЯ ТОЧЕК МАРШРУТА
 import {EVENT_TYPES} from '../constants';
 
+export const CARD_COUNT = 5;
+
+const Time = {
+  MINUTE: 60000,
+};
+
 // Функция получения рандомного числа
 const getRandomIntegerNumber = (min = 0, max = 9) => {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -46,10 +52,6 @@ const getRandomOffer = () => ({
 });
 
 // Функция получения времени
-const Time = {
-  MINUTE: 60000,
-};
-
 const makeEventDatesGenerator = ({Y, M, D}) => {
   let dateStart = Date.UTC(Y, M, D);
   return (minutes) => ({
@@ -90,5 +92,4 @@ export const getTripInfoCost = (tripDays) => {
   return tripInfoCost;
 };
 
-export const CARD_COUNT = 5;
 export const events = generateEvents(CARD_COUNT);

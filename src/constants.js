@@ -12,17 +12,6 @@ export const EVENT_TYPES = [
   `Restaurant`
 ];
 
-export const MENU_TYPES = [
-  `table`,
-  `stats`
-];
-
-export const FILTERS_TYPES = [
-  `Everything`,
-  `Futute`,
-  `Past`
-];
-
 // Словарь типов событий и предлогов
 export const eventTypeToPreposition = {
   'Taxi': `to`,

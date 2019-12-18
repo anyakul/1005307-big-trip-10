@@ -1,5 +1,9 @@
 import {isEscKey} from '../utils/key-board';
 import {RenderPosition, render, replace} from '../utils/render';
+import {SortType} from '../components/event-sorter';
+
+import SiteMenuComponent from '../components/site-menu';
+import EventFilterComponent from '../components/event-filter';
 
 // MAIN
 import BoardTripDaysComponent from '../components/board-trip-days';
@@ -7,7 +11,7 @@ import BoardDayComponent from '../components/board-day';
 import {CARD_COUNT} from '../mock/trip-event';
 
 // Форма сортировки
-import SortEventsFormComponent from '../components/sort-events-form';
+import EventSorterComponent from '../components/event-sorter';
 
 // Информация о дне
 import DayInfoComponent from '../components/day-info';
@@ -21,7 +25,6 @@ import EditEventFormComponent from '../components/edit-event-form';
 
 // Сообщения об отсутствии точек маршрута
 import NoEventsComponent from '../components/no-events';
-
 
 const renderEvent = (eventListElement, card) => {
   const onEscKeyDown = (evt) => {
@@ -51,42 +54,73 @@ const renderEvent = (eventListElement, card) => {
   render(eventListElement, eventComponent, RenderPosition.BEFOREEND);
 };
 
+const showEvents = (events, container) => {
+  events.slice(0, CARD_COUNT)
+    .forEach((eventItem) => {
+      renderEvent(container, eventItem);
+    });
+};
+
 const DAYS_COUNT = 2;
 
 export default class TripController {
 
   constructor(container) {
     this._container = container;
-
+    this._siteMenuComponent = new SiteMenuComponent();
+    this._eventFilter = new EventFilterComponent();
     this._noEventsComponent = new NoEventsComponent();
-    this._sortEventsFormComponent = new SortEventsFormComponent();
+    this._eventSorterComponent = new EventSorterComponent();
     this._tripDaysComponent = new BoardTripDaysComponent();
     this._dayComponent = new BoardDayComponent();
     this._eventsListComponent = new BoardEventsListComponent();
   }
 
   render(events) {
-    const container = this._container;
-    const isAllEventsArchived = events.every((eventItem) => eventItem.isArchive);
+    const header = this._container.querySelector(`header`);
+    const tripControls = header.querySelector(`.trip-controls`);
+    render(tripControls, this._siteMenuComponent, RenderPosition.BEFOREEND);
+    render(tripControls, this._eventFilter, RenderPosition.BEFOREEND);
+
+    const main = this._container.querySelector(`main`);
+    const tripEvents = main.querySelector(`.trip-events`);
+
+    const isAllEventsArchived = events.every(({isArchive}) => isArchive);
     if (isAllEventsArchived) {
-      render(container, new NoEventsComponent().getElement(), RenderPosition.BEFOREEND);
+      render(this._tripEventsContainer, this._noEventsComponent, RenderPosition.BEFOREEND);
       return;
     }
-    render(container, this._sortEventsFormComponent, RenderPosition.BEFOREEND);
-    render(container, this._tripDaysComponent, RenderPosition.BEFOREEND);
+    render(tripEvents, this._eventSorterComponent, RenderPosition.BEFOREEND);
+    render(tripEvents, this._tripDaysComponent, RenderPosition.BEFOREEND);
 
-    const boardTripDays = container.querySelector(`.trip-days`);
+    const boardTripDays = tripEvents.querySelector(`.trip-days`);
     render(boardTripDays, this._dayComponent, RenderPosition.BEFOREEND);
 
     const boardDay = boardTripDays.querySelector(`.day`);
     render(boardDay, this._eventsListComponent, RenderPosition.BEFOREEND);
 
     const boardEventsList = boardDay.querySelector(`.trip-events__list`);
-
-    events.slice(0, CARD_COUNT)
-      .forEach((eventItem) => {
-        renderEvent(boardEventsList, eventItem);
-      });
+    showEvents(events, boardEventsList);
     events.slice(1, DAYS_COUNT).forEach((eventItem) => render(boardDay, new DayInfoComponent(eventItem), RenderPosition.AFTERBEGIN));
+
+    this._eventSorterComponent.setSortChangeHandler((sortType) => {
+      let sortedEvents = [];
+
+      switch (sortType) {
+        case SortType.PRICE:
+          sortedEvents = events.sort((a, b) => b.basePrice - a.basePrice);
+          break;
+
+        case SortType.TIME:
+          sortedEvents = events.slice().sort((a, b) => {
+            const durationFirst = a.dateToUnix - a.dateFromUnix;
+            const durationSecond = b.dateToUnix - b.dateFromUnix;
+
+            return durationSecond - durationFirst;
+          });
+      }
+      boardEventsList.innerHTML = ``;
+      showEvents(sortedEvents, boardEventsList);
+    });
   }
 }
