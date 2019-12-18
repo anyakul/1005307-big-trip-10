@@ -65,9 +65,8 @@ const showEvents = (events, container) => {
 
 export default class TripController {
 
-  constructor(tripControlsContainer, tripEventsContainer) {
-    this._tripControlsContainer = tripControlsContainer;
-    this._tripEventsContainer = tripEventsContainer;
+  constructor(container) {
+    this._container = container;
     this._siteMenuComponent = new SiteMenuComponent();
     this._filtersFormComponent = new FiltersFormComponent();
     this._noEventsComponent = new NoEventsComponent();
@@ -78,18 +77,23 @@ export default class TripController {
   }
 
   render(events) {
-    render(this._tripControlsContainer, this._siteMenuComponent, RenderPosition.BEFOREEND);
-    render(this._tripControlsContainer, this._filtersFormComponent, RenderPosition.BEFOREEND);
+    const header = this._container.querySelector(`header`);
+    const tripControls = header.querySelector(`.trip-controls`);
+    render(tripControls, this._siteMenuComponent, RenderPosition.BEFOREEND);
+    render(tripControls, this._filtersFormComponent, RenderPosition.BEFOREEND);
+    
+    const main = this._container.querySelector(`main`);
+    const tripEvents = main.querySelector(`.trip-events`);
 
     const isAllEventsArchived = events.every(({isArchive}) => isArchive);
     if (isAllEventsArchived) {
       render(this._tripEventsContainer, this._noEventsComponent, RenderPosition.BEFOREEND);
       return;
     }
-    render(this._tripEventsContainer, this._sortEventsFormComponent, RenderPosition.BEFOREEND);
-    render(this._tripEventsContainer, this._tripDaysComponent, RenderPosition.BEFOREEND);
+    render(tripEvents, this._sortEventsFormComponent, RenderPosition.BEFOREEND);
+    render(tripEvents, this._tripDaysComponent, RenderPosition.BEFOREEND);
 
-    const boardTripDays = this._tripEventsContainer.querySelector(`.trip-days`);
+    const boardTripDays = tripEvents.querySelector(`.trip-days`);
     render(boardTripDays, this._dayComponent, RenderPosition.BEFOREEND);
 
     const boardDay = boardTripDays.querySelector(`.day`);

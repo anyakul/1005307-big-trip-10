@@ -18,6 +18,8 @@ const tripInfoCost = pageHeader.querySelector(`.trip-info__cost-value`);
 const pageMain = document.querySelector(`.page-main`);
 const tripEvents = pageMain.querySelector(`.trip-events`);
 
+const body = document.querySelector(`body`);
+
 // Информация о городах поездки
 events.slice(1, 2).forEach((eventItem) => render(tripInfo, new TripInfoComponent(eventItem), RenderPosition.AFTERBEGIN));
 
@@ -26,5 +28,5 @@ tripInfoCost.textContent = getTripInfoCost(events);
 
 // ОТРИСОВКА MAIN
 
-const tripController = new TripController(tripControls, tripEvents);
+const tripController = new TripController(body);
 tripController.render(events);

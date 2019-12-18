@@ -1,4 +1,4 @@
-import AbstractComponent from './abstract-component.js';
+import AbstractComponent from './abstract-component';
 import {createFilterFormTemplates} from './templates/event-filter';
 
 const FilterType = {
