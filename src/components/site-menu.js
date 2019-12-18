@@ -1,25 +1,49 @@
-// Меню
 import AbstractComponent from './abstract-component.js';
+import {createMenuTemplate} from './templates/site-menu';
 
-const createSiteMenuTemplate = (menu) => {
-  const {firstPoint, secondPoint} = menu;
-
-  return (
-    `<nav class="trip-controls__trip-tabs  trip-tabs">
-      <a class="trip-tabs__btn  trip-tabs__btn--active" href="#">${firstPoint}</a>
-      <a class="trip-tabs__btn" href="#">${secondPoint}</a>
-    </nav>`
-  );
+const MenuTab = {
+  TABLE: `table`,
+  STATS: `stats`,
 };
 
-export default class SiteMenuComponent extends AbstractComponent {
-  constructor(menu) {
+const MenuTabName = {
+  [MenuTab.TABLE]: `Table`,
+  [MenuTab.STATS]: `Stats`,
+};
+
+const createMenuTabs = (activeTab) => Object.entries(MenuTabName)
+  .map(([tab, name]) => ({tab, name, isActive: tab === activeTab}));
+
+class SiteMenuComponent extends AbstractComponent {
+  constructor(activeTab = MenuTab.TABLE) {
     super();
 
-    this._menu = menu;
+    this._activeTab = activeTab;
+    this._tabs = createMenuTabs(this._activeTab);
   }
 
   getTemplate() {
-    return createSiteMenuTemplate(this._menu);
+    return createMenuTemplate(this._tabs);
+  }
+
+  setTabChangeHandler(handler) {
+    this.getElement().addEventListener(`click`, (evt) => {
+      evt.preventDefault();
+
+      if (evt.target.tagName !== `A`) {
+        return;
+      }
+
+      const menuTab = evt.target.dataset.menuTab;
+      if (this._activeTab === menuTab) {
+        return;
+      }
+
+      this._activeTab = menuTab;
+      handler(this._activeTab);
+    });
   }
 }
+
+export default SiteMenuComponent;
+export {MenuTab};

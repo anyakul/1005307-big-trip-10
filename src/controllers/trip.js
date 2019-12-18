@@ -8,7 +8,7 @@ import BoardDayComponent from '../components/board-day';
 import {CARD_COUNT} from '../mock/trip-event';
 
 // Форма сортировки
-import SortEventsFormComponent from '../components/sort-events-form';
+import SortEventsFormComponent from '../components/event-sorter';
 
 // Информация о дне
 import DayInfoComponent from '../components/day-info';
@@ -91,7 +91,7 @@ export default class TripController {
     showEvents(events, boardEventsList);
     events.slice(1, DAYS_COUNT).forEach((eventItem) => render(boardDay, new DayInfoComponent(eventItem), RenderPosition.AFTERBEGIN));
 
-    this._sortEventsFormComponent.setSortTypeClickHandler((sortType) => {
+    this._sortEventsFormComponent.setSortChangeHandler((sortType) => {
       let sortedEvents = [];
 
       switch (sortType) {

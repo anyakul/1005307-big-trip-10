@@ -7,7 +7,7 @@ import TripInfoComponent from './components/trip-info';
 
 // Фильтры
 import {generateFiltersPoints} from './mock/filters';
-import FiltersFormComponent from './components/filters-form';
+import FiltersFormComponent from './components/event-filter';
 
 // Меню
 import SiteMenuComponent from './components/site-menu';

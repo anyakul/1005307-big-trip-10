@@ -1,4 +1,3 @@
-
 // Тип точки маршрута
 export const EVENT_TYPES = [
   `Taxi`,
