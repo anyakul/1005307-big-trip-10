@@ -26,8 +26,6 @@ import EditEventFormComponent from '../components/edit-event-form';
 // Сообщения об отсутствии точек маршрута
 import NoEventsComponent from '../components/no-events';
 
-const DAYS_COUNT = 2;
-
 const renderEvent = (eventListElement, card) => {
   const onEscKeyDown = (evt) => {
 
@@ -63,6 +61,8 @@ const showEvents = (events, container) => {
     });
 };
 
+const DAYS_COUNT = 2;
+
 export default class TripController {
 
   constructor(container) {
@@ -81,7 +81,7 @@ export default class TripController {
     const tripControls = header.querySelector(`.trip-controls`);
     render(tripControls, this._siteMenuComponent, RenderPosition.BEFOREEND);
     render(tripControls, this._filtersFormComponent, RenderPosition.BEFOREEND);
-    
+
     const main = this._container.querySelector(`main`);
     const tripEvents = main.querySelector(`.trip-events`);
 
@@ -118,9 +118,9 @@ export default class TripController {
 
             return durationSecond - durationFirst;
           });
-          boardEventsList.innerHTML = ``;
-          showEvents(sortedEvents, boardEventsList);
       }
+      boardEventsList.innerHTML = ``;
+      showEvents(sortedEvents, boardEventsList);
     });
   }
 }
