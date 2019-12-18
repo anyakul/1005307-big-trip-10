@@ -3,7 +3,7 @@ import {RenderPosition, render, replace} from '../utils/render';
 import {SortType} from '../components/event-sorter';
 
 import SiteMenuComponent from '../components/site-menu';
-import FiltersFormComponent from '../components/event-filter';
+import EventFilterComponent from '../components/event-filter';
 
 // MAIN
 import BoardTripDaysComponent from '../components/board-trip-days';
@@ -11,7 +11,7 @@ import BoardDayComponent from '../components/board-day';
 import {CARD_COUNT} from '../mock/trip-event';
 
 // Форма сортировки
-import SortEventsFormComponent from '../components/event-sorter';
+import EventSorterComponent from '../components/event-sorter';
 
 // Информация о дне
 import DayInfoComponent from '../components/day-info';
@@ -68,9 +68,9 @@ export default class TripController {
   constructor(container) {
     this._container = container;
     this._siteMenuComponent = new SiteMenuComponent();
-    this._filtersFormComponent = new FiltersFormComponent();
+    this._eventFilter = new EventFilterComponent();
     this._noEventsComponent = new NoEventsComponent();
-    this._sortEventsFormComponent = new SortEventsFormComponent();
+    this._eventSorterComponent = new EventSorterComponent();
     this._tripDaysComponent = new BoardTripDaysComponent();
     this._dayComponent = new BoardDayComponent();
     this._eventsListComponent = new BoardEventsListComponent();
@@ -80,7 +80,7 @@ export default class TripController {
     const header = this._container.querySelector(`header`);
     const tripControls = header.querySelector(`.trip-controls`);
     render(tripControls, this._siteMenuComponent, RenderPosition.BEFOREEND);
-    render(tripControls, this._filtersFormComponent, RenderPosition.BEFOREEND);
+    render(tripControls, this._eventFilter, RenderPosition.BEFOREEND);
 
     const main = this._container.querySelector(`main`);
     const tripEvents = main.querySelector(`.trip-events`);
@@ -90,7 +90,7 @@ export default class TripController {
       render(this._tripEventsContainer, this._noEventsComponent, RenderPosition.BEFOREEND);
       return;
     }
-    render(tripEvents, this._sortEventsFormComponent, RenderPosition.BEFOREEND);
+    render(tripEvents, this._eventSorterComponent, RenderPosition.BEFOREEND);
     render(tripEvents, this._tripDaysComponent, RenderPosition.BEFOREEND);
 
     const boardTripDays = tripEvents.querySelector(`.trip-days`);
@@ -103,7 +103,7 @@ export default class TripController {
     showEvents(events, boardEventsList);
     events.slice(1, DAYS_COUNT).forEach((eventItem) => render(boardDay, new DayInfoComponent(eventItem), RenderPosition.AFTERBEGIN));
 
-    this._sortEventsFormComponent.setSortChangeHandler((sortType) => {
+    this._eventSorterComponent.setSortChangeHandler((sortType) => {
       let sortedEvents = [];
 
       switch (sortType) {

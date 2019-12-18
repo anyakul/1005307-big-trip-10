@@ -23,6 +23,5 @@ events.slice(1, 2).forEach((eventItem) => render(tripInfo, new TripInfoComponent
 tripInfoCost.textContent = getTripInfoCost(events);
 
 // ОТРИСОВКА MAIN
-
 const tripController = new TripController(body);
 tripController.render(events);
