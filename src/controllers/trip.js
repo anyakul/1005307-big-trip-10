@@ -1,6 +1,4 @@
-import {isEscKey} from '../utils/key-board';
-import {RenderPosition, render, replace} from '../utils/render';
-import {SortType} from '../components/event-sorter';
+import {RenderPosition, render} from '../utils/render';
 
 import SiteMenuComponent from '../components/site-menu';
 import EventFilterComponent from '../components/event-filter';
@@ -8,65 +6,34 @@ import EventFilterComponent from '../components/event-filter';
 // MAIN
 import BoardTripDaysComponent from '../components/board-trip-days';
 import BoardDayComponent from '../components/board-day';
-import {CARD_COUNT} from '../mock/trip-event';
 
 // Форма сортировки
-import EventSorterComponent from '../components/event-sorter';
+import EventSorterComponent, {SortType} from '../components/event-sorter';
 
 // Информация о дне
 import DayInfoComponent from '../components/day-info';
 
 // События дня
 import BoardEventsListComponent from '../components/board-events-list';
-import EventCardComponent from '../components/event-card';
-
-// Форма редактирования события
-import EditEventFormComponent from '../components/edit-event-form';
 
 // Сообщения об отсутствии точек маршрута
 import NoEventsComponent from '../components/no-events';
+import PointController from './point';
 
-const renderEvent = (eventListElement, card) => {
-  const onEscKeyDown = (evt) => {
+const renderEvents = (eventsListElement, events) => {
+  return events.map((eventItem) => {
+    const pointController = new PointController(eventsListElement);
+    pointController.render(eventItem);
 
-    if (isEscKey(evt)) {
-      replaceEventToEdit();
-      document.removeEventListener(`keydown`, onEscKeyDown);
-    }
-  };
-
-  const replaceEditToEvent = () => {
-    replace(eventEditComponent, eventComponent);
-    document.addEventListener(`keydown`, onEscKeyDown);
-  };
-
-  const replaceEventToEdit = () => {
-    replace(eventComponent, eventEditComponent);
-  };
-
-  const eventComponent = new EventCardComponent(card);
-
-  eventComponent.setEditButtonClickHandler(replaceEditToEvent);
-
-  const eventEditComponent = new EditEventFormComponent(card);
-  eventEditComponent.setSubmitHandler(replaceEventToEdit);
-
-  render(eventListElement, eventComponent, RenderPosition.BEFOREEND);
+    return pointController;
+  });
 };
-
-const showEvents = (events, container) => {
-  events.slice(0, CARD_COUNT)
-    .forEach((eventItem) => {
-      renderEvent(container, eventItem);
-    });
-};
-
-const DAYS_COUNT = 2;
 
 export default class TripController {
 
   constructor(container) {
     this._container = container;
+    this._events = [];
     this._siteMenuComponent = new SiteMenuComponent();
     this._eventFilter = new EventFilterComponent();
     this._noEventsComponent = new NoEventsComponent();
@@ -77,6 +44,7 @@ export default class TripController {
   }
 
   render(events) {
+    this._events = events;
     const header = this._container.querySelector(`header`);
     const tripControls = header.querySelector(`.trip-controls`);
     render(tripControls, this._siteMenuComponent, RenderPosition.BEFOREEND);
@@ -99,14 +67,17 @@ export default class TripController {
     const boardDay = boardTripDays.querySelector(`.day`);
     render(boardDay, this._eventsListComponent, RenderPosition.BEFOREEND);
 
-    const boardEventsList = boardDay.querySelector(`.trip-events__list`);
-    showEvents(events, boardEventsList);
-    events.slice(1, DAYS_COUNT).forEach((eventItem) => render(boardDay, new DayInfoComponent(eventItem), RenderPosition.AFTERBEGIN));
+    const boardEventsList = this._container.querySelector(`.trip-events__list`);
+    events.slice(1, 2).forEach((eventItem) => render(boardDay, new DayInfoComponent(eventItem), RenderPosition.AFTERBEGIN));
 
     this._eventSorterComponent.setSortChangeHandler((sortType) => {
       let sortedEvents = [];
 
       switch (sortType) {
+        case SortType.EVENT:
+          sortedEvents = events.sort((a, b) => b.dateFromUnix - a.dateToUnix);
+          break;
+
         case SortType.PRICE:
           sortedEvents = events.sort((a, b) => b.basePrice - a.basePrice);
           break;
@@ -120,7 +91,10 @@ export default class TripController {
           });
       }
       boardEventsList.innerHTML = ``;
-      showEvents(sortedEvents, boardEventsList);
+      renderEvents(boardEventsList, sortedEvents.slice(0, 5));
     });
+
+    renderEvents(boardEventsList, this._events.slice(0, 5));
+  // this._showedPointsControllers = this._showedPointsControllers.concat(newEvent);
   }
 }
