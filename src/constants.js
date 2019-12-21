@@ -1,27 +1,13 @@
 // Тип точки маршрута
 export const EVENT_TYPES = [
-  `Taxi`,
-  `Bus`,
-  `Train`,
-  `Ship`,
-  `Transport`,
-  `Drive`,
-  `Flight`,
-  `Check-in`,
-  `Sightseeing`,
-  `Restaurant`
+  `taxi`,
+  `bus`,
+  `train`,
+  `ship`,
+  `transport`,
+  `drive`,
+  `flight`,
+  `check-in`,
+  `sightseeing`,
+  `restaurant`
 ];
-
-// Словарь типов событий и предлогов
-export const eventTypeToPreposition = {
-  'Taxi': `to`,
-  'Bus': `to`,
-  'Train': `to`,
-  'Ship': `to`,
-  'Transport': `to`,
-  'Drive': `to`,
-  'Flight': `to`,
-  'Check-in': `to`,
-  'Sightseeing': `at`,
-  'Restaurant': `in`
-};
