@@ -10,7 +10,6 @@ const generateExtraServicesMarkup = ({title, price}) => (
 
 const createExtraServicesMarkup = makeTemplateGenerator(generateExtraServicesMarkup);
 
-
 const createCardTemplate = ({type, destination, time, basePrice}) => (
   `<div class="event__type">
     <img class="event__type-icon" width="42" height="42" src="./img/icons/${type}.png" alt="Event type icon">
@@ -29,7 +28,7 @@ const createCardTemplate = ({type, destination, time, basePrice}) => (
   </p>`
 );
 
-export const createEventCardTemplate = (events) => (
+const createEventCardTemplate = (events) => (
   `<li class="trip-events__item">
     <div class="event">
       ${createCardTemplate(events)}
@@ -41,3 +40,5 @@ export const createEventCardTemplate = (events) => (
     </div>
   </li>`
 );
+
+export {createEventCardTemplate};

@@ -1,4 +1,4 @@
-import {showTime, showFullDate} from '../utils/date';
+import {showTime, showDate, showFullDate} from '../utils/date';
 import {createEventCardTemplate} from './templates/event-card';
 import AbstractComponent from './abstract-component';
 
@@ -27,7 +27,7 @@ const showData = (card) => {
     destination: `${destination.name}`,
     time: showDateInCard(card),
     basePrice: `${basePrice}`,
-    offers: createOffers(card.offers)
+    offers: createOffers(card.offers),
   };
 };
 
@@ -48,3 +48,4 @@ class EventCardComponent extends AbstractComponent {
 }
 
 export default EventCardComponent;
+export {showDateInCard};

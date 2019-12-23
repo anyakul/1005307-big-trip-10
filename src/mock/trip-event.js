@@ -73,6 +73,7 @@ const generateEvent = () => {
     picture: getRandomPicture(),
     basePrice: getRandomIntegerNumber(100, 1000),
     offers: getRandomArrayLength(0, 3).map(getRandomOffer),
+    dayNumber: 1,
     isFavorite: getRandomBoolean(),
   };
 };
