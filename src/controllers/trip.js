@@ -16,23 +16,9 @@ import {generateTripDays} from '../mock/trip-event';
 
 // События дня
 import NoEventsComponent from '../components/no-events';
-// import PointController from './point';
-/*
-const renderEvents = (eventsListElement, events) => {
-  return events.map((eventItem) => {
-    const pointController = new PointController(eventsListElement);
-    pointController.render(eventItem);
-    return pointController;
-  });
-};
-
-const renderDay = (tripEventsElement, events) => {
-  const DayComponents = new DayComponent(events);
-  render(tripEventsElement, DayComponents, RenderPosition.BEFOREEND);
-};
-*/
 
 const renderEvent = (card) => {
+  const {dateFromUnix} = card;
   const onEscKeyDown = (evt) => {
 
     if (isEscKey(evt)) {
@@ -58,15 +44,10 @@ const renderEvent = (card) => {
   eventEditComponent.setSubmitHandler(replaceEventToEdit);
 
   const tripEventsList = document.querySelectorAll(`.trip-events__list`);
-//  render(tripEventsList, eventComponent, RenderPosition.BEFOREEND);
-
-//  render(tripEventsList, cardComponent, RenderPosition.BEFOREEND);
 
   tripEventsList.forEach((tripEventItem) => {
-    //if (tripEventItem.dataset.date === `${card.dateFromUnix.getDate()}/${card.dateFromUnix.getMonth()}`) {
-    if (showDate(tripEventItem.date) === showDate(`${card.dateFromUnix}`)) {
+    if (showDate(tripEventItem.dataset.date) === `${showDate(dateFromUnix)}`) {
       render(tripEventItem, eventComponent, RenderPosition.BEFOREEND);
-  //    console.log(tripEventItem.dataset.date);
     }
   });
 };
@@ -76,8 +57,6 @@ export default class TripController {
 
   constructor(container) {
     this._container = container;
-//    this._events = [];
-  //  this._tripDays = [];
     this._siteMenuComponent = new SiteMenuComponent();
     this._eventFilter = new EventFilterComponent();
     this._noEventsComponent = new NoEventsComponent();
@@ -106,7 +85,7 @@ export default class TripController {
     events.forEach((eventItem) => {
         renderEvent(eventItem);
       });
-    /*this._eventSorterComponent.setSortChangeHandler((sortType) => {
+    this._eventSorterComponent.setSortChangeHandler((sortType) => {
       let sortedEvents = [];
 
       switch (sortType) {
@@ -129,8 +108,5 @@ export default class TripController {
       boardEventsList.innerHTML = ``;
       renderEvents(boardEventsList, sortedEvents.slice(0, 5));
     });
-*/
-   // renderEvents(boardEventsList, this._events.slice(0, 5));
-  // this._showedPointsControllers = this._showedPointsControllers.concat(newEvent);
   }
 }

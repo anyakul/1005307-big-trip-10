@@ -1,10 +1,6 @@
 import {showDate} from '../utils/date';
 import AbstractComponent from './abstract-component';
 
-// Информация о дне
-// import {makeTemplateGenerator} from './generator';
-// const createDayTemplates = makeTemplateGenerator(createDayTemplate);
-
 const createDayTemplate = (tripDays) => {
   return (tripDays.map((day, i) => {
     const dayDate = day[0].dateFromUnix;
