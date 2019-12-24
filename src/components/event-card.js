@@ -1,4 +1,4 @@
-import {showTime, showDate, showFullDate} from '../utils/date';
+import {showTime, showFullDate} from '../utils/date';
 import {createEventCardTemplate} from './templates/event-card';
 import AbstractComponent from './abstract-component';
 

@@ -84,6 +84,29 @@ const generateEvents = (count) => {
     .map(generateEvent);
 };
 
+export const events = generateEvents(CARD_COUNT);
+events.sort((a, b) => Date.parse(b.dateFromUnix) > Date.parse(a.dateFromUnix) ? 1 : -1);
+
+export const generateTripDays = (events) => {
+  let tripDays = [];
+  let currentCards = [];
+
+  events.forEach((eventItem, i) => {
+    let prevCard = i > 0 ? events[i - 1] : null;
+
+    if (prevCard && eventItem.dateFromUnix !== prevCard.dateFromUnix) {
+      tripDays.push(currentCards);
+      currentCards = [];
+    }
+    currentCards.push(eventItem);
+    if (i === events.length - 1) {
+      tripDays.push(currentCards);
+    }
+  });
+
+  return tripDays;
+};
+
 // Функция подсчета стоимости поездки
 export const getTripInfoCost = (tripDays) => {
   const eventCards = tripDays.flat();
@@ -92,5 +115,3 @@ export const getTripInfoCost = (tripDays) => {
   }, 0);
   return tripInfoCost;
 };
-
-export const events = generateEvents(CARD_COUNT);

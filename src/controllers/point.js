@@ -3,7 +3,7 @@ import {RenderPosition, render, replace} from '../utils/render';
 import EventCardComponent from '../components/event-card';
 import EditEventFormComponent from '../components/edit-event-form';
 
-const renderEvent = (eventListElement, card) => {
+const renderEvent = (card) => {
   const onEscKeyDown = (evt) => {
 
     if (isEscKey(evt)) {
@@ -28,9 +28,15 @@ const renderEvent = (eventListElement, card) => {
   const eventEditComponent = new EditEventFormComponent(card);
   eventEditComponent.setSubmitHandler(replaceEventToEdit);
 
-  render(eventListElement, eventComponent, RenderPosition.BEFOREEND);
-};
+  const tripEventsList = document.querySelectorAll(`.trip-events__list`);
 
+  tripEventsList.forEach((tripEventItem) => {
+    //if (tripEventItem.dataset.date === `${card.dateFromUnix.getDate()}/${card.dateFromUnix.getMonth()}`) {
+    if (showDate(tripEventItem.date) === showDate(`${card.dateFromUnix}`)) {
+      render(tripEventItem, eventComponent, RenderPosition.BEFOREEND);
+    }
+  });
+};
 export default class PointController {
 
   constructor(container) {

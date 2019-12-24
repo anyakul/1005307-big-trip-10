@@ -1,22 +1,27 @@
 import {RenderPosition, render} from '../utils/render';
+import {isEscKey} from '../utils/key-board';
+import {replace} from '../utils/render';
 import SiteMenuComponent from '../components/site-menu';
 import EventFilterComponent from '../components/event-filter';
+import EventCardComponent from '../components/event-card';
+import EditEventFormComponent from '../components/edit-event-form';
+import {showDate} from '../utils/date';
 
 // Форма сортировки
 import EventSorterComponent, {SortType} from '../components/event-sorter';
 
 // Информация о дне
 import DayComponent from '../components/day';
+import {generateTripDays} from '../mock/trip-event';
 
 // События дня
 import NoEventsComponent from '../components/no-events';
-import PointController from './point';
-
+// import PointController from './point';
+/*
 const renderEvents = (eventsListElement, events) => {
   return events.map((eventItem) => {
     const pointController = new PointController(eventsListElement);
     pointController.render(eventItem);
-
     return pointController;
   });
 };
@@ -25,13 +30,54 @@ const renderDay = (tripEventsElement, events) => {
   const DayComponents = new DayComponent(events);
   render(tripEventsElement, DayComponents, RenderPosition.BEFOREEND);
 };
+*/
+
+const renderEvent = (card) => {
+  const onEscKeyDown = (evt) => {
+
+    if (isEscKey(evt)) {
+      replaceEventToEdit();
+      document.removeEventListener(`keydown`, onEscKeyDown);
+    }
+  };
+
+  const replaceEditToEvent = () => {
+    replace(eventEditComponent, eventComponent);
+    document.addEventListener(`keydown`, onEscKeyDown);
+  };
+
+  const replaceEventToEdit = () => {
+    replace(eventComponent, eventEditComponent);
+  };
+
+  const eventComponent = new EventCardComponent(card);
+
+  eventComponent.setEditButtonClickHandler(replaceEditToEvent);
+
+  const eventEditComponent = new EditEventFormComponent(card);
+  eventEditComponent.setSubmitHandler(replaceEventToEdit);
+
+  const tripEventsList = document.querySelectorAll(`.trip-events__list`);
+//  render(tripEventsList, eventComponent, RenderPosition.BEFOREEND);
+
+//  render(tripEventsList, cardComponent, RenderPosition.BEFOREEND);
+
+  tripEventsList.forEach((tripEventItem) => {
+    //if (tripEventItem.dataset.date === `${card.dateFromUnix.getDate()}/${card.dateFromUnix.getMonth()}`) {
+    if (showDate(tripEventItem.date) === showDate(`${card.dateFromUnix}`)) {
+      render(tripEventItem, eventComponent, RenderPosition.BEFOREEND);
+  //    console.log(tripEventItem.dataset.date);
+    }
+  });
+};
+
 
 export default class TripController {
 
   constructor(container) {
     this._container = container;
-    this._events = [];
-    this._days = [];
+//    this._events = [];
+  //  this._tripDays = [];
     this._siteMenuComponent = new SiteMenuComponent();
     this._eventFilter = new EventFilterComponent();
     this._noEventsComponent = new NoEventsComponent();
@@ -40,6 +86,7 @@ export default class TripController {
 
   render(events) {
     this._events = events;
+    this._tripDays = generateTripDays(this._events);
     const header = this._container.querySelector(`header`);
     const tripControls = header.querySelector(`.trip-controls`);
     render(tripControls, this._siteMenuComponent, RenderPosition.BEFOREEND);
@@ -54,10 +101,12 @@ export default class TripController {
       return;
     }
     render(tripEvents, this._eventSorterComponent, RenderPosition.BEFOREEND);
-    renderDay(tripEvents, events);
-    const boardEventsList = this._container.querySelector(`.trip-events__list`);
+    render(tripEvents, new DayComponent(this._tripDays), RenderPosition.BEFOREEND);
 
-    this._eventSorterComponent.setSortChangeHandler((sortType) => {
+    events.forEach((eventItem) => {
+        renderEvent(eventItem);
+      });
+    /*this._eventSorterComponent.setSortChangeHandler((sortType) => {
       let sortedEvents = [];
 
       switch (sortType) {
@@ -80,8 +129,8 @@ export default class TripController {
       boardEventsList.innerHTML = ``;
       renderEvents(boardEventsList, sortedEvents.slice(0, 5));
     });
-
-    renderEvents(boardEventsList, this._events.slice(0, 5));
+*/
+   // renderEvents(boardEventsList, this._events.slice(0, 5));
   // this._showedPointsControllers = this._showedPointsControllers.concat(newEvent);
   }
 }
