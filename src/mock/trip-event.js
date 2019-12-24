@@ -1,5 +1,6 @@
 // МОКИ ДЛЯ ТОЧЕК МАРШРУТА
 import {EVENT_TYPES} from '../constants';
+import {showDate} from '../utils/date';
 
 export const CARD_COUNT = 5;
 
@@ -85,7 +86,7 @@ const generateEvents = (count) => {
 };
 
 export const events = generateEvents(CARD_COUNT);
-events.sort((a, b) => Date.parse(b.dateFromUnix) > Date.parse(a.dateFromUnix) ? 1 : -1);
+//events.sort((a, b) => Date.parse(b.dateFromUnix) > Date.parse(a.dateFromUnix) ? 1 : -1);
 
 export const generateTripDays = (events) => {
   let tripDays = [];
@@ -94,7 +95,7 @@ export const generateTripDays = (events) => {
   events.forEach((eventItem, i) => {
     let prevCard = i > 0 ? events[i - 1] : null;
 
-    if (prevCard && eventItem.dateFromUnix !== prevCard.dateFromUnix) {
+    if (prevCard && showDate(eventItem.dateFromUnix) !== showDate(prevCard.dateFromUnix)) {
       tripDays.push(currentCards);
       currentCards = [];
     }
