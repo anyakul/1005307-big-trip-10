@@ -1,6 +1,11 @@
 import {RenderPosition, render} from '../utils/render';
+import {isEscKey} from '../utils/key-board';
+import {replace} from '../utils/render';
 import SiteMenuComponent from '../components/site-menu';
 import EventFilterComponent from '../components/event-filter';
+import EventCardComponent from '../components/event-card';
+import EditEventFormComponent from '../components/edit-event-form';
+import {showDate} from '../utils/date';
 
 // Форма сортировки
 import EventSorterComponent, {SortType} from '../components/event-sorter';
@@ -46,8 +51,6 @@ export default class TripController {
     this._pointController.render(events);
 
     this._eventSorterComponent.setSortChangeHandler((sortType) => {
-      const tripEventsList = document.querySelector(`.trip-events__list`);
-      tripEventsList.innerHTML = ``;
       let sortedEvents = [];
 
       switch (sortType) {
@@ -57,7 +60,6 @@ export default class TripController {
 
         case SortType.PRICE:
           sortedEvents = events.sort((a, b) => b.basePrice - a.basePrice);
-          renderSortedEvents(sortedEvents, tripEventsList);
           break;
 
         case SortType.TIME:
@@ -67,8 +69,10 @@ export default class TripController {
 
             return durationSecond - durationFirst;
           });
-          renderSortedEvents(sortedEvents, tripEventsList);
       }
-    }); 
+      boardEventsList.innerHTML = ``;
+      renderEvent(sortedEvents.slice(0, 5));
+    });
   }
 }
+
