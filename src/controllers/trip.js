@@ -1,11 +1,6 @@
 import {RenderPosition, render} from '../utils/render';
-import {isEscKey} from '../utils/key-board';
-import {replace} from '../utils/render';
 import SiteMenuComponent from '../components/site-menu';
 import EventFilterComponent from '../components/event-filter';
-import EventCardComponent from '../components/event-card';
-import EditEventFormComponent from '../components/edit-event-form';
-import {showDate} from '../utils/date';
 
 // Форма сортировки
 import EventSorterComponent, {SortType} from '../components/event-sorter';
@@ -16,42 +11,7 @@ import {generateTripDays} from '../mock/trip-event';
 
 // События дня
 import NoEventsComponent from '../components/no-events';
-
-const renderEvent = (card) => {
-  const {dateFromUnix} = card;
-  const onEscKeyDown = (evt) => {
-
-    if (isEscKey(evt)) {
-      replaceEventToEdit();
-      document.removeEventListener(`keydown`, onEscKeyDown);
-    }
-  };
-
-  const replaceEditToEvent = () => {
-    replace(eventEditComponent, eventComponent);
-    document.addEventListener(`keydown`, onEscKeyDown);
-  };
-
-  const replaceEventToEdit = () => {
-    replace(eventComponent, eventEditComponent);
-  };
-
-  const eventComponent = new EventCardComponent(card);
-
-  eventComponent.setEditButtonClickHandler(replaceEditToEvent);
-
-  const eventEditComponent = new EditEventFormComponent(card);
-  eventEditComponent.setSubmitHandler(replaceEventToEdit);
-
-  const tripEventsList = document.querySelectorAll(`.trip-events__list`);
-
-  tripEventsList.forEach((tripEventItem) => {
-    if (showDate(tripEventItem.dataset.date) === `${showDate(dateFromUnix)}`) {
-      render(tripEventItem, eventComponent, RenderPosition.BEFOREEND);
-    }
-  });
-};
-
+import PointController from './point';
 
 export default class TripController {
 
@@ -61,6 +21,7 @@ export default class TripController {
     this._eventFilter = new EventFilterComponent();
     this._noEventsComponent = new NoEventsComponent();
     this._eventSorterComponent = new EventSorterComponent();
+    this._pointController = new PointController();
   }
 
   render(events) {
@@ -82,11 +43,11 @@ export default class TripController {
     render(tripEvents, this._eventSorterComponent, RenderPosition.BEFOREEND);
     render(tripEvents, new DayComponent(this._tripDays), RenderPosition.BEFOREEND);
 
-    events.forEach((eventItem) => {
-      renderEvent(eventItem);
-    });
+    this._pointController.render(events);
 
     this._eventSorterComponent.setSortChangeHandler((sortType) => {
+      const tripEventsList = document.querySelector(`.trip-events__list`);
+      tripEventsList.innerHTML = ``;
       let sortedEvents = [];
 
       switch (sortType) {
@@ -96,6 +57,7 @@ export default class TripController {
 
         case SortType.PRICE:
           sortedEvents = events.sort((a, b) => b.basePrice - a.basePrice);
+          renderSortedEvents(sortedEvents, tripEventsList);
           break;
 
         case SortType.TIME:
@@ -105,9 +67,8 @@ export default class TripController {
 
             return durationSecond - durationFirst;
           });
+          renderSortedEvents(sortedEvents, tripEventsList);
       }
-      boardEventsList.innerHTML = ``;
-      renderEvent(sortedEvents.slice(0, 5));
-    });
+    }); 
   }
 }

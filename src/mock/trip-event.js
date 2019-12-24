@@ -86,9 +86,8 @@ const generateEvents = (count) => {
 };
 
 export const events = generateEvents(CARD_COUNT);
-//events.sort((a, b) => Date.parse(b.dateFromUnix) > Date.parse(a.dateFromUnix) ? 1 : -1);
 
-export const generateTripDays = (events) => {
+export const generateTripDays = () => {
   let tripDays = [];
   let currentCards = [];
 
