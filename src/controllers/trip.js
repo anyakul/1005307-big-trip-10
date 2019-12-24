@@ -1,11 +1,6 @@
 import {RenderPosition, render} from '../utils/render';
-import {isEscKey} from '../utils/key-board';
-import {replace} from '../utils/render';
 import SiteMenuComponent from '../components/site-menu';
 import EventFilterComponent from '../components/event-filter';
-import EventCardComponent from '../components/event-card';
-import EditEventFormComponent from '../components/edit-event-form';
-import {showDate} from '../utils/date';
 
 // Форма сортировки
 import EventSorterComponent, {SortType} from '../components/event-sorter';
