@@ -83,8 +83,9 @@ export default class TripController {
     render(tripEvents, new DayComponent(this._tripDays), RenderPosition.BEFOREEND);
 
     events.forEach((eventItem) => {
-        renderEvent(eventItem);
-      });
+      renderEvent(eventItem);
+    });
+
     this._eventSorterComponent.setSortChangeHandler((sortType) => {
       let sortedEvents = [];
 
@@ -106,7 +107,7 @@ export default class TripController {
           });
       }
       boardEventsList.innerHTML = ``;
-      renderEvents(boardEventsList, sortedEvents.slice(0, 5));
+      renderEvent(sortedEvents.slice(0, 5));
     });
   }
 }
