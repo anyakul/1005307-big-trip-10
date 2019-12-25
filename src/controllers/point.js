@@ -5,8 +5,7 @@ import EventCardComponent from '../components/event-card';
 import EditEventFormComponent from '../components/edit-event-form';
 import {showDate} from '../utils/date';
 
-const renderEvents = (card) => {
-  const {dateFromUnix} = card;
+const renderEvent = (cardsContainer, card) => {
   const onEscKeyDown = (evt) => {
 
     if (isEscKey(evt)) {
@@ -31,13 +30,22 @@ const renderEvents = (card) => {
   const eventEditComponent = new EditEventFormComponent(card);
   eventEditComponent.setSubmitHandler(replaceEventToEdit);
 
-  const tripEventsList = document.querySelectorAll(`.trip-events__list`);
+  render(cardsContainer, eventComponent, RenderPosition.BEFOREEND);
+};
 
+const renderEvents = (card) => {
+  const {dateFromUnix} = card;
+  const tripEventsList = document.querySelectorAll(`.trip-events__list`);
   tripEventsList.forEach((tripEventItem) => {
     if (showDate(tripEventItem.dataset.date) === `${showDate(dateFromUnix)}`) {
-      render(tripEventItem, eventComponent, RenderPosition.BEFOREEND);
+      renderEvent(tripEventItem, card);
     }
   });
+};
+
+const renderSortedEvents = (cards) => {
+  const tripEventsList = document.querySelector(`.trip-events__list`);
+  renderEvent(tripEventsList, cards);
 };
 
 export default class PointController {
@@ -49,6 +57,12 @@ export default class PointController {
   render(events) {
     events.forEach((eventItem) => {
       renderEvents(eventItem);
+    });
+  }
+
+  renderSorted(sortedEvents) {
+    sortedEvents.forEach((eventItem) => {
+      renderSortedEvents(eventItem);
     });
   }
 }

@@ -1,4 +1,4 @@
-import {RenderPosition, render} from '../utils/render';
+import {RenderPosition, render, remove} from '../utils/render';
 import SiteMenuComponent from '../components/site-menu';
 import EventFilterComponent from '../components/event-filter';
 
@@ -12,6 +12,7 @@ import {generateTripDays} from '../mock/trip-event';
 // События дня
 import NoEventsComponent from '../components/no-events';
 import PointController from './point';
+import SortComponent from '../components/sort';
 
 export default class TripController {
 
@@ -22,6 +23,7 @@ export default class TripController {
     this._noEventsComponent = new NoEventsComponent();
     this._eventSorterComponent = new EventSorterComponent();
     this._pointController = new PointController();
+    this._sortContainer = new SortComponent();
   }
 
   render(events) {
@@ -32,6 +34,14 @@ export default class TripController {
     render(tripControls, this._siteMenuComponent, RenderPosition.BEFOREEND);
     render(tripControls, this._eventFilter, RenderPosition.BEFOREEND);
 
+    const sortEventsDefault = () => {
+      if (this._sortContainer) {
+        remove(this._sortContainer);
+      }
+      render(tripEvents, new DayComponent(this._tripDays), RenderPosition.BEFOREEND);
+      this._pointController.render(events);
+    };
+
     const main = this._container.querySelector(`main`);
     const tripEvents = main.querySelector(`.trip-events`);
 
@@ -41,16 +51,14 @@ export default class TripController {
       return;
     }
     render(tripEvents, this._eventSorterComponent, RenderPosition.BEFOREEND);
-    render(tripEvents, new DayComponent(this._tripDays), RenderPosition.BEFOREEND);
-
-    this._pointController.render(events);
+    sortEventsDefault(this._pointController);
 
     this._eventSorterComponent.setSortChangeHandler((sortType) => {
       let sortedEvents = [];
 
       switch (sortType) {
         case SortType.EVENT:
-          sortedEvents = events.sort((a, b) => b.dateFromUnix - a.dateToUnix);
+          sortEventsDefault(this._pointController);
           break;
 
         case SortType.PRICE:
@@ -61,13 +69,23 @@ export default class TripController {
           sortedEvents = events.slice().sort((a, b) => {
             const durationFirst = a.dateToUnix - a.dateFromUnix;
             const durationSecond = b.dateToUnix - b.dateFromUnix;
-
             return durationSecond - durationFirst;
           });
+          break;
       }
-      boardEventsList.innerHTML = ``;
-      renderEvent(sortedEvents.slice(0, 5));
+      if (sortType === SortType.TIME || sortType === SortType.PRICE) {
+        if (this._sortContainer) {
+          remove(this._sortContainer);
+        }
+
+        const tripDays = main.querySelector(`.trip-days`);
+        if (tripDays) {
+          document.querySelector(`.trip-days`).remove();
+        }
+
+        render(tripEvents, this._sortContainer, RenderPosition.BEFOREEND);
+        this._pointController.renderSorted(sortedEvents);
+      }
     });
   }
 }
-
