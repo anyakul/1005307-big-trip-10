@@ -1,6 +1,6 @@
 // Форма редактирования события
 
-export const createEventEditorTemplate = () => {
+const createEventEditorTemplate = () => {
   return (
     `<li class="trip-events__item">
       <form class="trip-events__item event event--edit" action="#" method="post">
@@ -166,3 +166,5 @@ export const createEventEditorTemplate = () => {
     </li>`
   );
 };
+
+export {createEventEditorTemplate};

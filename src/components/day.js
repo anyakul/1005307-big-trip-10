@@ -31,4 +31,5 @@ class DayComponent extends AbstractComponent {
     return createBoardTemplate(this._tripDays);
   }
 }
+
 export default DayComponent;

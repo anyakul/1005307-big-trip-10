@@ -1,7 +1,7 @@
 // Абстрактный компонент
 import {createElement} from '../utils/render';
 
-export default class AbstractComponent {
+class AbstractComponent {
   constructor() {
     if (new.target === AbstractComponent) {
       throw new Error(`Can't instantiate AbstractComponent, only concrete one.`);
@@ -26,3 +26,5 @@ export default class AbstractComponent {
     this._element = null;
   }
 }
+
+export default AbstractComponent;

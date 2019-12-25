@@ -9,8 +9,10 @@ const generateFilters = () => {
   };
 };
 
-export const generateFiltersPoints = (count) => {
+const generateFiltersPoints = (count) => {
   return new Array(count)
     .fill(``)
     .map(generateFilters);
 };
+
+export {generateFiltersPoints};

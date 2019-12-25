@@ -8,8 +8,10 @@ const generateMenu = () => {
   };
 };
 
-export const generateMenuPoints = (count) => {
+const generateMenuPoints = (count) => {
   return new Array(count)
     .fill(``)
     .map(generateMenu);
 };
+
+export {generateMenuPoints};

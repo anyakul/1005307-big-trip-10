@@ -48,7 +48,7 @@ const renderSortedEvents = (cards) => {
   renderEvent(tripEventsList, cards);
 };
 
-export default class PointController {
+class PointController {
 
   constructor(container) {
     this._container = container;
@@ -66,3 +66,5 @@ export default class PointController {
     });
   }
 }
+
+export default PointController;

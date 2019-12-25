@@ -13,8 +13,9 @@ import {generateTripDays} from '../mock/trip-event';
 import NoEventsComponent from '../components/no-events';
 import PointController from './point';
 import SortComponent from '../components/sort';
+import TripInfoComponent from '../components/trip-info';
 
-export default class TripController {
+class TripController {
 
   constructor(container) {
     this._container = container;
@@ -28,9 +29,14 @@ export default class TripController {
 
   render(events) {
     this._events = events;
+    this._tripInfoComponent = new TripInfoComponent(events);
     this._tripDays = generateTripDays(this._events);
+
     const header = this._container.querySelector(`header`);
     const tripControls = header.querySelector(`.trip-controls`);
+    const tripInfo = header.querySelector(`.trip-info`);
+
+    events.slice(1, 2).forEach((eventItem) => render(tripInfo, new TripInfoComponent(eventItem), RenderPosition.AFTERBEGIN));
     render(tripControls, this._siteMenuComponent, RenderPosition.BEFOREEND);
     render(tripControls, this._eventFilter, RenderPosition.BEFOREEND);
 
@@ -89,3 +95,5 @@ export default class TripController {
     });
   }
 }
+
+export default TripController;

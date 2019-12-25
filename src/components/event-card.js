@@ -48,4 +48,3 @@ class EventCardComponent extends AbstractComponent {
 }
 
 export default EventCardComponent;
-export {showDateInCard};

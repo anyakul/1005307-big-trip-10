@@ -15,7 +15,7 @@ const createTripInfoTemplate = (card) => {
   );
 };
 
-export default class TripInfoComponent extends AbstractComponent {
+class TripInfoComponent extends AbstractComponent {
   constructor(card) {
     super();
 
@@ -26,3 +26,5 @@ export default class TripInfoComponent extends AbstractComponent {
     return createTripInfoTemplate(this._card);
   }
 }
+
+export default TripInfoComponent;

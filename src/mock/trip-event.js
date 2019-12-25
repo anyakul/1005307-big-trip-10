@@ -2,7 +2,7 @@
 import {EVENT_TYPES} from '../constants';
 import {showDate} from '../utils/date';
 
-export const CARD_COUNT = 5;
+const CARD_COUNT = 5;
 
 const Time = {
   MINUTE: 60000,
@@ -74,7 +74,6 @@ const generateEvent = () => {
     picture: getRandomPicture(),
     basePrice: getRandomIntegerNumber(100, 1000),
     offers: getRandomArrayLength(0, 3).map(getRandomOffer),
-    dayNumber: 1,
     isFavorite: getRandomBoolean(),
   };
 };
@@ -85,9 +84,9 @@ const generateEvents = (count) => {
     .map(generateEvent);
 };
 
-export const events = generateEvents(CARD_COUNT);
+const events = generateEvents(CARD_COUNT);
 
-export const generateTripDays = () => {
+const generateTripDays = () => {
   let tripDays = [];
   let currentCards = [];
 
@@ -108,10 +107,17 @@ export const generateTripDays = () => {
 };
 
 // Функция подсчета стоимости поездки
-export const getTripInfoCost = (tripDays) => {
+const getTripInfoCost = (tripDays) => {
   const eventCards = tripDays.flat();
   let tripInfoCost = eventCards.reduce((sum, eventCard) => {
     return sum + eventCard.basePrice;
   }, 0);
   return tripInfoCost;
+};
+
+export {
+  CARD_COUNT,
+  events,
+  generateTripDays,
+  getTripInfoCost,
 };

@@ -1,7 +1,7 @@
 import AbstractComponent from './abstract-component';
 import {createEventEditorTemplate} from './templates/event-editor';
 
-export default class EventEditorComponent extends AbstractComponent {
+class EventEditorComponent extends AbstractComponent {
   getTemplate() {
     return createEventEditorTemplate();
   }
@@ -13,3 +13,5 @@ export default class EventEditorComponent extends AbstractComponent {
     });
   }
 }
+
+export default EventEditorComponent;
