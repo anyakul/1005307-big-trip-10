@@ -1,7 +1,6 @@
 // Форма редактирования события
-import AbstractComponent from './abstract-component.js';
 
-const createEditEventFormTemplate = () => {
+export const createEventEditorTemplate = () => {
   return (
     `<li class="trip-events__item">
       <form class="trip-events__item event event--edit" action="#" method="post">
@@ -167,16 +166,3 @@ const createEditEventFormTemplate = () => {
     </li>`
   );
 };
-
-export default class EditEventFormComponent extends AbstractComponent {
-  getTemplate() {
-    return createEditEventFormTemplate();
-  }
-
-  setSubmitHandler(handler) {
-    this.getElement().addEventListener(`submit`, (evt) => {
-      evt.preventDefault();
-      handler();
-    });
-  }
-}

@@ -51,14 +51,14 @@ export default class TripController {
       return;
     }
     render(tripEvents, this._eventSorterComponent, RenderPosition.BEFOREEND);
-    sortEventsDefault(this._pointController);
+    sortEventsDefault();
 
     this._eventSorterComponent.setSortChangeHandler((sortType) => {
       let sortedEvents = [];
 
       switch (sortType) {
         case SortType.EVENT:
-          sortEventsDefault(this._pointController);
+          sortEventsDefault();
           break;
 
         case SortType.PRICE:

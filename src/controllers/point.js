@@ -2,7 +2,7 @@ import {RenderPosition, render} from '../utils/render';
 import {isEscKey} from '../utils/key-board';
 import {replace} from '../utils/render';
 import EventCardComponent from '../components/event-card';
-import EditEventFormComponent from '../components/edit-event-form';
+import EditEventFormComponent from '../components/event-editor';
 import {showDate} from '../utils/date';
 
 const renderEvent = (cardsContainer, card) => {
