@@ -50,7 +50,7 @@ class TripController {
       render(this._tripEvents, new DayComponent(this._tripDays), RenderPosition.BEFOREEND);
       this._pointController.render(events);
     };
-    
+
     this._main = this._container.querySelector(`main`);
     this._tripEvents = this._main.querySelector(`.trip-events`);
 

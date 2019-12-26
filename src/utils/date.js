@@ -1,3 +1,5 @@
+const months = [`Jan`, `Feb`, `Mar`, `Apr`, `May`, `Jun`, `Jul`, `Aug`, `Sep`, `Oct`, `Nov`, `Dec`];
+
 // Функция конвертации даты
 export const showTime = (unixTimestamp) => {
   const date = new Date(unixTimestamp);
@@ -9,10 +11,18 @@ export const showTime = (unixTimestamp) => {
 // Функция конвертации даты
 export const showDate = (unixTimestamp) => {
   const date = new Date(unixTimestamp);
-  const months = [`Jan`, `Feb`, `Mar`, `Apr`, `May`, `Jun`, `Jul`, `Aug`, `Sep`, `Oct`, `Nov`, `Dec`];
   const day = date.getDate();
   const month = months[date.getMonth()];
   return day + ` ` + month;
+};
+
+// Функция конвертации даты
+export const showDateWithYear = (unixTimestamp) => {
+  const date = new Date(unixTimestamp);
+  const day = date.getDate();
+  const month = months[date.getMonth()];
+  const year = date.getFullYear();
+  return day + `/` + month + `/` + year;
 };
 
 // Функция конвертации даты
