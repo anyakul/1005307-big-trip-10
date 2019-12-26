@@ -1,9 +1,11 @@
 import {RenderPosition, render, remove} from '../utils/render';
+import TripInfoComponent from '../components/trip-info';
 import SiteMenuComponent from '../components/site-menu';
 import EventFilterComponent from '../components/event-filter';
 
 // Форма сортировки
 import EventSorterComponent, {SortType} from '../components/event-sorter';
+import {getTripInfoCost} from '../mock/trip-event';
 
 // Информация о дне
 import DayComponent from '../components/day';
@@ -13,7 +15,6 @@ import {generateTripDays} from '../mock/trip-event';
 import NoEventsComponent from '../components/no-events';
 import PointController from './point';
 import SortComponent from '../components/sort';
-import TripInfoComponent from '../components/trip-info';
 
 class TripController {
 
@@ -29,34 +30,36 @@ class TripController {
 
   render(events) {
     this._events = events;
-    this._tripInfoComponent = new TripInfoComponent(events);
     this._tripDays = generateTripDays(this._events);
 
-    const header = this._container.querySelector(`header`);
-    const tripControls = header.querySelector(`.trip-controls`);
-    const tripInfo = header.querySelector(`.trip-info`);
+    this._header = this._container.querySelector(`header`);
+    this._tripInfo = this._header.querySelector(`.trip-info`);
+    this._tripInfoCost = this._header.querySelector(`.trip-info__cost-value`);
+    this._tripControls = this._header.querySelector(`.trip-controls`);
 
-    events.slice(1, 2).forEach((eventItem) => render(tripInfo, new TripInfoComponent(eventItem), RenderPosition.AFTERBEGIN));
-    render(tripControls, this._siteMenuComponent, RenderPosition.BEFOREEND);
-    render(tripControls, this._eventFilter, RenderPosition.BEFOREEND);
+    events.slice(1, 2).forEach((eventItem) => render(this._tripInfo, new TripInfoComponent(eventItem), RenderPosition.AFTERBEGIN));
+    this._tripInfoCost.textContent = getTripInfoCost(this._events);
+
+    render(this._tripControls, this._siteMenuComponent, RenderPosition.BEFOREEND);
+    render(this._tripControls, this._eventFilter, RenderPosition.BEFOREEND);
 
     const sortEventsDefault = () => {
       if (this._sortContainer) {
         remove(this._sortContainer);
       }
-      render(tripEvents, new DayComponent(this._tripDays), RenderPosition.BEFOREEND);
+      render(this._tripEvents, new DayComponent(this._tripDays), RenderPosition.BEFOREEND);
       this._pointController.render(events);
     };
+    
+    this._main = this._container.querySelector(`main`);
+    this._tripEvents = this._main.querySelector(`.trip-events`);
 
-    const main = this._container.querySelector(`main`);
-    const tripEvents = main.querySelector(`.trip-events`);
-
-    const isAllEventsArchived = events.every(({isArchive}) => isArchive);
+    const isAllEventsArchived = this._events.every(({isArchive}) => isArchive);
     if (isAllEventsArchived) {
       render(this._tripEventsContainer, this._noEventsComponent, RenderPosition.BEFOREEND);
       return;
     }
-    render(tripEvents, this._eventSorterComponent, RenderPosition.BEFOREEND);
+    render(this._tripEvents, this._eventSorterComponent, RenderPosition.BEFOREEND);
     sortEventsDefault();
 
     this._eventSorterComponent.setSortChangeHandler((sortType) => {
@@ -84,12 +87,12 @@ class TripController {
           remove(this._sortContainer);
         }
 
-        const tripDays = main.querySelector(`.trip-days`);
-        if (tripDays) {
+        this._tripDaysContainer = this._main.querySelector(`.trip-days`);
+        if (this._tripDaysContainer) {
           document.querySelector(`.trip-days`).remove();
         }
 
-        render(tripEvents, this._sortContainer, RenderPosition.BEFOREEND);
+        render(this._tripEvents, this._sortContainer, RenderPosition.BEFOREEND);
         this._pointController.renderSorted(sortedEvents);
       }
     });
