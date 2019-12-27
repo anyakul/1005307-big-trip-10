@@ -1,7 +1,27 @@
 import {showDate} from '../utils/date';
 import AbstractComponent from './abstract-component';
 
-const createDayTemplate = (tripDays) => {
+const generateTripDays = (events) => {
+  let tripDays = [];
+  let currentCards = [];
+
+  events.forEach((eventItem, i) => {
+    let prevCard = i > 0 ? events[i - 1] : null;
+
+    if (prevCard && showDate(eventItem.dateFromUnix) !== showDate(prevCard.dateFromUnix)) {
+      tripDays.push(currentCards);
+      currentCards = [];
+    }
+    currentCards.push(eventItem);
+    if (i === events.length - 1) {
+      tripDays.push(currentCards);
+    }
+  });
+
+  return tripDays;
+};
+
+const createDayBoardTemplate = (tripDays) => {
   return (tripDays.map((day, i) => {
     const dayDate = day[0].dateFromUnix;
     const date = showDate(dayDate);
@@ -17,8 +37,8 @@ const createDayTemplate = (tripDays) => {
   }).join(`\n`));
 };
 
-const createBoardTemplate = (tripDays) => (
-  `<ul class="trip-days">${createDayTemplate(tripDays)}</ul>`
+const createDayBoardTemplates = (tripDays) => (
+  `<ul class="trip-days">${createDayBoardTemplate(tripDays)}</ul>`
 );
 
 class DayComponent extends AbstractComponent {
@@ -28,8 +48,9 @@ class DayComponent extends AbstractComponent {
   }
 
   getTemplate() {
-    return createBoardTemplate(this._tripDays);
+    return createDayBoardTemplates(this._tripDays);
   }
 }
 
 export default DayComponent;
+export {generateTripDays};

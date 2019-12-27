@@ -1,6 +1,6 @@
-import AbstractComponent from './abstract-component.js';
+import AbstractComponent from './abstract-component';
 
-class SortContainer extends AbstractComponent {
+class SortBoardContainer extends AbstractComponent {
   getTemplate() {
     return (
       `<ul class="trip-days">
@@ -13,4 +13,4 @@ class SortContainer extends AbstractComponent {
   }
 }
 
-export default SortContainer;
+export default SortBoardContainer;

@@ -2,7 +2,7 @@ import {showTime, showFullDate, showDate, showDateWithYear} from '../utils/date'
 import {createEventCardTemplate} from './templates/event-card';
 import AbstractComponent from './abstract-component';
 
-const EventsTypeTransport = {
+const EventTypeTransport = {
   TAXI: `taxi`,
   BUS: `bus`,
   TRAIN: `train`,
@@ -12,7 +12,7 @@ const EventsTypeTransport = {
   FLIGHT: `flight`,
 };
 
-const EventsTypePlaces = {
+const EventTypePlace = {
   CHECKIN: `check-in`,
   SIGHTSEEING: `sightseeing`,
   RESTAURANT: `restaurant`
@@ -20,14 +20,14 @@ const EventsTypePlaces = {
 
 const getTypeName = (type) => type[0].toUpperCase() + type.slice(1);
 
-const createEventTypesTransport = (checkedType) => Object.values(EventsTypeTransport)
+const createEventTypesTransport = (checkedType) => Object.values(EventTypeTransport)
   .map((typeTransport) => ({
     typeTransport,
     nameTransport: getTypeName(typeTransport),
     isChecked: typeTransport === checkedType
   }));
 
-const createEventTypesPlaces = (checkedType) => Object.values(EventsTypePlaces)
+const createEventTypesPlace = (checkedType) => Object.values(EventTypePlace)
   .map((typePlaces) => ({
     typePlaces,
     namePlaces: getTypeName(typePlaces),
@@ -49,12 +49,7 @@ const showDateInCard = (card) => {
   };
 };
 
-const createOffers = (offers) => Object.values(offers)
-  .map((offer) => ({
-    title: offer.title,
-    price: offer.price,
-    accepted: offer.accepted,
-  }));
+const createOffers = (offers) => Object.values(offers);
 
 const showData = (card) => {
   const {type, destination, basePrice} = card;
@@ -66,7 +61,7 @@ const showData = (card) => {
     basePrice: `${basePrice}`,
     offers: createOffers(card.offers),
     typesTransport: createEventTypesTransport(type),
-    typesPlaces: createEventTypesPlaces(type),
+    typesPlaces: createEventTypesPlace(type),
     // destinationPhoto: createDestinationPhoto(card.destination),
   };
 };

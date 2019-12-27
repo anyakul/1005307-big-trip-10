@@ -1,6 +1,5 @@
 // МОКИ ДЛЯ ТОЧЕК МАРШРУТА
 import {EVENT_TYPES} from '../constants';
-import {showDate} from '../utils/date';
 
 const CARD_COUNT = 5;
 
@@ -86,38 +85,7 @@ const generateEvents = (count) => {
 
 const events = generateEvents(CARD_COUNT);
 
-const generateTripDays = () => {
-  let tripDays = [];
-  let currentCards = [];
-
-  events.forEach((eventItem, i) => {
-    let prevCard = i > 0 ? events[i - 1] : null;
-
-    if (prevCard && showDate(eventItem.dateFromUnix) !== showDate(prevCard.dateFromUnix)) {
-      tripDays.push(currentCards);
-      currentCards = [];
-    }
-    currentCards.push(eventItem);
-    if (i === events.length - 1) {
-      tripDays.push(currentCards);
-    }
-  });
-
-  return tripDays;
-};
-
-// Функция подсчета стоимости поездки
-const getTripInfoCost = (tripDays) => {
-  const eventCards = tripDays.flat();
-  let tripInfoCost = eventCards.reduce((sum, eventCard) => {
-    return sum + eventCard.basePrice;
-  }, 0);
-  return tripInfoCost;
-};
-
 export {
   CARD_COUNT,
   events,
-  generateTripDays,
-  getTripInfoCost,
 };

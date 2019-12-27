@@ -55,15 +55,11 @@ class PointController {
   }
 
   render(events) {
-    events.forEach((eventItem) => {
-      renderEvents(eventItem);
-    });
+    events.forEach(renderEvents);
   }
 
   renderSorted(sortedEvents) {
-    sortedEvents.forEach((eventItem) => {
-      renderSortedEvents(eventItem);
-    });
+    sortedEvents.forEach(renderSortedEvents);
   }
 }
 
