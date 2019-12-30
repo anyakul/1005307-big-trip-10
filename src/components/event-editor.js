@@ -18,6 +18,11 @@ class EventEditorComponent extends AbstractComponent {
       handler();
     });
   }
+
+  setFavoriteButtonClickHandler(handler) {
+    this.getElement().querySelector(`.event__favorite-checkbox`).addEventListener(`click`, handler);
+    this._favoriteButtonHanlder = handler;
+  }
 }
 
 export default EventEditorComponent;

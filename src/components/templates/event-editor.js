@@ -200,7 +200,7 @@ const createDestinationTemplate = (events) => (
     ${createDestinationDescriptionTemplate(events)}
     <div class="event__photos-container">
       <div class="event__photos-tape">
-        ${createDestinationPicturesTemplates(events.pictures)}
+        ${createDestinationPicturesTemplates(events.destinationPictures)}
        </div>
      </div>
    </section>`
@@ -222,7 +222,6 @@ const createEventEditorTemplate = (events) => (
         ${createButtonsTemplate()}
       </header>
       <section class="event__details">
-        ${createDestinationDescriptionTemplate(events)}
         ${createOffersTemplate(events)}
         ${createDestinationTemplate(events)}
       </section>

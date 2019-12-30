@@ -4,6 +4,7 @@ import SiteMenuComponent from '../components/site-menu';
 import EventFilterComponent from '../components/event-filter';
 import TripCostComponent from '../components/trip-cost';
 import AddEventButtonComponent from '../components/add-event-button';
+import {showDate} from '../utils/date';
 
 // Форма сортировки
 import EventSorterComponent, {SortType} from '../components/event-sorter';
@@ -24,19 +25,22 @@ class TripController {
     this._eventFilterComponent = new EventFilterComponent();
     this._addEventButtonComponent = new AddEventButtonComponent();
     this._eventSorterComponent = new EventSorterComponent();
-    this._pointController = new PointController();
   }
 
   render(events) {
-    this._events = events;
-    this._tripDays = generateTripDays(this._events);
-    this._sortBoardContainer = new SortBoardComponent(this._events);
-    this._tripCostComponent = new TripCostComponent(this._events);
-
     const header = this._container.querySelector(`header`);
     const tripMain = header.querySelector(`.trip-main`);
     const tripInfo = tripMain.querySelector(`.trip-info`);
     const tripControls = tripMain.querySelector(`.trip-controls`);
+    const main = this._container.querySelector(`main`);
+    const tripEvents = main.querySelector(`.trip-events`);
+    const tripDays = main.querySelector(`.day`);
+
+    this._events = events;
+    this._tripDays = generateTripDays(this._events);
+    this._sortBoardContainer = new SortBoardComponent(this._events);
+    this._tripCostComponent = new TripCostComponent(this._events);
+    this._dayBoardComponent = new DayBoardComponent(this._tripDays);
 
     render(tripMain, this._addEventButtonComponent, RenderPosition.BEFOREEND);
     render(tripInfo, this._tripCostComponent, RenderPosition.AFTERBEGIN);
@@ -48,30 +52,43 @@ class TripController {
       if (this._sortBoardContainer) {
         remove(this._sortBoardContainer);
       }
-      render(tripEvents, new DayBoardComponent(this._tripDays), RenderPosition.BEFOREEND);
-      this._pointController.render(events);
-    };
+      if (this._dayBoardComponent) {
+        remove(this._dayBoardComponent);
+      }
+      render(tripEvents, this._dayBoardComponent, RenderPosition.BEFOREEND);
+      this._events.forEach((card) => {
+        const tripEventsList = document.querySelectorAll(`.trip-events__list`);
+        tripEventsList.innerHTML = ``;
+        this._card = card;
+        const {dateFromUnix} = this._card;
 
-    const main = this._container.querySelector(`main`);
-    const tripEvents = main.querySelector(`.trip-events`);
+        tripEventsList.forEach((tripEventItem) => {
+          this._tripEventItem = tripEventItem;
+          if (showDate(this._tripEventItem.dataset.date) === `${showDate(dateFromUnix)}`) {
+            this._pointController = new PointController(this._tripEventItem);
+            this._pointController.render(card);
+          }
+        });
+      });
+    };
 
     render(tripEvents, this._eventSorterComponent, RenderPosition.BEFOREEND);
     sortEventsDefault();
 
     this._eventSorterComponent.setSortChangeHandler((sortType) => {
-      let sortedEvents = [];
+      this._sortedEvents = [];
 
       switch (sortType) {
         case SortType.EVENT:
-          sortEventsDefault();
+          sortEventsDefault(this._events, tripDays);
           break;
 
         case SortType.PRICE:
-          sortedEvents = events.sort((a, b) => b.basePrice - a.basePrice);
+          this._sortedEvents = this._events.sort((a, b) => b.basePrice - a.basePrice);
           break;
 
         case SortType.TIME:
-          sortedEvents = events.slice().sort((a, b) => {
+          this._sortedEvents = this._events.slice().sort((a, b) => {
             const durationFirst = a.dateToUnix - a.dateFromUnix;
             const durationSecond = b.dateToUnix - b.dateFromUnix;
             return durationSecond - durationFirst;
@@ -89,7 +106,11 @@ class TripController {
         }
 
         render(tripEvents, this._sortBoardContainer, RenderPosition.BEFOREEND);
-        this._pointController.renderSorted(sortedEvents);
+        this._sortedEvents.forEach((card) => {
+          this._tripEventsList = document.querySelector(`.trip-events__list`);
+          this._pointController = new PointController(this._tripEventsList);
+          this._pointController.render(card);
+        });
       }
     });
   }

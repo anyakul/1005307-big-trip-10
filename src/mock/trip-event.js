@@ -85,7 +85,4 @@ const generateEvents = (count) => {
 
 const events = generateEvents(CARD_COUNT);
 
-export {
-  CARD_COUNT,
-  events,
-};
+export {events};

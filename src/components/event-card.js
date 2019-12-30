@@ -68,7 +68,7 @@ const showData = (card) => {
     type: `${type}`,
     destinationName: `${destination.name}`,
     destinationDescription: `${destination.description}`,
-    pictures: createPhotos(card.destination),
+    destinationPictures: createPhotos(card.destination),
     time: showDateInCard(card),
     basePrice: `${basePrice}`,
     offers: createOffers(card.offers),
