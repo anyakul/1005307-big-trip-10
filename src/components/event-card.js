@@ -24,7 +24,7 @@ const Preposition = {
 };
 
 const getCorrectPreposition = (type) => {
-  return ((type === `check-in` || type === `sightseeing` || type === `restaurant`) ?
+  return ((type === EventTypePlace.CHECKIN || type === EventTypePlace.SIGHTSEEING || type === EventTypePlace.RESTAURANT) ?
     Preposition.PREPOSITION_FOR_PLACE : Preposition.PREPOSITION_FOR_TRANSPORT);
 };
 

@@ -30,7 +30,7 @@ const renderEvent = (cardsContainer, card) => {
   const eventEditComponent = new EditEventFormComponent(card);
   eventEditComponent.setSubmitHandler(replaceEventToEdit);
 
-  render(cardsContainer, eventEditComponent, RenderPosition.BEFOREEND);
+  render(cardsContainer, eventComponent, RenderPosition.BEFOREEND);
 };
 
 const renderEvents = (card) => {
