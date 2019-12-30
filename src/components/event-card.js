@@ -18,21 +18,17 @@ const EventTypePlace = {
   RESTAURANT: `restaurant`
 };
 
+const Preposition = {
+  PREPOSITION_FOR_TRANSPORT: `to`,
+  PREPOSITION_FOR_PLACE: `in`,
+};
+
+const getCorrectPreposition = (type) => {
+  return ((type === `check-in` || type === `sightseeing` || type === `restaurant`) ?
+    Preposition.PREPOSITION_FOR_PLACE : Preposition.PREPOSITION_FOR_TRANSPORT);
+};
+
 const getTypeName = (type) => type[0].toUpperCase() + type.slice(1);
-
-const createEventTypesTransport = (checkedType) => Object.values(EventTypeTransport)
-  .map((typeTransport) => ({
-    typeTransport,
-    nameTransport: getTypeName(typeTransport),
-    isChecked: typeTransport === checkedType
-  }));
-
-const createEventTypesPlace = (checkedType) => Object.values(EventTypePlace)
-  .map((typePlaces) => ({
-    typePlaces,
-    namePlaces: getTypeName(typePlaces),
-    isChecked: typePlaces === checkedType
-  }));
 
 const showDateInCard = (card) => {
   const diffTimeUnix = card.dateToUnix - card.dateFromUnix;
@@ -49,7 +45,22 @@ const showDateInCard = (card) => {
   };
 };
 
+const createEventTypesTransport = (checkedType) => Object.values(EventTypeTransport)
+  .map((typeTransport) => ({
+    typeTransport,
+    nameTransport: getTypeName(typeTransport),
+    isChecked: typeTransport === checkedType,
+  }));
+
+const createEventTypesPlace = (checkedType) => Object.values(EventTypePlace)
+  .map((typePlaces) => ({
+    typePlaces,
+    namePlaces: getTypeName(typePlaces),
+    isChecked: typePlaces === checkedType,
+  }));
+
 const createOffers = (offers) => Object.values(offers);
+const createPhotos = (destination) => Object.values(destination.pictures);
 
 const showData = (card) => {
   const {type, destination, basePrice} = card;
@@ -57,12 +68,13 @@ const showData = (card) => {
     type: `${type}`,
     destinationName: `${destination.name}`,
     destinationDescription: `${destination.description}`,
+    pictures: createPhotos(card.destination),
     time: showDateInCard(card),
     basePrice: `${basePrice}`,
     offers: createOffers(card.offers),
     typesTransport: createEventTypesTransport(type),
     typesPlaces: createEventTypesPlace(type),
-    // destinationPhoto: createDestinationPhoto(card.destination),
+    preposition: getCorrectPreposition(type),
   };
 };
 

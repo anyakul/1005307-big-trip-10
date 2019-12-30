@@ -10,11 +10,14 @@ const generateExtraServicesMarkup = ({title, price}) => (
 
 const createExtraServicesMarkup = makeTemplateGenerator(generateExtraServicesMarkup);
 
-const createCardTemplate = ({type, destination, time, basePrice}) => (
+const createCardTemplate = ({type, destinationName, time, basePrice, preposition}) => (
   `<div class="event__type">
     <img class="event__type-icon" width="42" height="42" src="./img/icons/${type}.png" alt="Event type icon">
   </div>
-  <h3 class="event__title">${type} to ${destination}</h3>
+  <h3 class="event__title">${type}
+    ${preposition}
+    ${destinationName}
+  </h3>
   <div class="event__schedule">
     <p class="event__time">
       <time class="event__start-time" datetime="${time.fullDateFrom}">${time.timeFrom}</time>
