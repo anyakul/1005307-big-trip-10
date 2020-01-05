@@ -75,6 +75,7 @@ const showData = (card) => {
     typesTransport: createEventTypesTransport(type),
     typesPlaces: createEventTypesPlace(type),
     preposition: getCorrectPreposition(type),
+    isFavorite: card.isFavorite,
   };
 };
 

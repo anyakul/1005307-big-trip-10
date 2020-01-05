@@ -10,23 +10,24 @@ const Mode = {
 
 class PointController {
 
-  constructor(container, onViewChange) {
+  constructor(container, onDataChange, onViewChange) {
     this._container = container;
     this._onViewChange = onViewChange;
-    this._events = null;
+    this._onDataChange = onDataChange;
+    this._eventItem = null;
     this._eventComponent = null;
     this._eventEditComponent = null;
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
     this._mode = Mode.DEFAULT;
   }
 
-  render(events) {
-    this._events = events;
+  render(eventItem) {
+    this._eventItem = eventItem;
 
     const oldEventComponent = this._eventComponent;
     const oldEventEditComponent = this._eventEditComponent;
-    this._eventComponent = new EventCardComponent(this._events);
-    this._eventEditorComponent = new EventEditorComponent(this._events);
+    this._eventComponent = new EventCardComponent(this._eventItem);
+    this._eventEditorComponent = new EventEditorComponent(this._eventItem);
 
     this._setCardListeners();
 
@@ -39,7 +40,7 @@ class PointController {
   }
 
   setDefaultView() {
-    if (this._mode === Mode.DEFAULT) {
+    if (this._mode !== Mode.DEFAULT) {
       this._replaceEventToEdit();
     }
   }
@@ -53,7 +54,16 @@ class PointController {
   _setEditCardListeners() {
     document.addEventListener(`keydown`, this._onEscKeyDown);
     this._eventEditorComponent.setRollUpButtonClickHandler(() => this._replaceEditToEvent());
-    this._eventEditorComponent.setSubmitHandler(() => this._replaceEditToEvent());
+    this._eventEditorComponent.setSubmitHandler((evt) => {
+      evt.preventDefault();
+      this._replaceEditToEvent();
+    });
+
+    this._eventEditorComponent.setFavoriteButtonClickHandler(() => {
+      this._onDataChange(this, this._eventItem, Object.assign({}, this._eventItem, {
+        isFavorite: !this._eventItem.isFavorite
+      }));
+    });
   }
 
   _replaceEditToEvent() {
@@ -62,6 +72,7 @@ class PointController {
   }
 
   _replaceEventToEdit() {
+    this._onViewChange();
     replace(this._eventEditorComponent, this._eventComponent);
     this._mode = Mode.EDIT;
     this._setEditCardListeners();

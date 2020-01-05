@@ -6,17 +6,20 @@ class EventEditorComponent extends AbstractComponent {
   constructor(events) {
     super();
     this._card = showData(events);
+    this._submitHandler = [];
   }
 
   getTemplate() {
     return createEventEditorTemplate(this._card);
   }
 
+  rerender() {
+    super.rerender();
+  }
+
   setSubmitHandler(handler) {
-    this.getElement().addEventListener(`submit`, (evt) => {
-      evt.preventDefault();
-      handler();
-    });
+    this.getElement().querySelector(`form`).addEventListener(`submit`, handler);
+    this._submitHandler = handler;
   }
 
   setFavoriteButtonClickHandler(handler) {
@@ -28,6 +31,7 @@ class EventEditorComponent extends AbstractComponent {
     this.getElement().querySelector(`.event__rollup-btn`)
       .addEventListener(`click`, handler);
     this._rollUpButtonClickHandler = handler;
+    this._submitHandler = handler;
   }
 }
 
