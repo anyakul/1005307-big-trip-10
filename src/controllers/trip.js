@@ -17,6 +17,7 @@ class TripController {
   constructor(container) {
     this._container = container;
     this._events = [];
+    this._sortedEvents = [];
     this._siteMenuComponent = new SiteMenuComponent();
     this._eventFilterComponent = new EventFilterComponent();
     this._addEventButtonComponent = new AddEventButtonComponent();
@@ -52,8 +53,7 @@ class TripController {
     render(this._tripEvents, this._eventSorterComponent, RenderPosition.AFTERBEGIN);
     render(this._tripEvents, this._dayBoardComponent, RenderPosition.BEFOREEND);
 
-    this._newEvents = this._sortEventsDefault();
-    this._pointControllers = this._pointControllers.concat(this._newEvents);
+    this._showSortEventsDefault();
   }
 
   _sortEventsDefault() {
@@ -73,10 +73,20 @@ class TripController {
     });
     return pointControllers;
   }
+  
+  _showSortEventsDefault() {
+    this._newEvents = this._sortEventsDefault();
+    this._pointControllers = this._pointControllers.concat(this._newEvents);
+  }
+  
+  _showSortEvents() {
+    this._newEvents = this._sortEvents();
+    this._pointControllers = this._pointControllers.concat(this._newEvents);
+  }
 
-  _sortEvents(sortedEvents) {
+  _sortEvents() {
     const pointControllers = [];
-    sortedEvents.forEach((card) => {
+    this._sortedEvents.forEach((card) => {
       const tripEventsList = this._tripEvents.querySelector(`.trip-events__list`);
       const pointController = new PointController(tripEventsList, this._onViewChange);
       pointController.render(card);
@@ -90,21 +100,19 @@ class TripController {
   }
 
   _onSortTypeChange(sortType) {
-    let sortedEvents = [];
 
     switch (sortType) {
       case SortType.EVENT:
         render(this._tripEvents, this._dayBoardComponent, RenderPosition.BEFOREEND);
-        this._newEvents = this._sortEventsDefault();
-        this._pointControllers = this._pointControllers.concat(this._newEvents);
+        this._showSortEventsDefault();
         break;
 
       case SortType.PRICE:
-        sortedEvents = this._events.slice().sort((a, b) => b.basePrice - a.basePrice);
+        this._sortedEvents = this._events.slice().sort((a, b) => b.basePrice - a.basePrice);
         break;
 
       case SortType.TIME:
-        sortedEvents = this._events.slice().sort((a, b) => {
+        this._sortedEvents = this._events.slice().sort((a, b) => {
           const durationFirst = a.dateToUnix - a.dateFromUnix;
           const durationSecond = b.dateToUnix - b.dateFromUnix;
           return durationSecond - durationFirst;
@@ -125,8 +133,7 @@ class TripController {
         remove(this._dayBoardComponent);
       }
       render(this._tripEvents, this._sortBoardContainer, RenderPosition.BEFOREEND);
-      this._newEvents = this._sortEvents(sortedEvents);
-      this._pointControllers = this._pointControllers.concat(this._newEvents);
+      this._showSortEvents();
     }
   }
 }
