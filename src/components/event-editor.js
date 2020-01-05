@@ -23,6 +23,12 @@ class EventEditorComponent extends AbstractComponent {
     this.getElement().querySelector(`.event__favorite-checkbox`).addEventListener(`click`, handler);
     this._favoriteButtonHanlder = handler;
   }
+
+  setRollUpButtonClickHandler(handler) {
+    this.getElement().querySelector(`.event__rollup-btn`)
+      .addEventListener(`click`, handler);
+    this._rollUpButtonClickHandler = handler;
+  }
 }
 
 export default EventEditorComponent;

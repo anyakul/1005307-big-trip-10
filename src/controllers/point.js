@@ -1,7 +1,7 @@
 import {RenderPosition, render, replace} from '../utils/render';
 import {isEscKey} from '../utils/key-board';
 import EventCardComponent from '../components/event-card';
-import EditEventFormComponent from '../components/event-editor';
+import EventEditorComponent from '../components/event-editor';
 
 const Mode = {
   DEFAULT: `default`,
@@ -26,14 +26,9 @@ class PointController {
     const oldEventComponent = this._eventComponent;
     const oldEventEditComponent = this._eventEditComponent;
     this._eventComponent = new EventCardComponent(this._events);
-    this._eventEditComponent = new EditEventFormComponent(this._events);
+    this._eventEditorComponent = new EventEditorComponent(this._events);
 
-    this._eventComponent.setEditButtonClickHandler(() => {
-      this._replaceEventToEdit();
-      document.addEventListener(`keydown`, this._onEscKeyDown);
-    });
-
-    this._eventEditComponent.setSubmitHandler(() => this._replaceEditToEvent());
+    this._setCardListeners();
 
     if (oldEventEditComponent && oldEventComponent) {
       replace(this._eventComponent, oldEventComponent);
@@ -49,14 +44,27 @@ class PointController {
     }
   }
 
+  _setCardListeners() {
+    this._eventComponent.setRollUpButtonClickHandler(() => {
+      this._replaceEventToEdit();
+    });
+  }
+
+  _setEditCardListeners() {
+    document.addEventListener(`keydown`, this._onEscKeyDown);
+    this._eventEditorComponent.setRollUpButtonClickHandler(() => this._replaceEditToEvent());
+    this._eventEditorComponent.setSubmitHandler(() => this._replaceEditToEvent());
+  }
+
   _replaceEditToEvent() {
-    replace(this._eventComponent, this._eventEditComponent);
+    replace(this._eventComponent, this._eventEditorComponent);
     this._mode = Mode.DEFAULT;
   }
 
   _replaceEventToEdit() {
-    replace(this._eventEditComponent, this._eventComponent);
+    replace(this._eventEditorComponent, this._eventComponent);
     this._mode = Mode.EDIT;
+    this._setEditCardListeners();
   }
 
   _onEscKeyDown(evt) {

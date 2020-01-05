@@ -12,7 +12,6 @@ import SortBoardComponent from '../components/sort-board';
 
 import PointController from './point';
 
-
 class TripController {
 
   constructor(container) {
@@ -38,7 +37,6 @@ class TripController {
     const tripMain = header.querySelector(`.trip-main`);
     const tripInfo = tripMain.querySelector(`.trip-info`);
     const tripControls = tripMain.querySelector(`.trip-controls`);
-    
 
     this._events = events;
     this._tripDays = generateTripDays(this._events);
@@ -74,8 +72,8 @@ class TripController {
       });
     });
     return pointControllers;
-  };
-  
+  }
+
   _sortEvents(sortedEvents) {
     const pointControllers = [];
     sortedEvents.forEach((card) => {
@@ -85,8 +83,7 @@ class TripController {
       pointControllers.push(pointController);
     });
     return pointControllers;
-  };
-
+  }
 
   _onViewChange() {
     this._pointControllers.forEach((it) => it.setDefaultView());
