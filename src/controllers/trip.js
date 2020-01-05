@@ -12,34 +12,6 @@ import SortBoardComponent from '../components/sort-board';
 
 import PointController from './point';
 
-const sortEventsDefault = (container, events, onDataChange, onViewChange) => {
-  const pointControllers = [];
-  events.forEach((card) => {
-    const tripEventsList = container.querySelectorAll(`.trip-events__list`);
-    tripEventsList.innerHTML = ``;
-    const {dateFromUnix} = card;
-
-    tripEventsList.forEach((tripEventItem) => {
-      if (showDate(tripEventItem.dataset.date) === `${showDate(dateFromUnix)}`) {
-        const pointController = new PointController(tripEventItem, onViewChange);
-        pointController.render(card);
-        pointControllers.push(pointController);
-      }
-    });
-  });
-  return pointControllers;
-};
-
-const sortEvents = (container, sortedEvents, onDataChange, onViewChange) => {
-  const pointControllers = [];
-  sortedEvents.forEach((card) => {
-    const tripEventsList = container.querySelector(`.trip-events__list`);
-    const pointController = new PointController(tripEventsList, onViewChange);
-    pointController.render(card);
-    pointControllers.push(pointController);
-  });
-  return pointControllers;
-};
 
 class TripController {
 
@@ -66,6 +38,7 @@ class TripController {
     const tripMain = header.querySelector(`.trip-main`);
     const tripInfo = tripMain.querySelector(`.trip-info`);
     const tripControls = tripMain.querySelector(`.trip-controls`);
+    
 
     this._events = events;
     this._tripDays = generateTripDays(this._events);
@@ -81,9 +54,39 @@ class TripController {
     render(this._tripEvents, this._eventSorterComponent, RenderPosition.AFTERBEGIN);
     render(this._tripEvents, this._dayBoardComponent, RenderPosition.BEFOREEND);
 
-    this._newEvents = sortEventsDefault(this._tripEvents, this._events, this._onDataChange, this._onViewChange);
+    this._newEvents = this._sortEventsDefault();
     this._pointControllers = this._pointControllers.concat(this._newEvents);
   }
+
+  _sortEventsDefault() {
+    const pointControllers = [];
+    this._events.forEach((card) => {
+      const tripEventsList = this._tripEvents.querySelectorAll(`.trip-events__list`);
+      tripEventsList.innerHTML = ``;
+      const {dateFromUnix} = card;
+
+      tripEventsList.forEach((tripEventItem) => {
+        if (showDate(tripEventItem.dataset.date) === `${showDate(dateFromUnix)}`) {
+          const pointController = new PointController(tripEventItem, this._onViewChange);
+          pointController.render(card);
+          pointControllers.push(pointController);
+        }
+      });
+    });
+    return pointControllers;
+  };
+  
+  _sortEvents(sortedEvents) {
+    const pointControllers = [];
+    sortedEvents.forEach((card) => {
+      const tripEventsList = this._tripEvents.querySelector(`.trip-events__list`);
+      const pointController = new PointController(tripEventsList, this._onViewChange);
+      pointController.render(card);
+      pointControllers.push(pointController);
+    });
+    return pointControllers;
+  };
+
 
   _onViewChange() {
     this._pointControllers.forEach((it) => it.setDefaultView());
@@ -95,7 +98,7 @@ class TripController {
     switch (sortType) {
       case SortType.EVENT:
         render(this._tripEvents, this._dayBoardComponent, RenderPosition.BEFOREEND);
-        this._newEvents = sortEventsDefault(this._tripEvents, this._events, this._onDataChange, this._onViewChange);
+        this._newEvents = this._sortEventsDefault();
         this._pointControllers = this._pointControllers.concat(this._newEvents);
         break;
 
@@ -125,7 +128,7 @@ class TripController {
         remove(this._dayBoardComponent);
       }
       render(this._tripEvents, this._sortBoardContainer, RenderPosition.BEFOREEND);
-      this._newEvents = sortEvents(this._tripEvents, sortedEvents, this._onDataChange, this._onViewChange);
+      this._newEvents = this._sortEvents(sortedEvents);
       this._pointControllers = this._pointControllers.concat(this._newEvents);
     }
   }
