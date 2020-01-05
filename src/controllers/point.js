@@ -3,41 +3,67 @@ import {isEscKey} from '../utils/key-board';
 import EventCardComponent from '../components/event-card';
 import EditEventFormComponent from '../components/event-editor';
 
+const Mode = {
+  DEFAULT: `default`,
+  EDIT: `edit`,
+};
+
 class PointController {
 
-  constructor(container) {
+  constructor(container, onViewChange) {
     this._container = container;
+    this._onViewChange = onViewChange;
     this._events = null;
-    //   this._onDataChange = onDataChange;
+    this._eventComponent = null;
+    this._eventEditComponent = null;
+    this._onEscKeyDown = this._onEscKeyDown.bind(this);
+    this._mode = Mode.DEFAULT;
   }
 
   render(events) {
     this._events = events;
-    const onEscKeyDown = (evt) => {
 
-      if (isEscKey(evt)) {
-        replaceEventToEdit();
-        document.removeEventListener(`keydown`, onEscKeyDown);
-      }
-    };
-
-    const replaceEditToEvent = () => {
-      replace(this._eventEditComponent, this._eventComponent);
-      document.addEventListener(`keydown`, onEscKeyDown);
-    };
-
-    const replaceEventToEdit = () => {
-      replace(this._eventComponent, this._eventEditComponent);
-    };
-
+    const oldEventComponent = this._eventComponent;
+    const oldEventEditComponent = this._eventEditComponent;
     this._eventComponent = new EventCardComponent(this._events);
-
-    this._eventComponent.setEditButtonClickHandler(replaceEditToEvent);
-
     this._eventEditComponent = new EditEventFormComponent(this._events);
-    this._eventEditComponent.setSubmitHandler(replaceEventToEdit);
 
-    render(this._container, this._eventComponent, RenderPosition.BEFOREEND);
+    this._eventComponent.setEditButtonClickHandler(() => {
+      this._replaceEventToEdit();
+      document.addEventListener(`keydown`, this._onEscKeyDown);
+    });
+
+    this._eventEditComponent.setSubmitHandler(() => this._replaceEditToEvent());
+
+    if (oldEventEditComponent && oldEventComponent) {
+      replace(this._eventComponent, oldEventComponent);
+      replace(this._eventEditComponent, oldEventEditComponent);
+    } else {
+      render(this._container, this._eventComponent, RenderPosition.BEFOREEND);
+    }
+  }
+
+  setDefaultView() {
+    if (this._mode === Mode.DEFAULT) {
+      this._replaceEventToEdit();
+    }
+  }
+
+  _replaceEditToEvent() {
+    replace(this._eventComponent, this._eventEditComponent);
+    this._mode = Mode.DEFAULT;
+  }
+
+  _replaceEventToEdit() {
+    replace(this._eventEditComponent, this._eventComponent);
+    this._mode = Mode.EDIT;
+  }
+
+  _onEscKeyDown(evt) {
+    if (isEscKey(evt)) {
+      this._replaceEditToEvent();
+      document.removeEventListener(`keydown`, this._onEscKeyDown);
+    }
   }
 }
 

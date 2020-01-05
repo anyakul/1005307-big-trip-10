@@ -12,46 +12,53 @@ import SortBoardComponent from '../components/sort-board';
 
 import PointController from './point';
 
-const tripEvents = document.querySelector(`.trip-events`);
-
-const sortEventsDefault = (events) => {
+const sortEventsDefault = (container, events, onDataChange, onViewChange) => {
+  const pointControllers = [];
   events.forEach((card) => {
-    const tripEventsList = tripEvents.querySelectorAll(`.trip-events__list`);
+    const tripEventsList = container.querySelectorAll(`.trip-events__list`);
     tripEventsList.innerHTML = ``;
     const {dateFromUnix} = card;
 
     tripEventsList.forEach((tripEventItem) => {
       if (showDate(tripEventItem.dataset.date) === `${showDate(dateFromUnix)}`) {
-        const pointController = new PointController(tripEventItem);
+        const pointController = new PointController(tripEventItem, onViewChange);
         pointController.render(card);
+        pointControllers.push(pointController);
       }
     });
   });
+  return pointControllers;
 };
 
-const sortEvents = (sortedEvents) => {
+const sortEvents = (container, sortedEvents, onDataChange, onViewChange) => {
+  const pointControllers = [];
   sortedEvents.forEach((card) => {
-    const tripEventsList = tripEvents.querySelector(`.trip-events__list`);
-    const pointController = new PointController(tripEventsList);
+    const tripEventsList = container.querySelector(`.trip-events__list`);
+    const pointController = new PointController(tripEventsList, onViewChange);
     pointController.render(card);
+    pointControllers.push(pointController);
   });
-}
+  return pointControllers;
+};
 
 class TripController {
 
   constructor(container) {
     this._container = container;
-    this._events = null;
-
+    this._events = [];
     this._siteMenuComponent = new SiteMenuComponent();
     this._eventFilterComponent = new EventFilterComponent();
     this._addEventButtonComponent = new AddEventButtonComponent();
     this._eventSorterComponent = new EventSorterComponent();
     this._sortBoardContainer = new SortBoardComponent();
 
+    this._onViewChange = this._onViewChange.bind(this);
     this._onSortTypeChange = this._onSortTypeChange.bind(this);
 
+    this._tripEvents = this._container.querySelector(`.trip-events`);
     this._eventSorterComponent.setSortChangeHandler(this._onSortTypeChange);
+
+    this._pointControllers = [];
   }
 
   render(events) {
@@ -62,9 +69,8 @@ class TripController {
 
     this._events = events;
     this._tripDays = generateTripDays(this._events);
-    
+
     this._tripCostComponent = new TripCostComponent(this._events);
-    this._sortEventsDefault = sortEventsDefault(this._events);
     this._dayBoardComponent = new DayBoardComponent(this._tripDays);
 
     render(tripMain, this._addEventButtonComponent, RenderPosition.BEFOREEND);
@@ -72,10 +78,15 @@ class TripController {
     render(tripInfo, new TripInfoComponent(events[0]), RenderPosition.AFTERBEGIN);
     render(tripControls, this._siteMenuComponent, RenderPosition.BEFOREEND);
     render(tripControls, this._eventFilterComponent, RenderPosition.BEFOREEND);
-    render(tripEvents, this._eventSorterComponent, RenderPosition.AFTERBEGIN);
-    render(tripEvents, this._dayBoardComponent, RenderPosition.BEFOREEND);
+    render(this._tripEvents, this._eventSorterComponent, RenderPosition.AFTERBEGIN);
+    render(this._tripEvents, this._dayBoardComponent, RenderPosition.BEFOREEND);
 
-    sortEventsDefault(this._events);
+    this._newEvents = sortEventsDefault(this._tripEvents, this._events, this._onDataChange, this._onViewChange);
+    this._pointControllers = this._pointControllers.concat(this._newEvents);
+  }
+
+  _onViewChange() {
+    this._pointControllers.forEach((it) => it.setDefaultView());
   }
 
   _onSortTypeChange(sortType) {
@@ -83,8 +94,9 @@ class TripController {
 
     switch (sortType) {
       case SortType.EVENT:
-        render(tripEvents, this._dayBoardComponent, RenderPosition.BEFOREEND);
-        sortEventsDefault(this._events);
+        render(this._tripEvents, this._dayBoardComponent, RenderPosition.BEFOREEND);
+        this._newEvents = sortEventsDefault(this._tripEvents, this._events, this._onDataChange, this._onViewChange);
+        this._pointControllers = this._pointControllers.concat(this._newEvents);
         break;
 
       case SortType.PRICE:
@@ -112,8 +124,9 @@ class TripController {
       if (this._dayBoardComponent) {
         remove(this._dayBoardComponent);
       }
-      render(tripEvents, this._sortBoardContainer, RenderPosition.BEFOREEND);
-      sortEvents(sortedEvents);
+      render(this._tripEvents, this._sortBoardContainer, RenderPosition.BEFOREEND);
+      this._newEvents = sortEvents(this._tripEvents, sortedEvents, this._onDataChange, this._onViewChange);
+      this._pointControllers = this._pointControllers.concat(this._newEvents);
     }
   }
 }
