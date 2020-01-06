@@ -58,12 +58,6 @@ class PointController {
       evt.preventDefault();
       this._replaceEditToEvent();
     });
-
-    this._eventEditorComponent.setFavoriteButtonClickHandler(() => {
-      this._onDataChange(this, this._eventItem, Object.assign({}, this._eventItem, {
-        isFavorite: !this._eventItem.isFavorite
-      }));
-    });
   }
 
   _replaceEditToEvent() {

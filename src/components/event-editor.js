@@ -20,11 +20,6 @@ class EventEditorComponent extends AbstractSmartComponent {
     this._submitHandler = handler;
   }
 
-  setFavoriteButtonClickHandler(handler) {
-    this.getElement().querySelector(`.event__favorite-btn`).addEventListener(`click`, handler);
-    this._favoriteButtonHandler = handler;
-  }
-
   setRollUpButtonClickHandler(handler) {
     this.getElement().querySelector(`.event__rollup-btn`)
       .addEventListener(`click`, handler);
@@ -34,7 +29,6 @@ class EventEditorComponent extends AbstractSmartComponent {
   recoveryListeners() {
     this.setRollUpButtonClickHandler(this._rollUpButtonClickHandler);
     this.setSubmitHandler(this._submitHandler);
-    this.setFavoriteButtonClickHandler(this._favoriteButtonHandler);
     this._subscribeOnEvents();
   }
 
@@ -43,12 +37,19 @@ class EventEditorComponent extends AbstractSmartComponent {
   }
 
   _subscribeOnEvents() {
-    this.getElement().querySelector(`.event__type-list`).addEventListener(`change`, (evt) => {
+    const elem = this.getElement();
+    elem.querySelector(`.event__type-list`).addEventListener(`change`, (evt) => {
       if (evt.target.tagName === `INPUT`) {
         this._events.type = evt.target.value;
         this.rerender();
       }
     });
+
+    elem.querySelector(`.event__favorite-checkbox`)
+      .addEventListener(`change`, () => {
+        this._events.isFavorite = !this._events.isFavorite;
+        this.rerender();
+      });
   }
 }
 
