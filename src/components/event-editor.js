@@ -45,7 +45,7 @@ class EventEditorComponent extends AbstractSmartComponent {
   _subscribeOnEvents() {
     this.getElement().querySelector(`.event__type-list`).addEventListener(`change`, (evt) => {
       if (evt.target.tagName === `INPUT`) {
-        this._card.type = evt.target.value;
+        this._events.type = evt.target.value;
         this.rerender();
       }
     });
