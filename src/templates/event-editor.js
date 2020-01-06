@@ -1,4 +1,7 @@
 import {makeTemplateGenerator} from './generator';
+import {createEventTypesTransport, createEventTypesPlace, createPhotos} from '../components/event-card';
+import {getCorrectPreposition} from '../components/event-card';
+import {showTime, showDateWithYear} from '../utils/date';
 
 const createTripTypeImageTemplate = ({type}) => (
   `<img
@@ -52,44 +55,45 @@ const createTypeTemplate = (events) => (
       <span class="visually-hidden">Choose event type</span>
       ${createTripTypeImageTemplate(events)}
     </label>
-    <input 
+    <input
       class="event__type-toggle  visually-hidden"
       id="event-type-toggle-1"
       type="checkbox">
     <div class="event__type-list">
       <fieldset class="event__type-group">
         <legend class="visually-hidden">Transfer</legend>
-        ${createTripTypeTransportTemplates(events.typesTransport)}
+        ${createTripTypeTransportTemplates(createEventTypesTransport(events.type))}
       </fieldset>
       <fieldset class="event__type-group">
         <legend class="visually-hidden">Activity</legend>
-        ${createTripTypePlacesTemplates(events.typesPlaces)}
+        ${createTripTypePlacesTemplates(createEventTypesPlace(events.type))}
       </fieldset>
     </div>
   </div>`
 );
 
-const createDestinationFieldGroup = ({type, destinationName, preposition}) => (
+const createDestinationFieldGroup = ({type, destination}) => (
   `<div class="event__field-group event__field-group--destination">
     <label class="event__label event__type-output" for="event-destination-1">
-    ${type} ${preposition}
+    ${type}
+    ${getCorrectPreposition(type)}
     </label>
     <input
       class="event__input event__input--destination"
       id="event-destination-1"
       type="text"
       name="event-destination"
-      value="${destinationName}"
+      value="${destination.name}"
       list="destination-list-1">
     <datalist id="destination-list-1">
       <option
-        value="${destinationName}">
+        value="${destination.name}">
       </option>
     </datalist>
   </div>`
 );
 
-const createTimeTemplate = ({time}) => (
+const createTimeTemplate = ({dateFromUnix, dateToUnix}) => (
   `<div class="event__field-group  event__field-group--time">
     <label
       class="visually-hidden"
@@ -101,7 +105,7 @@ const createTimeTemplate = ({time}) => (
       id="event-start-time-1"
       type="text"
       name="event-start-time"
-      value="${time.dateFromWithYear} ${time.timeFrom}">
+      value="${showDateWithYear(dateFromUnix)} ${showTime(dateFromUnix)}">
       &mdash;
     <label
       class="visually-hidden"
@@ -113,7 +117,7 @@ const createTimeTemplate = ({time}) => (
       id="event-end-time-1"
       type="text"
       name="event-end-time"
-      value="${time.dateToWithYear} ${time.timeTo}">
+      value="${showDateWithYear(dateToUnix)} ${showTime(dateToUnix)}>
   </div>`
 );
 
@@ -188,8 +192,8 @@ const createOffersTemplate = (events) => (
   </section>`
 );
 
-const createDestinationDescriptionTemplate = ({destinationDescription}) => (
-  `<p class="event__destination-description">${destinationDescription}</p>`
+const createDestinationDescriptionTemplate = ({destination}) => (
+  `<p class="event__destination-description">${destination.description}</p>`
 );
 
 const createDestinationPicturesTemplate = ({src, description}) => (
@@ -205,7 +209,7 @@ const createDestinationTemplate = (events) => (
     ${createDestinationDescriptionTemplate(events)}
     <div class="event__photos-container">
       <div class="event__photos-tape">
-        ${createDestinationPicturesTemplates(events.destinationPictures)}
+        ${createDestinationPicturesTemplates(createPhotos(events.destination))}
        </div>
      </div>
    </section>`

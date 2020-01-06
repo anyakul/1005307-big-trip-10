@@ -1,4 +1,6 @@
 import {makeTemplateGenerator} from './generator';
+import {showTime, showFullDate} from '../utils/date';
+import {getCorrectPreposition} from '../components/event-card';
 
 const generateExtraServicesMarkup = ({title, price}) => (
   `<li class="event__offer">
@@ -10,21 +12,21 @@ const generateExtraServicesMarkup = ({title, price}) => (
 
 const createExtraServicesMarkup = makeTemplateGenerator(generateExtraServicesMarkup);
 
-const createCardTemplate = ({type, destinationName, time, basePrice, preposition}) => (
+const createCardTemplate = ({type, destination, dateFromUnix, dateToUnix, basePrice}) => (
   `<div class="event__type">
     <img class="event__type-icon" width="42" height="42" src="./img/icons/${type}.png" alt="Event type icon">
   </div>
   <h3 class="event__title">${type}
-    ${preposition}
-    ${destinationName}
+    ${getCorrectPreposition(type)}
+    ${destination.name}
   </h3>
   <div class="event__schedule">
     <p class="event__time">
-      <time class="event__start-time" datetime="${time.fullDateFrom}">${time.timeFrom}</time>
+      <time class="event__start-time" datetime="${showFullDate(dateFromUnix)}">${showTime(dateFromUnix)}</time>
       &mdash;
-      <time class="event__end-time" datetime="${time.fullDateTo}">${time.timeTo}</time>
+      <time class="event__end-time" datetime="${showFullDate(dateToUnix)}">${showTime(dateToUnix)}</time>
     </p>
-    <p class="event__duration">${time.diffTime}</p>
+    <p class="event__duration">${showTime(dateFromUnix - dateToUnix)}</p>
   </div>
   <p class="event__price">
     &euro;&nbsp;<span class="event__price-value">${basePrice}</span>

@@ -53,7 +53,7 @@ class TripController {
     render(this._tripEvents, this._eventSorterComponent, RenderPosition.AFTERBEGIN);
     render(this._tripEvents, this._dayBoardComponent, RenderPosition.BEFOREEND);
 
-    this._showSortEventsDefault();
+    this._showSortEvents(this._sortEventsDefault());
   }
 
   _sortEventsDefault() {
@@ -95,14 +95,8 @@ class TripController {
     return pointControllers;
   }
 
-  _showSortEventsDefault() {
-    this._newEvents = this._sortEventsDefault();
-    this._pointControllers = this._pointControllers.concat(this._newEvents);
-  }
-
-  _showSortEvents() {
-    this._newEvents = this._sortEvents();
-    this._pointControllers = this._pointControllers.concat(this._newEvents);
+  _showSortEvents(method) {
+    this._pointControllers = this._pointControllers.concat(method);
   }
 
   _onViewChange() {
@@ -114,12 +108,12 @@ class TripController {
     switch (sortType) {
       case SortType.EVENT:
         render(this._tripEvents, this._dayBoardComponent, RenderPosition.BEFOREEND);
-        this._showSortEventsDefault();
+        this._showSortEvents(this._sortEventsDefault());
         break;
 
       case SortType.PRICE:
         this._sortedEvents = this._events.slice().sort((a, b) => b.basePrice - a.basePrice);
-        this._showSortEvents();
+        this._showSortEvents(this._sortEvents());
         break;
 
       case SortType.TIME:
@@ -128,20 +122,17 @@ class TripController {
           const durationSecond = b.dateToUnix - b.dateFromUnix;
           return durationSecond - durationFirst;
         });
-        this._showSortEvents();
+        this._showSortEvents(this._sortEvents());
         break;
     }
   }
 
   _onDataChange(pointController, oldData, newData) {
     const index = this._events.findIndex((eventItem) => eventItem === oldData);
-
     if (index === -1) {
       return;
     }
-
     this._events = [].concat(this._events.slice(0, index), newData, this._events.slice(index + 1));
-
     pointController.render(this._events[index]);
   }
 

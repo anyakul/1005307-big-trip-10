@@ -1,5 +1,4 @@
-import {showTime, showFullDate, showDate, showDateWithYear} from '../utils/date';
-import {createEventCardTemplate} from './templates/event-card';
+import {createEventCardTemplate} from '../templates/event-card';
 import AbstractComponent from './abstract-component';
 
 const EventTypeTransport = {
@@ -30,63 +29,30 @@ const getCorrectPreposition = (type) => {
 
 const getTypeName = (type) => type[0].toUpperCase() + type.slice(1);
 
-const showDateInCard = (card) => {
-  const diffTimeUnix = card.dateToUnix - card.dateFromUnix;
-  return {
-    timeFrom: showTime(card.dateFromUnix),
-    timeTo: showTime(card.dateToUnix),
-    dateFrom: showDate(card.dateFromUnix),
-    dateTo: showDate(card.dateToUnix),
-    dateFromWithYear: showDateWithYear(card.dateFromUnix),
-    dateToWithYear: showDateWithYear(card.dateToUnix),
-    diffTime: showTime(diffTimeUnix),
-    fullDateFrom: showFullDate(card.dateFromUnix),
-    fullDateTo: showFullDate(card.dateToUnix),
-  };
-};
-
-const createEventTypesTransport = (checkedType) => Object.values(EventTypeTransport)
+const createEventTypesTransport = (checkedTypes) => Object.values(EventTypeTransport)
   .map((typeTransport) => ({
     typeTransport,
     nameTransport: getTypeName(typeTransport),
-    isChecked: typeTransport === checkedType,
+    isChecked: typeTransport === checkedTypes,
   }));
 
-const createEventTypesPlace = (checkedType) => Object.values(EventTypePlace)
+const createEventTypesPlace = (checkedTypes) => Object.values(EventTypePlace)
   .map((typePlaces) => ({
     typePlaces,
     namePlaces: getTypeName(typePlaces),
-    isChecked: typePlaces === checkedType,
+    isChecked: typePlaces === checkedTypes,
   }));
 
-const createOffers = (offers) => Object.values(offers);
 const createPhotos = (destination) => Object.values(destination.pictures);
-
-const showData = (card) => {
-  const {type, destination, basePrice} = card;
-  return {
-    type: `${type}`,
-    destinationName: `${destination.name}`,
-    destinationDescription: `${destination.description}`,
-    destinationPictures: createPhotos(card.destination),
-    time: showDateInCard(card),
-    basePrice: `${basePrice}`,
-    offers: createOffers(card.offers),
-    typesTransport: createEventTypesTransport(type),
-    typesPlaces: createEventTypesPlace(type),
-    preposition: getCorrectPreposition(type),
-    isFavorite: card.isFavorite,
-  };
-};
 
 class EventCardComponent extends AbstractComponent {
   constructor(events) {
     super();
-    this._card = showData(events);
+    this._events = events;
   }
 
   getTemplate() {
-    return createEventCardTemplate(this._card);
+    return createEventCardTemplate(this._events);
   }
 
   setRollUpButtonClickHandler(handler) {
@@ -96,4 +62,4 @@ class EventCardComponent extends AbstractComponent {
 }
 
 export default EventCardComponent;
-export {showData};
+export {createEventTypesTransport, createEventTypesPlace, createPhotos, getCorrectPreposition};
