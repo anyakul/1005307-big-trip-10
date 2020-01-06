@@ -37,19 +37,18 @@ class EventEditorComponent extends AbstractSmartComponent {
   }
 
   _subscribeOnEvents() {
-    const elem = this.getElement();
-    elem.querySelector(`.event__type-list`).addEventListener(`change`, (evt) => {
+    this.getElement().querySelector(`.event__favorite-checkbox`)
+      .addEventListener(`change`, () => {
+        this._events.isFavorite = !this._events.isFavorite;
+        this.rerender();
+      });
+
+    this.getElement().querySelector(`.event__type-list`).addEventListener(`change`, (evt) => {
       if (evt.target.tagName === `INPUT`) {
         this._events.type = evt.target.value;
         this.rerender();
       }
     });
-
-    elem.querySelector(`.event__favorite-checkbox`)
-      .addEventListener(`change`, () => {
-        this._events.isFavorite = !this._events.isFavorite;
-        this.rerender();
-      });
   }
 }
 

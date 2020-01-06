@@ -68,7 +68,7 @@ class TripController {
 
       tripEventsList.forEach((tripEventItem) => {
         if (showDate(tripEventItem.dataset.date) === `${showDate(dateFromUnix)}`) {
-          const pointController = new PointController(tripEventItem, this._onDataChange, this._onViewChange);
+          const pointController = new PointController(tripEventItem, this._onViewChange);
           pointController.render(card);
           pointControllers.push(pointController);
         }
@@ -88,7 +88,7 @@ class TripController {
     const pointControllers = [];
     this._sortedEvents.forEach((card) => {
       const tripEventsList = this._tripEvents.querySelector(`.trip-events__list`);
-      const pointController = new PointController(tripEventsList, this._onDataChange, this._onViewChange);
+      const pointController = new PointController(tripEventsList, this._onViewChange);
       pointController.render(card);
       pointControllers.push(pointController);
     });

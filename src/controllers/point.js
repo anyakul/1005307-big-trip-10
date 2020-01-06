@@ -10,10 +10,9 @@ const Mode = {
 
 class PointController {
 
-  constructor(container, onDataChange, onViewChange) {
+  constructor(container, onViewChange) {
     this._container = container;
     this._onViewChange = onViewChange;
-    this._onDataChange = onDataChange;
     this._eventItem = null;
     this._eventComponent = null;
     this._eventEditComponent = null;
