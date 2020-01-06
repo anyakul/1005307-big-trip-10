@@ -1,7 +1,7 @@
 import {makeTemplateGenerator} from './generator';
 import {createEventTypesTransport, createEventTypesPlace, createPhotos} from '../components/event-card';
+import {castFullDateFormat} from '../utils/date';
 import {getCorrectPreposition} from '../components/event-card';
-import {showTime, showDateWithYear} from '../utils/date';
 
 const createTripTypeImageTemplate = ({type}) => (
   `<img
@@ -93,7 +93,7 @@ const createDestinationFieldGroup = ({type, destination}) => (
   </div>`
 );
 
-const createTimeTemplate = ({dateFromUnix, dateToUnix}) => (
+const createTimeTemplate = ({dateFrom, dateTo}) => (
   `<div class="event__field-group  event__field-group--time">
     <label
       class="visually-hidden"
@@ -105,7 +105,7 @@ const createTimeTemplate = ({dateFromUnix, dateToUnix}) => (
       id="event-start-time-1"
       type="text"
       name="event-start-time"
-      value="${showDateWithYear(dateFromUnix)} ${showTime(dateFromUnix)}">
+      value="${castFullDateFormat(dateFrom)}">
       &mdash;
     <label
       class="visually-hidden"
@@ -117,7 +117,7 @@ const createTimeTemplate = ({dateFromUnix, dateToUnix}) => (
       id="event-end-time-1"
       type="text"
       name="event-end-time"
-      value="${showDateWithYear(dateToUnix)} ${showTime(dateToUnix)}>
+      value="${castFullDateFormat(dateTo)}">
   </div>`
 );
 

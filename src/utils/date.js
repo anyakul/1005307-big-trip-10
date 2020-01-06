@@ -1,33 +1,53 @@
-const months = [`Jan`, `Feb`, `Mar`, `Apr`, `May`, `Jun`, `Jul`, `Aug`, `Sep`, `Oct`, `Nov`, `Dec`];
+import moment from "moment";
 
-// Функция конвертации даты
-export const showTime = (unixTimestamp) => {
-  const date = new Date(unixTimestamp);
-  const hour = (date.getHours() < 10) ? (`0` + date.getHours()) : (date.getHours());
-  const min = (date.getMinutes() < 10) ? (`0` + date.getMinutes()) : (date.getMinutes());
-  return hour + `:` + min;
+const generateTimeInterval = (dateStart, dateEnd) => {
+  const timeDiff = moment(dateEnd).diff(moment(dateStart));
+  let daysDiff = moment.utc(timeDiff).format(`DD`);
+  let hoursDiff = moment.utc(timeDiff).format(`HH`);
+  let minutesDiff = moment.utc(timeDiff).format(`mm`);
+
+  let formattedInterval = daysDiff > 0 ? castDateInterval(daysDiff) : ``;
+  if (daysDiff > 0 || hoursDiff > 0) {
+    formattedInterval += ` ${castHoursInterval(hoursDiff)}`;
+  }
+  return formattedInterval + ` ${castMinutesInterval(minutesDiff)}`;
 };
 
-// Функция конвертации даты
-export const showDate = (unixTimestamp) => {
-  const date = new Date(unixTimestamp);
-  const day = date.getDate();
-  const month = months[date.getMonth()];
-  return day + ` ` + month;
+const castDateInterval = (days) => {
+  return `${days}D`;
 };
 
-// Функция конвертации даты
-export const showDateWithYear = (unixTimestamp) => {
-  const date = new Date(unixTimestamp);
-  const day = date.getDate();
-  const month = months[date.getMonth()];
-  const year = date.getFullYear();
-  return day + `/` + month + `/` + year;
+const castHoursInterval = (hours) => {
+  return `${hours}H`;
 };
 
-// Функция конвертации даты
-export const showFullDate = (unixTimestamp) => {
-  const date = showDate(unixTimestamp);
-  const time = showTime(unixTimestamp);
-  return date + ` ` + time;
+const castMinutesInterval = (minutes) => {
+  return `${minutes}M`;
+};
+
+const castTimeFormat = (date) => {
+  return moment(date).format(`HH:mm`);
+};
+
+const castFullDateFormat = (date) => {
+  return moment(date).format(`DD/MM/YY HH:mm`);
+};
+
+const castDateFormat = (date) => {
+  return moment(date).format(`DD:MM:YY`);
+};
+
+const castMonthDayFormat = (date) => {
+  return moment(date).format(`MMM DD`);
+};
+
+export {
+  generateTimeInterval,
+  castDateInterval,
+  castHoursInterval,
+  castMinutesInterval,
+  castTimeFormat,
+  castFullDateFormat,
+  castDateFormat,
+  castMonthDayFormat
 };

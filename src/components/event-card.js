@@ -1,6 +1,7 @@
 import {createEventCardTemplate} from '../templates/event-card';
 import AbstractComponent from './abstract-component';
 
+
 const EventTypeTransport = {
   TAXI: `taxi`,
   BUS: `bus`,
@@ -21,6 +22,7 @@ const Preposition = {
   PREPOSITION_FOR_TRANSPORT: `to`,
   PREPOSITION_FOR_PLACE: `in`,
 };
+
 
 const getCorrectPreposition = (type) => {
   return ((type === EventTypePlace.CHECKIN || type === EventTypePlace.SIGHTSEEING || type === EventTypePlace.RESTAURANT) ?
@@ -62,4 +64,8 @@ class EventCardComponent extends AbstractComponent {
 }
 
 export default EventCardComponent;
-export {createEventTypesTransport, createEventTypesPlace, createPhotos, getCorrectPreposition};
+export {createEventTypesTransport,
+  createEventTypesPlace,
+  createPhotos,
+  getCorrectPreposition,
+};

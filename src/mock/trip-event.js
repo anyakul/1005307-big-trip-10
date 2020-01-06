@@ -67,8 +67,8 @@ const generateEvent = () => {
   const {dateFrom, dateTo} = getEventDates(getRandomIntegerNumber(30, 60 * 32));
   return {
     type: getRandomArrayItem(EVENT_TYPES),
-    dateFromUnix: dateFrom,
-    dateToUnix: dateTo,
+    dateFrom,
+    dateTo,
     destination: getRandomDestination(),
     picture: getRandomPicture(),
     basePrice: getRandomIntegerNumber(100, 1000),

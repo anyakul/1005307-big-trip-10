@@ -1,5 +1,4 @@
 import {RenderPosition, render, remove} from '../utils/render';
-import {showDate} from '../utils/date';
 
 import TripInfoComponent from '../components/trip-info';
 import SiteMenuComponent from '../components/site-menu';
@@ -9,6 +8,7 @@ import AddEventButtonComponent from '../components/add-event-button';
 import EventSorterComponent, {SortType} from '../components/event-sorter';
 import DayBoardComponent, {generateTripDays} from '../components/day-board';
 import SortBoardComponent from '../components/sort-board';
+import {castDateFormat} from '../utils/date';
 
 import PointController from './point';
 
@@ -64,10 +64,9 @@ class TripController {
     this._events.forEach((card) => {
       const tripEventsList = this._tripEvents.querySelectorAll(`.trip-events__list`);
       tripEventsList.innerHTML = ``;
-      const {dateFromUnix} = card;
 
       tripEventsList.forEach((tripEventItem) => {
-        if (showDate(tripEventItem.dataset.date) === `${showDate(dateFromUnix)}`) {
+        if (tripEventItem.dataset.date === castDateFormat(card.dateFrom)) {
           const pointController = new PointController(tripEventItem, this._onViewChange);
           pointController.render(card);
           pointControllers.push(pointController);

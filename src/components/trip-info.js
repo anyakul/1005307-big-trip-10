@@ -1,16 +1,16 @@
 // Маршрут поездки
-import {showDate} from '../utils/date';
 import AbstractComponent from './abstract-component';
+import {castMonthDayFormat} from '../utils/date';
 
 const createTripInfoTemplate = (card) => {
-  const {dateFromUnix, dateToUnix, destination} = card;
-  let dateFrom = showDate(dateFromUnix);
-  let dateTo = showDate(dateToUnix);
+  const {dateFrom, dateTo, destination} = card;
+  let dateStart = castMonthDayFormat(dateFrom);
+  let dateEnd = castMonthDayFormat(dateTo);
 
   return (
     `<div class="trip-info__main">
       <h1 class="trip-info__title">${destination.name} &mdash; ... &mdash; ${destination.name}</h1>
-        <p class="trip-info__dates">${dateFrom}&nbsp;&mdash;&nbsp;${dateTo}</p>
+        <p class="trip-info__dates">${dateStart}&nbsp;&mdash;&nbsp;${dateEnd}</p>
      </div>`
   );
 };
