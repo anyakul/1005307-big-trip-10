@@ -41,7 +41,7 @@ class PointController {
 
   setDefaultView() {
     if (this._mode !== Mode.DEFAULT) {
-      this._replaceEventToEdit();
+      this._replaceEditToEvent();
     }
   }
 
