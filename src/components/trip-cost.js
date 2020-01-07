@@ -10,10 +10,10 @@ class TripCostComponent extends AbstractComponent {
   constructor(events) {
     super();
     this._events = events;
-    this._tripCost = this.calc();
+    this._tripCost = this._calc();
   }
 
-  calc() {
+  _calc() {
     return this._events.reduce((total, {basePrice}) => total + basePrice, 0);
   }
 

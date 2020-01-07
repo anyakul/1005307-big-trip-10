@@ -6,7 +6,7 @@ import EventFilterComponent from '../components/event-filter';
 import TripCostComponent from '../components/trip-cost';
 import AddEventButtonComponent from '../components/add-event-button';
 import EventSorterComponent, {SortType} from '../components/event-sorter';
-import DayBoardComponent, {generateTripDays} from '../components/day-board';
+import DayBoardComponent from '../components/day-board';
 import SortBoardComponent from '../components/sort-board';
 import {castDateFormat} from '../utils/date';
 
@@ -26,7 +26,6 @@ class TripController {
     this._sortBoardContainer = new SortBoardComponent();
 
     this._onViewChange = this._onViewChange.bind(this);
-    this._onDataChange = this._onDataChange.bind(this);
     this._onSortTypeChange = this._onSortTypeChange.bind(this);
 
     this._tripEvents = this._container.querySelector(`.trip-events`);
@@ -40,10 +39,9 @@ class TripController {
     const tripControls = tripMain.querySelector(`.trip-controls`);
 
     this._events = events;
-    this._tripDays = generateTripDays(this._events);
 
     this._tripCostComponent = new TripCostComponent(this._events);
-    this._dayBoardComponent = new DayBoardComponent(this._tripDays);
+    this._dayBoardComponent = new DayBoardComponent(this._events);
 
     render(tripMain, this._addEventButtonComponent, RenderPosition.BEFOREEND);
     render(tripInfo, this._tripCostComponent, RenderPosition.AFTERBEGIN);
@@ -98,10 +96,6 @@ class TripController {
     this._pointControllers = this._pointControllers.concat(method);
   }
 
-  _onViewChange() {
-    this._pointControllers.forEach((it) => it.setDefaultView());
-  }
-
   _onSortTypeChange(sortType) {
 
     switch (sortType) {
@@ -124,15 +118,6 @@ class TripController {
         this._showSortEvents(this._sortEvents());
         break;
     }
-  }
-
-  _onDataChange(pointController, oldData, newData) {
-    const index = this._events.findIndex((eventItem) => eventItem === oldData);
-    if (index === -1) {
-      return;
-    }
-    this._events = [].concat(this._events.slice(0, index), newData, this._events.slice(index + 1));
-    pointController.render(this._events[index]);
   }
 
   _onViewChange() {

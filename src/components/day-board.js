@@ -1,26 +1,6 @@
 import AbstractComponent from './abstract-component';
 import {castMonthDayFormat, castDateFormat} from '../utils/date';
 
-const generateTripDays = (events) => {
-  let tripDays = [];
-  let currentCards = [];
-
-  events.forEach((eventItem, i) => {
-    let prevCard = i > 0 ? events[i - 1] : null;
-
-    if (prevCard && castDateFormat(eventItem.dateFrom) !== castDateFormat(prevCard.dateFrom)) {
-      tripDays.push(currentCards);
-      currentCards = [];
-    }
-    currentCards.push(eventItem);
-    if (i === events.length - 1) {
-      tripDays.push(currentCards);
-    }
-  });
-
-  return tripDays;
-};
-
 const createDayBoardTemplate = (tripDays) => {
   return (tripDays.map((day, i) => {
     const dayDate = day[0].dateFrom;
@@ -43,15 +23,35 @@ const createDayBoardTemplates = (tripDays) => (
 );
 
 class DayComponent extends AbstractComponent {
-  constructor(tripDays) {
+  constructor(events) {
     super();
-    this._tripDays = tripDays;
+    this._events = events;
+    this._tripDays = this._generateTripDays();
   }
 
   getTemplate() {
     return createDayBoardTemplates(this._tripDays);
   }
+
+  _generateTripDays() {
+    this._tripDays = [];
+    this._currentCards = [];
+
+    this._events.forEach((eventItem, i) => {
+      let prevCard = i > 0 ? this._events[i - 1] : null;
+
+      if (prevCard && castDateFormat(eventItem.dateFrom) !== castDateFormat(prevCard.dateFrom)) {
+        this._tripDays.push(this._currentCards);
+        this._currentCards = [];
+      }
+      this._currentCards.push(eventItem);
+      if (i === this._events.length - 1) {
+        this._tripDays.push(this._currentCards);
+      }
+    });
+
+    return this._tripDays;
+  }
 }
 
 export default DayComponent;
-export {generateTripDays};
