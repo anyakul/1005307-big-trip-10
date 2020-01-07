@@ -6,6 +6,7 @@ const createDayBoardTemplate = (tripDays) => {
     const dayDate = day[0].dateFrom;
     const monthDay = castMonthDayFormat(dayDate);
     const date = castDateFormat(dayDate);
+
     return (
       `<li class="trip-days__item day">
         <div class="day__info">

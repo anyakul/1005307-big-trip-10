@@ -1,7 +1,7 @@
 // МОКИ ДЛЯ ТОЧЕК МАРШРУТА
 import {EVENT_TYPES} from '../constants';
 
-const CARD_COUNT = 5;
+export const CARD_COUNT = 5;
 
 const Time = {
   MINUTE: 60000,
@@ -83,6 +83,13 @@ const generateEvents = (count) => {
     .map(generateEvent);
 };
 
-const events = generateEvents(CARD_COUNT);
+// Функция подсчета стоимости поездки
+export const getTripInfoCost = (tripDays) => {
+  const eventCards = tripDays.flat();
+  let tripInfoCost = eventCards.reduce((sum, eventCard) => {
+    return sum + eventCard.basePrice;
+  }, 0);
+  return tripInfoCost;
+};
 
-export {events};
+export const events = generateEvents(CARD_COUNT);
