@@ -14,7 +14,8 @@ const createTripTypeImageTemplate = ({type}) => (
     width="17"
     height="17"
     src="img/icons/${type}.png"
-    alt="Event type icon">`
+    alt="Event type icon"
+  >`
 );
 
 const createTripTypeTransportTemplate = ({type, name, isChecked}) => {
@@ -28,14 +29,15 @@ const createTripTypeTransportTemplate = ({type, name, isChecked}) => {
         type="radio"
         name="event-type"
         value="${type}"
-        ${isCheckedValue}>
+        ${isCheckedValue}
+      >
       <label
         class="event__type-label event__type-label--${type}"
         for="event-type-${type}-1">
         ${name}
       </label>
     </div>`
-  )
+  );
 };
 
 const createTripTypePlacesTemplate = ({type, name, isChecked}) => {
@@ -62,15 +64,17 @@ const createTripTypePlacesTemplate = ({type, name, isChecked}) => {
 const createTypeTemplate = (events) => {
   const tripTypeImageTemplate = createTripTypeImageTemplate(events);
   const tripTypeTransportTemplates = createTripTypeTransportTemplates(createTypes(events.type, EventTypeTransport));
-  const tripTypePlacesTemplates = createTripTypePlacesTemplates(createTypes(events.type, EventTypePlace))
-  
+  const tripTypePlacesTemplates = createTripTypePlacesTemplates(createTypes(events.type, EventTypePlace));
+
   return (
     `<div class="event__type-wrapper">
       <label
         class="event__type
         event__type-btn"
         for="event-type-toggle-1">
-        <span class="visually-hidden">Choose event type</span>
+        <span class="visually-hidden">
+          Choose event type
+        </span>
         ${tripTypeImageTemplate}
       </label>
       <input
@@ -79,11 +83,15 @@ const createTypeTemplate = (events) => {
         type="checkbox">
       <div class="event__type-list">
         <fieldset class="event__type-group">
-          <legend class="visually-hidden">Transfer</legend>
+          <legend class="visually-hidden">
+            Transfer
+          </legend>
           ${tripTypeTransportTemplates}
         </fieldset>
         <fieldset class="event__type-group">
-          <legend class="visually-hidden">Activity</legend>
+          <legend class="visually-hidden">
+            Activity
+          </legend>
           ${tripTypePlacesTemplates}
         </fieldset>
       </div>
@@ -97,8 +105,8 @@ const createDestinationFieldGroup = ({type, destination}) => {
   return (
     `<div class="event__field-group event__field-group--destination">
       <label class="event__label event__type-output" for="event-destination-1">
-      ${type}
-      ${preposition}
+        ${type}
+        ${preposition}
       </label>
       <input
         class="event__input event__input--destination"
@@ -172,16 +180,23 @@ const createButtonsTemplate = ({isFavorite}) => {
   const isFavoriteValue = isFavorite ? `checked` : ``;
 
   return (
-    `<button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-    <button class="event__reset-btn" type="reset">Delete</button>
+    `<button class="event__save-btn  btn  btn--blue" type="submit">
+      Save
+    </button>
+    <button class="event__reset-btn" type="reset">
+      Delete
+    </button>
     <input
       id="event-favorite-1"
       class="event__favorite-checkbox visually-hidden"
       type="checkbox"
       name="event-favorite"
-      ${isFavoriteValue}>
+      ${isFavoriteValue}
+    >
     <label class="event__favorite-btn" for="event-favorite-1">
-      <span class="visually-hidden">Add to favorite</span>
+      <span class="visually-hidden">
+        Add to favorite
+      </span>
       <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
         <path d="M14 21l-8.22899 4.3262 1.57159-9.1631L.685209 9.67376 9.8855 8.33688 14 0l4.1145 8.33688 9.2003 1.33688-6.6574 6.48934 1.5716 9.1631L14 21z"/>
       </svg>
@@ -202,16 +217,19 @@ const createOfferTemplate = ({title, price, accepted}) => {
         id="event-offer-luggage-1"
         type="checkbox"
         name="event-offer-luggage"
-        {isAccepted}>
+        ${isAccepted}
+      >
       <label
         class="event__offer-label"
-        for="event-offer-luggage-1">
+        for="event-offer-luggage-1"
+        >
         <span
           class="event__offer-title">
           ${title}
         </span>
         &plus;
-        &euro;&nbsp;<span class="event__offer-price">
+        &euro;&nbsp;
+        <span class="event__offer-price">
           ${price}
         </span>
       </label>
@@ -240,16 +258,19 @@ const createDestinationPicturesTemplate = ({src, description}) => (
   `<img
     class="event__photo"
     src="${src}"
-    alt="${description}">`
+    alt="${description}"
+  >`
 );
 
 const createDestinationTemplate = (events) => {
-  const destinationPicturesTemplates = createDestinationPicturesTemplates(createPhotos(events.destination))
+  const destinationPicturesTemplates = createDestinationPicturesTemplates(createPhotos(events.destination));
   const destinationDescriptionTemplate = createDestinationDescriptionTemplate(events);
 
   return (
     `<section class="event__section  event__section--destination">
-      <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+      <h3 class="event__section-title event__section-title--destination">
+        Destination
+      </h3>
       ${destinationDescriptionTemplate}
       <div class="event__photos-container">
         <div class="event__photos-tape">
@@ -257,7 +278,7 @@ const createDestinationTemplate = (events) => {
          </div>
        </div>
      </section>`
-   );
+  );
 };
 
 const createTripTypeTransportTemplates = makeTemplateGenerator(createTripTypeTransportTemplate);

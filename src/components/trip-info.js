@@ -10,7 +10,7 @@ const createTripInfoTemplate = ({dateFrom, dateTo, destination}) => {
       <h1 class="trip-info__title">${destination.name} &mdash; ... &mdash; ${destination.name}</h1>
         <p class="trip-info__dates">${castMonthDayFormat(dateFrom)}&nbsp;&mdash;&nbsp;${castMonthDay}</p>
      </div>`
-   );
+  );
 };
 
 class TripInfoComponent extends AbstractComponent {
