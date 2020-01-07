@@ -2,9 +2,10 @@ import moment from "moment";
 
 const generateTimeInterval = (dateStart, dateEnd) => {
   const timeDiff = moment(dateEnd).diff(moment(dateStart));
-  let daysDiff = moment.utc(timeDiff).format(`DD`);
-  let hoursDiff = moment.utc(timeDiff).format(`HH`);
-  let minutesDiff = moment.utc(timeDiff).format(`mm`);
+  const momentDur = moment.duration(timeDiff);
+  const daysDiff = momentDur.days();
+  const hoursDiff = momentDur.hours();
+  const minutesDiff = momentDur.minutes();
 
   let formattedInterval = daysDiff > 0 ? castDateInterval(daysDiff) : ``;
   if (daysDiff > 0 || hoursDiff > 0) {

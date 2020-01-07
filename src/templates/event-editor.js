@@ -1,7 +1,12 @@
 import {makeTemplateGenerator} from './generator';
-import {createEventTypesTransport, createEventTypesPlace, createPhotos} from '../components/event-card';
 import {castFullDateFormat} from '../utils/date';
-import {getCorrectPreposition} from '../components/event-card';
+import {EventTypeTransport,
+  EventTypePlace,
+  createPhotos,
+  getCorrectPreposition,
+}
+  from '../components/event-card';
+import {createTypes} from '../utils/common';
 
 const createTripTypeImageTemplate = ({type}) => (
   `<img
@@ -12,36 +17,36 @@ const createTripTypeImageTemplate = ({type}) => (
     alt="Event type icon">`
 );
 
-const createTripTypeTransportTemplate = ({typeTransport, nameTransport, isChecked}) => (
+const createTripTypeTransportTemplate = ({type, name, isChecked}) => (
   `<div class="event__type-item">
     <input
-      id="event-type-${typeTransport}-1"
+      id="event-type-${type}-1"
       class="event__type-input visually-hidden"
       type="radio"
       name="event-type"
-      value="${typeTransport}"
+      value="${type}"
       ${isChecked ? `checked` : ``}>
     <label
-      class="event__type-label event__type-label--${typeTransport}"
-      for="event-type-${typeTransport}-1">
-      ${nameTransport}
+      class="event__type-label event__type-label--${type}"
+      for="event-type-${type}-1">
+      ${name}
     </label>
   </div>`
 );
 
-const createTripTypePlacesTemplate = ({typePlaces, namePlaces, isChecked}) => (
+const createTripTypePlacesTemplate = ({type, name, isChecked}) => (
   `<div class="event__type-item">
     <input
-      id="event-type-${typePlaces}-1"
+      id="event-type-${type}-1"
       class="event__type-input visually-hidden"
       type="radio"
       name="event-type"
-      value="${typePlaces}"
+      value="${name}"
       ${isChecked ? `checked` : ``}>
     <label
-      class="event__type-label event__type-label--${typePlaces}"
-      for="event-type-${typePlaces}-1">
-      ${namePlaces}
+      class="event__type-label event__type-label--${type}"
+      for="event-type-${type}-1">
+      ${name}
     </label>
   </div>`
 );
@@ -62,11 +67,11 @@ const createTypeTemplate = (events) => (
     <div class="event__type-list">
       <fieldset class="event__type-group">
         <legend class="visually-hidden">Transfer</legend>
-        ${createTripTypeTransportTemplates(createEventTypesTransport(events.type))}
+        ${createTripTypeTransportTemplates(createTypes(events.type, EventTypeTransport))}
       </fieldset>
       <fieldset class="event__type-group">
         <legend class="visually-hidden">Activity</legend>
-        ${createTripTypePlacesTemplates(createEventTypesPlace(events.type))}
+        ${createTripTypePlacesTemplates(createTypes(events.type, EventTypePlace))}
       </fieldset>
     </div>
   </div>`

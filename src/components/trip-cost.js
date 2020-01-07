@@ -1,28 +1,20 @@
 import AbstractComponent from './abstract-component';
 
-const createTripCostTemplate = (events) => {
-  const {tripCost} = events;
-  return `<p class="trip-info__cost">
+const createTripCostTemplate = (tripCost) => (
+  `<p class="trip-info__cost">
     Total: &euro;&nbsp;<span class="trip-info__cost-value">${tripCost}</span>
-  </p>`;
-};
-
-const getTotalCost = (events) => events
-  .reduce((total, {basePrice}) => total + basePrice, 0);
-
-const showTripCost = (card) => {
-  return {
-    tripCost: getTotalCost(card)
-  };
-};
+  </p>`
+);
 
 class TripCostComponent extends AbstractComponent {
   constructor(events) {
     super();
     this._events = events;
-    if (events) {
-      this._tripCost = showTripCost(this._events);
-    }
+    this._tripCost = this.calc();
+  }
+
+  calc() {
+    return this._events.reduce((total, {basePrice}) => total + basePrice, 0);
   }
 
   getTemplate() {

@@ -4,13 +4,11 @@ import {castMonthDayFormat} from '../utils/date';
 
 const createTripInfoTemplate = (card) => {
   const {dateFrom, dateTo, destination} = card;
-  let dateStart = castMonthDayFormat(dateFrom);
-  let dateEnd = castMonthDayFormat(dateTo);
 
   return (
     `<div class="trip-info__main">
       <h1 class="trip-info__title">${destination.name} &mdash; ... &mdash; ${destination.name}</h1>
-        <p class="trip-info__dates">${dateStart}&nbsp;&mdash;&nbsp;${dateEnd}</p>
+        <p class="trip-info__dates">${castMonthDayFormat(dateFrom)}&nbsp;&mdash;&nbsp;${castMonthDayFormat(dateTo)}</p>
      </div>`
   );
 };

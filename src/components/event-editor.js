@@ -5,10 +5,10 @@ class EventEditorComponent extends AbstractSmartComponent {
   constructor(events) {
     super();
     this._events = events;
-    this._subscribeOnEvents();
     this._rollUpButtonClickHandler = null;
     this._submitHandler = null;
     this._favoriteButtonHandler = null;
+    this._subscribeOnEvents();
   }
 
   getTemplate() {
@@ -30,10 +30,6 @@ class EventEditorComponent extends AbstractSmartComponent {
     this.setRollUpButtonClickHandler(this._rollUpButtonClickHandler);
     this.setSubmitHandler(this._submitHandler);
     this._subscribeOnEvents();
-  }
-
-  rerender() {
-    super.rerender();
   }
 
   _subscribeOnEvents() {
