@@ -13,8 +13,12 @@ class TripCostComponent extends AbstractComponent {
     this._tripCost = this._calc();
   }
 
+  _sumOffers(offerList) {
+    return offerList.reduce((total, current) => total + current.accepted * current.price, 0);
+  }
+
   _calc() {
-    return this._events.reduce((total, {basePrice}) => total + basePrice, 0);
+    return this._events.reduce((total, current) => total + current.basePrice + this._sumOffers(current.offers), 0);
   }
 
   getTemplate() {
