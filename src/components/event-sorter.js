@@ -1,5 +1,5 @@
 import AbstractComponent from './abstract-component';
-import {DIRECTION_ICON, createSortFormTemplate} from './templates/event-sorter';
+import {DIRECTION_ICON, createSortFormTemplate} from '../templates/event-sorter';
 
 const SortType = {
   EVENT: `event`,

@@ -1,23 +1,37 @@
-// Функция конвертации даты
-export const showTime = (unixTimestamp) => {
-  const date = new Date(unixTimestamp);
-  const hour = (date.getHours() < 10) ? (`0` + date.getHours()) : (date.getHours());
-  const min = (date.getMinutes() < 10) ? (`0` + date.getMinutes()) : (date.getMinutes());
-  return hour + `:` + min;
+import moment, {duration} from 'moment';
+
+const hasTimeValue = ([, value]) => value > 0;
+const formatTimeValue = ([format, value]) => `${String(value).padStart(2, `0`)}${format}`;
+const calcDuration = (start, end) => duration(moment(end).diff(start))._data;
+
+const formatDuration = (start, end) => {
+  const {days: D, hours: H, minutes: M} = calcDuration(start, end);
+  return Object.entries({D, H, M})
+    .filter(hasTimeValue)
+    .map(formatTimeValue)
+    .join(` `);
 };
 
-// Функция конвертации даты
-export const showDate = (unixTimestamp) => {
-  const date = new Date(unixTimestamp);
-  const months = [`Jan`, `Feb`, `Mar`, `Apr`, `May`, `Jun`, `Jul`, `Aug`, `Sep`, `Oct`, `Nov`, `Dec`];
-  const day = date.getDate();
-  const month = months[date.getMonth()];
-  return day + ` ` + month;
+const castTimeFormat = (date) => {
+  return moment(date).format(`HH:mm`);
 };
 
-// Функция конвертации даты
-export const showFullDate = (unixTimestamp) => {
-  const date = showDate(unixTimestamp);
-  const time = showTime(unixTimestamp);
-  return date + ` ` + time;
+const castFullDateFormat = (date) => {
+  return moment(date).format(`DD/MM/YY HH:mm`);
+};
+
+const castDateFormat = (date) => {
+  return moment(date).format(`DD:MM:YY`);
+};
+
+const castMonthDayFormat = (date) => {
+  return moment(date).format(`MMM DD`);
+};
+
+export {
+  formatDuration,
+  castTimeFormat,
+  castFullDateFormat,
+  castDateFormat,
+  castMonthDayFormat
 };
