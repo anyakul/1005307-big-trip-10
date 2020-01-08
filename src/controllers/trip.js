@@ -42,10 +42,11 @@ class TripController {
 
     this._tripCostComponent = new TripCostComponent(this._events);
     this._dayBoardComponent = new DayBoardComponent(this._events);
+    this._tripInfoComponent = new TripInfoComponent(this._events);
 
     render(tripMain, this._addEventButtonComponent, RenderPosition.BEFOREEND);
     render(tripInfo, this._tripCostComponent, RenderPosition.AFTERBEGIN);
-    render(tripInfo, new TripInfoComponent(events[0]), RenderPosition.AFTERBEGIN);
+    render(tripInfo, this._tripInfoComponent, RenderPosition.AFTERBEGIN);
     render(tripControls, this._siteMenuComponent, RenderPosition.BEFOREEND);
     render(tripControls, this._eventFilterComponent, RenderPosition.BEFOREEND);
     render(this._tripEvents, this._eventSorterComponent, RenderPosition.AFTERBEGIN);

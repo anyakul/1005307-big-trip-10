@@ -1,28 +1,16 @@
 // Маршрут поездки
 import AbstractComponent from './abstract-component';
-import {castMonthDayFormat} from '../utils/date';
-
-const createTripInfoTemplate = ({dateFrom, dateTo, destination}) => {
-  const castMonthDayFrom = castMonthDayFormat(dateFrom);
-  const castMonthDayTo = castMonthDayFormat(dateTo);
-
-  return (
-    `<div class="trip-info__main">
-      <h1 class="trip-info__title">${destination.name} &mdash; ... &mdash; ${destination.name}</h1>
-        <p class="trip-info__dates">${castMonthDayFrom}&nbsp;&mdash;&nbsp;${castMonthDayTo}</p>
-     </div>`
-  );
-};
+import {createTripInfoTemplate} from '../templates/trip-info';
 
 class TripInfoComponent extends AbstractComponent {
-  constructor(card) {
+  constructor(events) {
     super();
 
-    this._card = card;
+    this._events = events;
   }
 
   getTemplate() {
-    return createTripInfoTemplate(this._card);
+    return createTripInfoTemplate(this._events);
   }
 }
 

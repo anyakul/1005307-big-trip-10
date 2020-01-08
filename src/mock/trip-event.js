@@ -1,11 +1,18 @@
 // МОКИ ДЛЯ ТОЧЕК МАРШРУТА
 import {EVENT_TYPES} from '../constants';
 
-export const CARD_COUNT = 5;
+export const CARD_COUNT = 2;
 
 const Time = {
   MINUTE: 60000,
 };
+
+const CITIES = [
+  `London`,
+  `Moscow`,
+  `Paris`,
+  `Bangkok`
+];
 
 // Функция получения рандомного числа
 const getRandomIntegerNumber = (min = 0, max = 9) => {
@@ -34,7 +41,7 @@ const getRandomPicture = () => ({
 
 // Функция получения направления
 const getRandomDestination = () => ({
-  name: `[destination name]`,
+  name: getRandomArrayItem(CITIES),
   description: `[destination description]`,
   pictures: getRandomArrayLength(0, 5).map(getRandomPicture),
 });
