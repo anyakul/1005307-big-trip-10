@@ -1,6 +1,6 @@
 import {makeTemplateGenerator} from './generator';
 import {getCorrectPreposition} from '../components/event-card';
-import {generateTimeInterval, castFullDateFormat, castTimeFormat} from '../utils/date';
+import {formatDuration, castFullDateFormat, castTimeFormat} from '../utils/date';
 
 const generateExtraServicesMarkup = ({title, price, accepted}) => {
   return (
@@ -27,6 +27,7 @@ const createCardTemplate = ({type, basePrice, destination, dateFrom, dateTo}) =>
   const fullDateFrom = castFullDateFormat(dateFrom);
   const fullDateTo = castFullDateFormat(dateTo);
   const preposition = getCorrectPreposition(type);
+  const timeInterval = formatDuration(dateFrom, dateTo);
 
   return (
     `<div class="event__type">
@@ -60,7 +61,7 @@ const createCardTemplate = ({type, basePrice, destination, dateFrom, dateTo}) =>
         </time>
       </p>
       <p class="event__duration">
-        ${generateTimeInterval(dateFrom, dateTo)}
+        ${timeInterval}
       </p>
     </div>
     <p class="event__price">

@@ -7,10 +7,11 @@ class AbstractSmartComponent extends AbstractComponent {
 
   rerender() {
     const oldElement = this.getElement();
+
     this.removeElement();
+
     oldElement.replaceWith(this.getElement());
-    const newElement = this.getElement();
-    newElement.replaceWith(this.getElement());
+
     this.recoveryListeners();
   }
 }

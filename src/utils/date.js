@@ -1,29 +1,15 @@
-import moment from "moment";
+import moment, {duration} from 'moment';
 
-const generateTimeInterval = (dateStart, dateEnd) => {
-  const timeDiff = moment(dateEnd).diff(moment(dateStart));
-  const momentDur = moment.duration(timeDiff);
-  const daysDiff = momentDur.days();
-  const hoursDiff = momentDur.hours();
-  const minutesDiff = momentDur.minutes();
+const hasTimeValue = ([, value]) => value > 0;
+const formatTimeValue = ([format, value]) => `${String(value).padStart(2, `0`)}${format}`;
+const calcDuration = (start, end) => duration(moment(end).diff(start))._data;
 
-  let formattedInterval = daysDiff > 0 ? castDateInterval(daysDiff) : ``;
-  if (daysDiff > 0 || hoursDiff > 0) {
-    formattedInterval += ` ${castHoursInterval(hoursDiff)}`;
-  }
-  return formattedInterval + ` ${castMinutesInterval(minutesDiff)}`;
-};
-
-const castDateInterval = (days) => {
-  return `${days}D`;
-};
-
-const castHoursInterval = (hours) => {
-  return `${hours}H`;
-};
-
-const castMinutesInterval = (minutes) => {
-  return `${minutes}M`;
+const formatDuration = (start, end) => {
+  const {days: D, hours: H, minutes: M} = calcDuration(start, end);
+  return Object.entries({D, H, M})
+    .filter(hasTimeValue)
+    .map(formatTimeValue)
+    .join(` `);
 };
 
 const castTimeFormat = (date) => {
@@ -43,10 +29,7 @@ const castMonthDayFormat = (date) => {
 };
 
 export {
-  generateTimeInterval,
-  castDateInterval,
-  castHoursInterval,
-  castMinutesInterval,
+  formatDuration,
   castTimeFormat,
   castFullDateFormat,
   castDateFormat,
