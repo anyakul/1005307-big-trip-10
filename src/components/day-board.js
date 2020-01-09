@@ -1,6 +1,6 @@
 import AbstractComponent from './abstract-component';
-import {createDayBoardTemplates} from '../templates/day-board';
-import {formatDate} from '../templates/date';
+import {createDayBoardTemplates} from './templates/day-board';
+import {formatDate} from './templates/date';
 
 class DayComponent extends AbstractComponent {
   constructor(events) {

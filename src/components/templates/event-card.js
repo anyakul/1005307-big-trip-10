@@ -1,5 +1,5 @@
 import {makeTemplateGenerator} from './generator';
-import {getCorrectPreposition} from '../components/event-card';
+import {getCorrectPreposition} from '../event-card';
 import {
   formatDuration,
   formatTime,

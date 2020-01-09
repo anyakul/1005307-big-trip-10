@@ -8,7 +8,7 @@ import AddEventButtonComponent from '../components/add-event-button';
 import EventSorterComponent, {SortType} from '../components/event-sorter';
 import DayBoardComponent from '../components/day-board';
 import SortBoardComponent from '../components/sort-board';
-import {formatDate} from '../templates/date';
+import {formatDate} from '../components/templates/date';
 
 import PointController from './point';
 

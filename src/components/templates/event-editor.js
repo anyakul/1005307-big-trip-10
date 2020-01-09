@@ -4,8 +4,8 @@ import {EventTypeTransport,
   createPhotos,
   getCorrectPreposition,
 }
-  from '../components/event-card';
-import {createTypes} from '../utils/common';
+  from '../event-card';
+import {createTypes} from './common';
 import {formatFullDate} from './date';
 
 const createTripTypeImageTemplate = ({type}) => (
