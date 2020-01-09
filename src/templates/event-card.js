@@ -1,6 +1,10 @@
 import {makeTemplateGenerator} from './generator';
 import {getCorrectPreposition} from '../components/event-card';
-import {formatDuration, castFullDateFormat, castTimeFormat} from '../utils/date';
+import {
+  formatDuration,
+  formatTime,
+  formatFullDate,
+} from './date';
 
 const generateExtraServicesMarkup = ({title, price, accepted}) => {
   return (
@@ -22,10 +26,10 @@ const generateExtraServicesMarkup = ({title, price, accepted}) => {
 const createExtraServicesMarkup = makeTemplateGenerator(generateExtraServicesMarkup);
 
 const createCardTemplate = ({type, basePrice, destination, dateFrom, dateTo}) => {
-  const castDateFrom = castTimeFormat(dateFrom);
-  const castDateTo = castTimeFormat(dateTo);
-  const fullDateFrom = castFullDateFormat(dateFrom);
-  const fullDateTo = castFullDateFormat(dateTo);
+  const dateFromInCard = formatTime(dateFrom);
+  const dateToInCard = formatTime(dateTo);
+  const fullDateFrom = formatFullDate(dateFrom);
+  const fullDateTo = formatFullDate(dateTo);
   const preposition = getCorrectPreposition(type);
   const timeInterval = formatDuration(dateFrom, dateTo);
 
@@ -50,14 +54,14 @@ const createCardTemplate = ({type, basePrice, destination, dateFrom, dateTo}) =>
           class="event__start-time"
           datetime="${fullDateFrom}"
           >
-          ${castDateFrom}
+          ${dateFromInCard}
         </time>
         &mdash;
         <time
           class="event__end-time"
           datetime="${fullDateTo}"
           >
-          ${castDateTo}
+          ${dateToInCard}
         </time>
       </p>
       <p class="event__duration">

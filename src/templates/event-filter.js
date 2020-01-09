@@ -1,6 +1,6 @@
 import {makeTemplateGenerator} from './generator';
 
-const createFilterTemplate = ({type, name, isChecked = false}) => (
+const createEventFilterTemplate = ({type, name, isChecked = false}) => (
   `<div class="trip-filters__filter">
     <input
       id="filter-${type}"
@@ -14,13 +14,13 @@ const createFilterTemplate = ({type, name, isChecked = false}) => (
   </div>`
 );
 
-const createFilterTemplates = makeTemplateGenerator(createFilterTemplate);
+const createFilterTemplates = makeTemplateGenerator(createEventFilterTemplate);
 
-const createFilterFormTemplates = (filters) => (
+const createEventFilterTemplates = (filters) => (
   `<form class="trip-filters" action="#" method="get">
     ${createFilterTemplates(filters)}
     <button class="visually-hidden" type="submit">Accept filter</button>
   </form>`
 );
 
-export {createFilterFormTemplates};
+export {createEventFilterTemplates};

@@ -1,5 +1,4 @@
 'use strict';
-import 'flatpickr/dist/flatpickr.min.css';
 
 const MomentLocalesPlugin = require(`moment-locales-webpack-plugin`);
 const path = require('path');

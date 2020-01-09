@@ -1,5 +1,5 @@
 import AbstractComponent from './abstract-component';
-import {createFilterFormTemplates} from '../templates/event-filter';
+import {createEventFilterTemplates} from '../templates/event-filter';
 import {createTypes} from '../utils/common';
 
 const FilterType = {
@@ -17,7 +17,7 @@ class EventFilterComponent extends AbstractComponent {
   }
 
   getTemplate() {
-    return createFilterFormTemplates(this._filters);
+    return createEventFilterTemplates(this._filters);
   }
 }
 

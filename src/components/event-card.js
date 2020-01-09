@@ -1,5 +1,5 @@
-import {createEventCardTemplate} from '../templates/event-card';
 import AbstractComponent from './abstract-component';
+import {createEventCardTemplate} from '../templates/event-card';
 
 const EventTypeTransport = {
   TAXI: `taxi`,

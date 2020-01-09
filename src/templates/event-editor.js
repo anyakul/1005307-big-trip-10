@@ -1,5 +1,4 @@
 import {makeTemplateGenerator} from './generator';
-import {castFullDateFormat} from '../utils/date';
 import {EventTypeTransport,
   EventTypePlace,
   createPhotos,
@@ -7,6 +6,7 @@ import {EventTypeTransport,
 }
   from '../components/event-card';
 import {createTypes} from '../utils/common';
+import {formatFullDate} from './date';
 
 const createTripTypeImageTemplate = ({type}) => (
   `<img
@@ -125,8 +125,8 @@ const createDestinationFieldGroup = ({type, destination}) => {
 };
 
 const createTimeTemplate = ({dateFrom, dateTo}) => {
-  const fullDateFrom = castFullDateFormat(dateFrom);
-  const fullDateTo = castFullDateFormat(dateTo);
+  const fullDateFrom = formatFullDate(dateFrom);
+  const fullDateTo = formatFullDate(dateTo);
 
   return (
     `<div class="event__field-group  event__field-group--time">

@@ -1,13 +1,13 @@
 import {makeTemplateGenerator} from './generator';
-import {castMonthDayFormat} from '../utils/date';
+import {formatMonthDay} from './date';
 
 const getDateTitle = (eventList) => {
   return (
     (eventList.length > 1) ?
-      (`${castMonthDayFormat(eventList[1].dateFrom)}
+      (`${formatMonthDay(eventList[1].dateFrom)}
         &nbsp;&mdash;&nbsp;
-        ${castMonthDayFormat(eventList[eventList.length - 1].dateTo)}`) :
-      (`${castMonthDayFormat(eventList[0].dateFrom)}`)
+        ${formatMonthDay(eventList[eventList.length - 1].dateTo)}`) :
+      (`${formatMonthDay(eventList[0].dateFrom)}`)
   );
 };
 

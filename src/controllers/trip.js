@@ -8,7 +8,7 @@ import AddEventButtonComponent from '../components/add-event-button';
 import EventSorterComponent, {SortType} from '../components/event-sorter';
 import DayBoardComponent from '../components/day-board';
 import SortBoardComponent from '../components/sort-board';
-import {castDateFormat} from '../utils/date';
+import {formatDate} from '../templates/date';
 
 import PointController from './point';
 
@@ -65,7 +65,7 @@ class TripController {
       tripEventsList.innerHTML = ``;
 
       tripEventsList.forEach((tripEventItem) => {
-        if (tripEventItem.dataset.date === castDateFormat(card.dateFrom)) {
+        if (tripEventItem.dataset.date === formatDate(card.dateFrom)) {
           const pointController = new PointController(tripEventItem, this._onViewChange);
           pointController.render(card);
           pointControllers.push(pointController);

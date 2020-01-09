@@ -1,3 +1,4 @@
+import 'flatpickr/dist/flatpickr.min.css';
 import TripController from './controllers/trip.js';
 import {events} from './mock/trip-event';
 

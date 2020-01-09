@@ -12,26 +12,26 @@ const formatDuration = (start, end) => {
     .join(` `);
 };
 
-const castTimeFormat = (date) => {
+const formatTime = (date) => {
   return moment(date).format(`HH:mm`);
 };
 
-const castFullDateFormat = (date) => {
+const formatFullDate = (date) => {
   return moment(date).format(`DD/MM/YY HH:mm`);
 };
 
-const castDateFormat = (date) => {
+const formatDate = (date) => {
   return moment(date).format(`DD:MM:YY`);
 };
 
-const castMonthDayFormat = (date) => {
+const formatMonthDay = (date) => {
   return moment(date).format(`MMM DD`);
 };
 
 export {
   formatDuration,
-  castTimeFormat,
-  castFullDateFormat,
-  castDateFormat,
-  castMonthDayFormat
+  formatTime,
+  formatFullDate,
+  formatDate,
+  formatMonthDay
 };
