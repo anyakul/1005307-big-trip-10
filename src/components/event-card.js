@@ -1,5 +1,6 @@
 import AbstractComponent from './abstract-component';
 import {createEventCardTemplate} from './templates/event-card';
+import {formatDate} from './templates/date';
 
 const EventTypeTransport = {
   TAXI: `taxi`,
@@ -42,6 +43,10 @@ class EventCardComponent extends AbstractComponent {
   setRollUpButtonClickHandler(handler) {
     this.getElement().querySelector(`.event__rollup-btn`)
       .addEventListener(`click`, handler);
+  }
+
+  getEventCardDate(eventItem) {
+    return formatDate(eventItem.dateFrom);
   }
 }
 

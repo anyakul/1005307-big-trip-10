@@ -1,5 +1,5 @@
 import AbstractComponent from './abstract-component';
-import {DIRECTION_ICON, createSortFormTemplate} from '../templates/event-sorter';
+import {DIRECTION_ICON, createSortFormTemplate} from './templates/event-sorter';
 
 const SortType = {
   EVENT: `event`,
@@ -17,11 +17,11 @@ const createSorters = (checkedType) => Object.entries(SortTypeName)
   .map(([type, name]) => ({type, name, isChecked: type === checkedType}));
 
 class EventSorterComponent extends AbstractComponent {
-  constructor() {
+  constructor(events) {
     super();
-
     this._currentSortType = SortType.EVENT;
     this._sorters = createSorters(this._currentSortType);
+    this._events = events;
   }
 
   getTemplate() {

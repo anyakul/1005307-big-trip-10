@@ -10,23 +10,20 @@ const Mode = {
 
 class PointController {
 
-  constructor(container, onViewChange) {
-    this._container = container;
+  constructor(eventItem, onViewChange) {
     this._onViewChange = onViewChange;
-    this._eventItem = null;
-    this._eventComponent = null;
-    this._eventEditComponent = null;
+    this._eventItem = eventItem;
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
     this._mode = Mode.DEFAULT;
+    this._eventComponent = new EventCardComponent(this._eventItem);
+    this._eventEditorComponent = new EventEditorComponent(this._eventItem);
   }
 
-  render(eventItem) {
-    this._eventItem = eventItem;
+  render(container) {
+    this._container = container;
 
     const oldEventComponent = this._eventComponent;
     const oldEventEditComponent = this._eventEditComponent;
-    this._eventComponent = new EventCardComponent(this._eventItem);
-    this._eventEditorComponent = new EventEditorComponent(this._eventItem);
 
     this._setCardListeners();
 
@@ -76,6 +73,20 @@ class PointController {
       this._replaceEditToEvent();
       document.removeEventListener(`keydown`, this._onEscKeyDown);
     }
+  }
+
+  setEventToDay(card, container) {
+    let renderedEvent = null;
+    container.forEach((tripEventItem) => {
+      if (tripEventItem.dataset.date === this._eventComponent.getEventCardDate(card)) {
+        renderedEvent = this.render(tripEventItem);
+      }
+    });
+    return renderedEvent;
+  }
+
+  setEvent(containers) {
+    return this.render(containers);
   }
 }
 
