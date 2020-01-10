@@ -85,7 +85,7 @@ class TripController {
 
     switch (sortType) {
       case SortType.EVENT:
-        this._showSortEvents(this._sortEvents(sortType));
+        this._showSortEvents(this._sortEvents());
         break;
 
       case SortType.PRICE:

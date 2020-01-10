@@ -1,42 +1,40 @@
-import {makeTemplateGenerator} from './generator';
+// Маршрут поездки
 import {formatMonthDay} from './date';
+import {generateEventsWithUniqueDestinationNames} from '../trip-info';
 
-const getDateTitle = (eventList) => {
+const getDates = (events) => {
   return (
-    (eventList.length > 1) ?
-      (`${formatMonthDay(eventList[1].dateFrom)}
+    (events.length > 1) ?
+      (`${formatMonthDay(events[1].dateFrom)}
         &nbsp;&mdash;&nbsp;
-        ${formatMonthDay(eventList[eventList.length - 1].dateTo)}`) :
-      (`${formatMonthDay(eventList[0].dateFrom)}`)
+        ${formatMonthDay(events[events.length - 1].dateTo)}`) :
+      (`${formatMonthDay(events[0].dateFrom)}`)
   );
 };
 
-const getDestinationName = (eventList) => {
-  const {destination} = eventList;
-  return (eventList !== eventList[eventList.length - 1]) ? `${destination.name} &mdash; ` : `${destination.name}`;
-};
-
-const getDestinationNameFirstAndLast = (eventList) => {
+const getDestinationNameFirstAndLast = (events) => {
   return (
-    [eventList[0].destination.name
+    [events[0].destination.name
     + ` ` + `&mdash; ... &mdash;` + ` ` +
-    eventList[eventList.length - 1].destination.name]
+    events[events.length - 1].destination.name]
   );
 };
 
-const getDestinationNames = makeTemplateGenerator(getDestinationName);
+const destinationName = ({destination}) => `${destination.name}`;
+const getDestinationNames = (events) => Object.values(events).map(destinationName).join(` &mdash; `);
 
-const getRoute = (eventList) => {
+const getRoute = (events) => {
+  const eventsWithUniqueDestinationNames = generateEventsWithUniqueDestinationNames(events);
   return (
-    (eventList.length > 3) ?
-      getDestinationNameFirstAndLast(eventList) :
-      getDestinationNames(eventList)
+    (eventsWithUniqueDestinationNames.length > 3) ?
+      getDestinationNameFirstAndLast(eventsWithUniqueDestinationNames) :
+      getDestinationNames(eventsWithUniqueDestinationNames)
   );
 };
 
-const createTripInfoTemplate = (eventList) => {
-  const route = getRoute(eventList);
-  const dates = getDateTitle(eventList);
+const createTripInfoTemplate = (events) => {
+  const route = getRoute(events);
+  const dates = getDates(events);
 
   return (
     `<div class="trip-info__main">
