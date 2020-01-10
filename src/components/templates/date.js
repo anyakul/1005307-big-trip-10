@@ -1,15 +1,20 @@
 import moment, {duration} from 'moment';
 
-const hasTimeValue = ([, value]) => value > 0;
-const formatTimeValue = ([format, value]) => `${String(value).padStart(2, `0`)}${format}`;
 const calcDuration = (start, end) => duration(moment(end).diff(start))._data;
+const formatTimeValue = ([format, value]) => `${String(value).padStart(2, `0`)}${format}`;
+const formatDurationTime = (durations) => Object.entries(durations).map(formatTimeValue).join(` `);
 
 const formatDuration = (start, end) => {
   const {days: D, hours: H, minutes: M} = calcDuration(start, end);
-  return Object.entries({D, H, M})
-    .filter(hasTimeValue)
-    .map(formatTimeValue)
-    .join(` `);
+
+  if (D > 0) {
+    return formatDurationTime({D, H, M});
+  }
+  if (H > 0) {
+    return formatDurationTime({H, M});
+  }
+
+  return formatDurationTime({M});
 };
 
 const formatTime = (date) => {

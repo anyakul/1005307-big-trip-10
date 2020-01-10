@@ -17,11 +17,10 @@ const createSorters = (checkedType) => Object.entries(SortTypeName)
   .map(([type, name]) => ({type, name, isChecked: type === checkedType}));
 
 class EventSorterComponent extends AbstractComponent {
-  constructor(events) {
+  constructor() {
     super();
     this._currentSortType = SortType.EVENT;
     this._sorters = createSorters(this._currentSortType);
-    this._events = events;
   }
 
   getTemplate() {

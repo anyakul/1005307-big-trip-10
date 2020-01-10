@@ -85,13 +85,12 @@ class TripController {
 
     switch (sortType) {
       case SortType.EVENT:
-        render(this._tripEvents, this._dayBoardComponent, RenderPosition.BEFOREEND);
-        this._showSortEvents(this._sortEvents(SortType.EVENT));
+        this._showSortEvents(this._sortEvents(sortType));
         break;
 
       case SortType.PRICE:
         this._events = this._events.slice().sort((a, b) => b.basePrice - a.basePrice);
-        this._showSortEvents(this._sortEvents(SortType.PRICE));
+        this._showSortEvents(this._sortEvents());
         break;
 
       case SortType.TIME:
@@ -100,7 +99,7 @@ class TripController {
           const durationSecond = b.dateTo - b.dateFrom;
           return durationSecond - durationFirst;
         });
-        this._showSortEvents(this._sortEvents(SortType.TIME));
+        this._showSortEvents(this._sortEvents());
         break;
     }
   }
