@@ -15,7 +15,7 @@ const getDates = (events) => {
 const getDestinationNameFirstAndLast = (events) => {
   return (
     [events[0].destination.name
-    + ` ` + `&mdash; ... &mdash;` + ` ` +
+    + ` &mdash; ... &mdash; ` +
     events[events.length - 1].destination.name]
   );
 };
