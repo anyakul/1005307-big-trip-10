@@ -1,6 +1,6 @@
 // Маршрут поездки
 import {formatMonthDay} from './date';
-import {generateEventsWithUniqueDestinationNames} from '../trip-info';
+import {generateEventsWithUniqueDestinationNames} from '../events';
 
 const getDates = (events) => {
   return (

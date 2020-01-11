@@ -1,10 +1,6 @@
 ﻿import AbstractComponent from './abstract-component';
-
 import {createTripCostTemplate} from './templates/trip-cost';
-
-const calculateSum = (items) => items.reduce((acc, it) => {
-  return it + acc;
-}, 0);
+import {calculateSum} from './events';
 
 class TripCostComponent extends AbstractComponent {
   constructor(events) {

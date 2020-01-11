@@ -3,8 +3,9 @@ import {EventTypeTransport,
   EventTypePlace,
   createPhotos,
   getCorrectPreposition,
+  createDestinationNames
 }
-  from '../event-card';
+  from '../events';
 import {createTypes} from './common';
 import {formatFullDate} from './date';
 
@@ -99,8 +100,15 @@ const createTypeTemplate = (events) => {
   );
 };
 
+const createDestinationNamesOptionTemplate = ({name}) => (
+  `<option
+    value="${name}">
+  </option>`
+);
+
 const createDestinationFieldGroup = ({type, destination}) => {
   const preposition = getCorrectPreposition(type);
+  const destinationNamesOptionTemplate = createDestinationNamesOptionTemplates(createDestinationNames());
 
   return (
     `<div class="event__field-group event__field-group--destination">
@@ -116,9 +124,7 @@ const createDestinationFieldGroup = ({type, destination}) => {
         value="${destination.name}"
         list="destination-list-1">
       <datalist id="destination-list-1">
-        <option
-          value="${destination.name}">
-        </option>
+        ${destinationNamesOptionTemplate}
       </datalist>
     </div>`
   );
@@ -264,14 +270,14 @@ const createDestinationPicturesTemplate = ({src, description}) => (
 
 const createDestinationTemplate = (events) => {
   const destinationPicturesTemplates = createDestinationPicturesTemplates(createPhotos(events.destination));
-  const destinationDescriptionTemplate = createDestinationDescriptionTemplate(events);
+  const destinationDescriptionTemplates = createDestinationDescriptionTemplate(events);
 
   return (
     `<section class="event__section  event__section--destination">
       <h3 class="event__section-title event__section-title--destination">
         Destination
       </h3>
-      ${destinationDescriptionTemplate}
+      ${destinationDescriptionTemplates}
       <div class="event__photos-container">
         <div class="event__photos-tape">
           ${destinationPicturesTemplates}
@@ -285,6 +291,7 @@ const createTripTypeTransportTemplates = makeTemplateGenerator(createTripTypeTra
 const createTripTypePlacesTemplates = makeTemplateGenerator(createTripTypePlacesTemplate);
 const createOfferTemplates = makeTemplateGenerator(createOfferTemplate);
 const createDestinationPicturesTemplates = makeTemplateGenerator(createDestinationPicturesTemplate);
+const createDestinationNamesOptionTemplates = makeTemplateGenerator(createDestinationNamesOptionTemplate);
 
 const createEventEditorTemplate = (events) => (
   `<li class="trip-events__item">
