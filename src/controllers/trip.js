@@ -13,10 +13,9 @@ import PointController from './point';
 
 class TripController {
 
-  constructor(container) {
+  constructor(container, eventsModel) {
     this._container = container;
-    this._events = [];
-    this._sortedEvents = [];
+    this._eventsModel = eventsModel;
     this._pointControllers = [];
     this._siteMenuComponent = new SiteMenuComponent();
     this._eventFilterComponent = new EventFilterComponent();
@@ -25,22 +24,22 @@ class TripController {
     this._sortBoardContainer = new SortBoardComponent();
     this._onViewChange = this._onViewChange.bind(this);
     this._onSortTypeChange = this._onSortTypeChange.bind(this);
-
+    this._events = this._eventsModel.getEvents();
     this._tripEvents = this._container.querySelector(`.trip-events`);
     this._eventSorterComponent.setSortChangeHandler(this._onSortTypeChange);
   }
 
-  render(events) {
+  render() {
     const header = this._container.querySelector(`header`);
     const tripMain = header.querySelector(`.trip-main`);
     const tripInfo = tripMain.querySelector(`.trip-info`);
     const tripControls = tripMain.querySelector(`.trip-controls`);
 
-    this._events = events;
+    const events = this._eventsModel.getEvents();
 
-    this._tripCostComponent = new TripCostComponent(this._events);
-    this._dayBoardComponent = new DayBoardComponent(this._events);
-    this._tripInfoComponent = new TripInfoComponent(this._events);
+    this._tripCostComponent = new TripCostComponent(events);
+    this._dayBoardComponent = new DayBoardComponent(events);
+    this._tripInfoComponent = new TripInfoComponent(events);
 
     render(tripMain, this._addEventButtonComponent, RenderPosition.BEFOREEND);
     render(tripInfo, this._tripCostComponent, RenderPosition.AFTERBEGIN);
@@ -82,7 +81,6 @@ class TripController {
   }
 
   _onSortTypeChange(sortType) {
-
     switch (sortType) {
       case SortType.EVENT:
         this._showSortEvents(this._sortEvents());

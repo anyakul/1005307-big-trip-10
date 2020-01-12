@@ -8,5 +8,5 @@ const body = document.querySelector(`body`);
 const eventsModel = new EventsModel();
 eventsModel.setEvents(events);
 
-const tripController = new TripController(body);
-tripController.render(events);
+const tripController = new TripController(body, eventsModel);
+tripController.render();
