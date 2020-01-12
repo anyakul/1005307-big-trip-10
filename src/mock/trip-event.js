@@ -87,6 +87,7 @@ const getEventDates = makeEventDatesGenerator({Y: 2019, M: 12, D: 7});
 const generateEvent = () => {
   const {dateFrom, dateTo} = getEventDates(getRandomIntegerNumber(30, 60 * 32));
   return {
+    id: String(new Date() + Math.random()),
     type: getRandomArrayItem(EVENT_TYPES),
     dateFrom,
     dateTo,
