@@ -1,7 +1,7 @@
 // МОКИ ДЛЯ ТОЧЕК МАРШРУТА
 import {EVENT_TYPES} from '../constants';
 
-export const CARD_COUNT = 1;
+const CARD_COUNT = 5;
 
 const Time = {
   MINUTE: 60000,

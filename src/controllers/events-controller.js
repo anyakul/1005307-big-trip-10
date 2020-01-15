@@ -1,16 +1,18 @@
 import {RenderPosition, render, replace} from '../utils/render';
 import {isEscKey} from '../utils/key-board';
-import EventCardComponent from '../components/event-card';
-import EventEditorComponent from '../components/event-editor';
+import EventCardComponent from '../components/event-card-component';
+import EventEditorComponent from '../components/event-editor-component';
 
 const Mode = {
   DEFAULT: `default`,
   EDIT: `edit`,
 };
 
-class PointController {
+class EventsController {
 
   constructor(eventItem, onViewChange) {
+    this._eventComponent = null;
+    this._editEventComponent = null;
     this._onViewChange = onViewChange;
     this._eventItem = eventItem;
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
@@ -90,4 +92,4 @@ class PointController {
   }
 }
 
-export default PointController;
+export default EventsController;

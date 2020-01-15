@@ -1,6 +1,5 @@
 import AbstractComponent from './abstract-component';
-import {createEventFilterTemplates} from './templates/event-filter';
-import {createTypes} from './templates/common';
+import {createEventFilterTemplates} from './templates/event-filter-template';
 
 const FilterType = {
   EVERYTHING: `everything`,
@@ -9,15 +8,19 @@ const FilterType = {
 };
 
 class EventFilterComponent extends AbstractComponent {
-  constructor(filterType = FilterType.EVERYTHING) {
+  constructor(filters) {
     super();
-
-    this._currentFilterType = filterType;
-    this._filters = createTypes(this._currentFilterType, FilterType);
+    this._filters = filters;
   }
 
   getTemplate() {
     return createEventFilterTemplates(this._filters);
+  }
+
+  setFiltersChangeHandler(handler) {
+    this.getElement().addEventListener(`change`, (evt) => {
+      return handler(evt.target.value);
+    });
   }
 }
 

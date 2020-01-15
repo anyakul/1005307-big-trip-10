@@ -3,13 +3,19 @@ import {formatMonthDay} from './date';
 import {generateEventsWithUniqueDestinationNames} from '../events';
 
 const getDates = (events) => {
-  return (
-    (events.length > 1) ?
-      (`${formatMonthDay(events[1].dateFrom)}
-        &nbsp;&mdash;&nbsp;
-        ${formatMonthDay(events[events.length - 1].dateTo)}`) :
-      (`${formatMonthDay(events[0].dateFrom)}`)
-  );
+  let template = null;
+  if (events.length === 0) {
+    template = ` `;
+  }
+  if (events.length > 1) {
+    template = (`${formatMonthDay(events[1].dateFrom)}
+      &nbsp;&mdash;&nbsp;
+      ${formatMonthDay(events[events.length - 1].dateTo)}`);
+  }
+  if (events.length === 1) {
+    template = (`${formatMonthDay(events[0].dateFrom)}`);
+  }
+  return template;
 };
 
 const getDestinationNameFirstAndLast = (events) => {
@@ -24,12 +30,18 @@ const destinationName = ({destination}) => `${destination.name}`;
 const getDestinationNames = (events) => Object.values(events).map(destinationName).join(` &mdash; `);
 
 const getRoute = (events) => {
+  let route = null;
   const eventsWithUniqueDestinationNames = generateEventsWithUniqueDestinationNames(events);
-  return (
-    (eventsWithUniqueDestinationNames.length > 3) ?
-      getDestinationNameFirstAndLast(eventsWithUniqueDestinationNames) :
-      getDestinationNames(eventsWithUniqueDestinationNames)
-  );
+  if (eventsWithUniqueDestinationNames.length > 3) {
+    route = getDestinationNameFirstAndLast(eventsWithUniqueDestinationNames);
+  }
+  if (eventsWithUniqueDestinationNames.length > 0) {
+    route = getDestinationNames(eventsWithUniqueDestinationNames);
+  }
+  if (eventsWithUniqueDestinationNames.length === 0) {
+    route = ` `;
+  }
+  return route;
 };
 
 const createTripInfoTemplate = (events) => {

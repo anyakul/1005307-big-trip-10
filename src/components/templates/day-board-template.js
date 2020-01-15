@@ -1,6 +1,6 @@
 import {formatMonthDay, formatDate} from './date';
 
-const createDayBoardTemplate = (tripDays) => {
+const createDayBoardTemplates = (tripDays) => {
   return (tripDays.map((day, i) => {
     const dayDate = day[0].dateFrom;
     const monthDay = formatMonthDay(dayDate);
@@ -17,9 +17,5 @@ const createDayBoardTemplate = (tripDays) => {
     );
   }).join(`\n`));
 };
-
-const createDayBoardTemplates = (tripDays) => (
-  `<ul class="trip-days">${createDayBoardTemplate(tripDays)}</ul>`
-);
 
 export {createDayBoardTemplates};

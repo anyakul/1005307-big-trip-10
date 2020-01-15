@@ -1,5 +1,5 @@
 import AbstractComponent from './abstract-component';
-import {createEventCardTemplate} from './templates/event-card';
+import {createEventCardTemplate} from './templates/event-card-template';
 import {formatDate} from './templates/date';
 
 

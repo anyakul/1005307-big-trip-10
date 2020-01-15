@@ -1,9 +1,9 @@
 import AbstractComponent from './abstract-component';
-import {createButtonTemplate} from './templates/add-event-button';
+import {createAddEventButtonTemplate} from './templates/add-event-button-template';
 
 class AddEventButtonComponent extends AbstractComponent {
   getTemplate() {
-    return createButtonTemplate();
+    return createAddEventButtonTemplate();
   }
 
   setClickHandler(handler) {
