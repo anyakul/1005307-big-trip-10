@@ -49,7 +49,7 @@ class EventsController {
 
   setDefaultView() {
     if (this._mode !== Mode.DEFAULT) {
-      return this._replaceEditToEvent();
+      return this._showCard();
     }
   }
 

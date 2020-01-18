@@ -23,6 +23,8 @@ const generateExtraServicesMarkup = ({title, price}) => {
   );
 };
 
+const createExtraServicesMarkup = makeTemplateGenerator(generateExtraServicesMarkup);
+
 const createCardTemplate = ({type, dateFrom, dateTo, basePrice, destination}) => {
   const dateFromInCard = formatTime(dateFrom);
   const dateToInCard = formatTime(dateTo);
@@ -76,8 +78,12 @@ const createCardTemplate = ({type, dateFrom, dateTo, basePrice, destination}) =>
 };
 
 const createEventCardTemplate = (events) => {
-  const offers = events.offers.slice(0, MAX_OFFERS_COUNT_TO_SHOW).map((it) => generateExtraServicesMarkup(it)).join(`\n`);
-  //const extraServices = createExtraServicesMarkup(offers);
+  const OFFERS_TRUNCATE = 3;
+  const truncateOffers = (offers) =>
+    offers.length > OFFERS_TRUNCATE
+    ? offers.slice(0, OFFERS_TRUNCATE)
+    : offers;
+  const extraServices = createExtraServicesMarkup(truncateOffers(events.offers));
   const cardTemplate = createCardTemplate(events);
 
   return (
@@ -88,7 +94,7 @@ const createEventCardTemplate = (events) => {
           Offers:
         </h4>
         <ul class="event__selected-offers">
-          ${offers}
+          ${extraServices}
         </ul>
         <button class="event__rollup-btn" type="button">
           <span class="visually-hidden">
