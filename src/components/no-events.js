@@ -1,6 +1,6 @@
 // Сообщение об отсутствии точек маршрута
-import AbstractComponent from './abstract-component';
-import {createNoEventsTemplate} from './templates/no-events-template';
+import AbstractComponent from './abstract';
+import {createNoEventsTemplate} from './templates/no-events';
 
 class NoEventsComponent extends AbstractComponent {
   getTemplate() {

@@ -1,8 +1,8 @@
 import {render, replace} from '../utils/render';
 import {isEscKey} from '../utils/key-board';
-import EventCardComponent from '../components/event-card-component';
-import EventEditorComponent from '../components/event-editor-component';
-import EventsModel from '../models/events-model';
+import EventCardComponent from '../components/event-card';
+import EventEditorComponent from '../components/event-editor';
+import EventsModel from '../models/events';
 
 const Mode = {
   DEFAULT: `default`,

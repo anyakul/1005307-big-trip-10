@@ -1,5 +1,5 @@
-import AbstractComponent from './abstract-component';
-import {createEventFilterTemplates} from './templates/event-filter-template';
+import AbstractComponent from './abstract';
+import {createEventFilterTemplates} from './templates/event-filter';
 
 const FilterType = {
   EVERYTHING: `everything`,

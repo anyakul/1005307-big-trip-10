@@ -1,5 +1,5 @@
-import {FilterType} from '../components/event-filter-component';
-import {SortType} from '../components/event-sorter-component';
+import {FilterType} from '../components/event-filter';
+import {SortType} from '../components/event-sorter';
 import {formatDuration, formatDate} from '../components/templates/date';
 import moment from 'moment';
 

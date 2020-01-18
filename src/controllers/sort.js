@@ -1,4 +1,4 @@
-import EventSorterComponent, {SortType} from '../components/event-sorter-component';
+import EventSorterComponent, {SortType} from '../components/event-sorter';
 import {render} from '../utils/render';
 
 export default class SortController {

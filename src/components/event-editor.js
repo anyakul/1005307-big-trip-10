@@ -1,5 +1,5 @@
-import AbstractSmartComponent from './abstract-smart-component';
-import {createEventEditorTemplate} from './templates/event-editor-template';
+import AbstractSmartComponent from './abstract-smart';
+import {createEventEditorTemplate} from './templates/event-editor';
 
 class EventEditorComponent extends AbstractSmartComponent {
   constructor(events) {

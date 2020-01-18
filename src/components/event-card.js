@@ -1,6 +1,5 @@
-import AbstractComponent from './abstract-component';
-import {createEventCardTemplate} from './templates/event-card-template';
-import {formatDate} from './templates/date';
+import AbstractComponent from './abstract';
+import {createEventCardTemplate} from './templates/event-card';
 
 
 class EventCardComponent extends AbstractComponent {
@@ -16,10 +15,6 @@ class EventCardComponent extends AbstractComponent {
   setRollUpButtonClickHandler(handler) {
     this.getElement().querySelector(`.event__rollup-btn`)
       .addEventListener(`click`, handler);
-  }
-
-  getEventCardDate(eventItem) {
-    return formatDate(eventItem.dateFrom);
   }
 }
 

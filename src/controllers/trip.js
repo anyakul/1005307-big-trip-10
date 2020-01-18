@@ -1,19 +1,19 @@
 import {RenderPosition, render} from '../utils/render';
 import moment from 'moment';
-import TripInfoComponent from '../components/trip-info-component';
-import SiteMenuComponent from '../components/site-menu-component';
-import TripCostComponent from '../components/trip-cost-component';
-import AddEventButtonComponent from '../components/add-event-button-component';
-import {SortType} from '../components/event-sorter-component';
+import TripInfoComponent from '../components/trip-info';
+import SiteMenuComponent from '../components/site-menu';
+import TripCostComponent from '../components/trip-cost';
+import AddEventButtonComponent from '../components/add-event-button';
+import {SortType} from '../components/event-sorter';
 
-import SortBoardComponent from '../components/sort-board-component';
-import NoEventsComponent from '../components/no-events-component';
-import TripDaysListComponent from '../components/days-list-component';
-import TripDayComponent from '../components/day-board-component';
+import SortBoardComponent from '../components/sort-board';
+import NoEventsComponent from '../components/no-events';
+import TripDaysListComponent from '../components/trip-days-list';
+import TripDayComponent from '../components/trip-day';
 
-import EventsController from './events-controller';
-import SorterController from './sort-controller';
-import FilterController from './filter-controller';
+import EventsController from './events';
+import SorterController from './sort';
+import FilterController from './filter';
 
 const Mode = {
   DEFAULT: `default`,

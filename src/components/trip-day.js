@@ -1,5 +1,5 @@
-import AbstractComponent from './abstract-component';
-import {createTripDayTemplate} from './templates/day-board-template';
+import AbstractComponent from './abstract';
+import {createTripDayTemplate} from './templates/trip-day';
 
 class TripDayComponent extends AbstractComponent {
   constructor(day, events, count) {

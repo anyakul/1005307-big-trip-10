@@ -1,4 +1,4 @@
-import Events from './models/events-model.js';
+import Events from './models/events.js';
 import Destination from './models/destination';
 import Offer from './models/offer';
 

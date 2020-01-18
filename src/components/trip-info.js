@@ -1,6 +1,6 @@
 // Маршрут поездки
-import AbstractComponent from './abstract-component';
-import {createTripInfoTemplate} from './templates/trip-info-template';
+import AbstractComponent from './abstract';
+import {createTripInfoTemplate} from './templates/trip-info';
 
 class TripInfoComponent extends AbstractComponent {
   constructor(events) {

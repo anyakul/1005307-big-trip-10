@@ -1,4 +1,4 @@
-import EventFilterComponent, {FilterType} from '../components/event-filter-component';
+import EventFilterComponent, {FilterType} from '../components/event-filter';
 import {render} from '../utils/render';
 
 class FilterController {

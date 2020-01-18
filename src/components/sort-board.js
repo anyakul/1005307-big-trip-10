@@ -1,5 +1,5 @@
-import AbstractComponent from './abstract-component';
-import {createSortBoardTemplate} from './templates/sort-board-template';
+import AbstractComponent from './abstract';
+import {createSortBoardTemplate} from './templates/sort-board';
 
 class SortBoardContainer extends AbstractComponent {
   getTemplate() {

@@ -1,5 +1,5 @@
-import AbstractComponent from './abstract-component';
-import {createTripCostTemplate} from './templates/trip-cost-template';
+import AbstractComponent from './abstract';
+import {createTripCostTemplate} from './templates/trip-cost';
 
 class TripCostComponent extends AbstractComponent {
   constructor(events) {
