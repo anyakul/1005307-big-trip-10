@@ -1,5 +1,5 @@
 import EventSorterComponent, {SortType} from '../components/event-sorter-component';
-import {render, RenderPosition} from '../utils/render';
+import {render} from '../utils/render';
 
 export default class SortController {
   constructor(container, eventsModel) {
@@ -21,9 +21,9 @@ export default class SortController {
 
     this._sorterComponent = new EventSorterComponent(sorters);
 
-    render(container, this._sorterComponent, RenderPosition.BEFOREEND);
+    render(container, this._sorterComponent.getElement());
 
-    this._sorterComponent.setSorterChangeHandler(this._onSortTypeChange);
+    this._sorterComponent.setSortTypeChangeHandler(this._onSortTypeChange);
   }
 
   get() {
@@ -31,7 +31,8 @@ export default class SortController {
   }
 
   _onSortTypeChange(sortType) {
-    this._activeSorterType = sortType;
-    this._eventsModel.setSorter(this._activeSorterType);
+    this._sortType = sortType;
+    this._eventsModel.setSorter(sortType);
+    this._renderWithSortType();
   }
 }

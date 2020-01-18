@@ -15,6 +15,10 @@ class EventEditorComponent extends AbstractSmartComponent {
     return createEventEditorTemplate(this._events);
   }
 
+  getData() {
+    return new FormData(form);
+  }
+
   setSubmitHandler(handler) {
     this.getElement().addEventListener(`submit`, handler);
     this._submitHandler = handler;

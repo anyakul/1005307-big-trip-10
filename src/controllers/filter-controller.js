@@ -1,5 +1,5 @@
 import EventFilterComponent, {FilterType} from '../components/event-filter-component';
-import {render, RenderPosition} from '../utils/render';
+import {render} from '../utils/render';
 
 class FilterController {
   constructor(container, eventsModel) {
@@ -23,7 +23,7 @@ class FilterController {
 
     this._filterComponent = new EventFilterComponent(filters);
 
-    render(container, this._filterComponent, RenderPosition.BEFOREEND);
+    render(container, this._filterComponent.getElement());
 
     this._filterComponent.setFiltersChangeHandler(this._onFilterChange);
   }

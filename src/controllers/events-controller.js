@@ -1,69 +1,79 @@
-import {RenderPosition, render, replace} from '../utils/render';
+import {render, replace} from '../utils/render';
 import {isEscKey} from '../utils/key-board';
 import EventCardComponent from '../components/event-card-component';
 import EventEditorComponent from '../components/event-editor-component';
+import EventsModel from '../models/events-model';
 
 const Mode = {
   DEFAULT: `default`,
   EDIT: `edit`,
 };
 
+const parseFormData = (formData) => {
+  return new EventsModel({
+    'id': formData.id,
+    'type': formData.type,
+    'date_from': formData.startDate,
+    'date_to': formData.endDate,
+    'destination': formData.destination,
+    'base_price': formData.price,
+    'offers': formData.offers,
+    'is_favorite': formData.isFavorite
+  });
+};
+
 class EventsController {
 
-  constructor(eventItem, onViewChange) {
+  constructor(container, onViewChange) {
+    this._event = null;
+    this._mode = Mode.VIEW;
+    this._container = container;
     this._eventComponent = null;
     this._editEventComponent = null;
+    // this._onDataChange = onDataChange;
     this._onViewChange = onViewChange;
-    this._eventItem = eventItem;
+    // this._eventItem = eventItem;
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
-    this._mode = Mode.DEFAULT;
-    this._eventComponent = new EventCardComponent(this._eventItem);
-    this._eventEditorComponent = new EventEditorComponent(this._eventItem);
   }
 
-  render(container) {
-    this._container = container;
-
+  render(eventItem, mode) {
+    this._eventItem = eventItem;
+    this._mode = mode;
+    this._eventComponent = new EventCardComponent(this._eventItem);
+    this._eventEditorComponent = new EventEditorComponent(this._eventItem);
     const oldEventComponent = this._eventComponent;
-    const oldEventEditComponent = this._eventEditComponent;
-
+    const oldEventEditComponent = this._eventEditorComponent;
     this._setCardListeners();
-
-    if (oldEventEditComponent && oldEventComponent) {
-      replace(this._eventComponent, oldEventComponent);
-      replace(this._eventEditComponent, oldEventEditComponent);
-    } else {
-      render(this._container, this._eventComponent, RenderPosition.BEFOREEND);
-    }
+    render(this._container, this._eventComponent.getElement());
   }
 
   setDefaultView() {
     if (this._mode !== Mode.DEFAULT) {
-      this._replaceEditToEvent();
+      return this._replaceEditToEvent();
     }
   }
 
   _setCardListeners() {
-    this._eventComponent.setRollUpButtonClickHandler(() => {
-      this._replaceEventToEdit();
-    });
+    this._eventComponent.setRollUpButtonClickHandler(() => this._showForm());
   }
 
   _setEditCardListeners() {
     document.addEventListener(`keydown`, this._onEscKeyDown);
-    this._eventEditorComponent.setRollUpButtonClickHandler(() => this._replaceEditToEvent());
+    this._eventEditorComponent.setRollUpButtonClickHandler(() => {
+      return this._showCard();
+    });
     this._eventEditorComponent.setSubmitHandler((evt) => {
       evt.preventDefault();
-      this._replaceEditToEvent();
+      this._showCard();
     });
   }
 
-  _replaceEditToEvent() {
+  _showCard() {
     replace(this._eventComponent, this._eventEditorComponent);
     this._mode = Mode.DEFAULT;
   }
 
-  _replaceEventToEdit() {
+  _showForm() {
     this._onViewChange();
     replace(this._eventEditorComponent, this._eventComponent);
     this._mode = Mode.EDIT;
@@ -72,23 +82,9 @@ class EventsController {
 
   _onEscKeyDown(evt) {
     if (isEscKey(evt)) {
-      this._replaceEditToEvent();
+      this._showCard();
       document.removeEventListener(`keydown`, this._onEscKeyDown);
     }
-  }
-
-  setEventToDay(card, container) {
-    let renderedEvent = null;
-    container.forEach((tripEventItem) => {
-      if (tripEventItem.dataset.date === this._eventComponent.getEventCardDate(card)) {
-        renderedEvent = this.render(tripEventItem);
-      }
-    });
-    return renderedEvent;
-  }
-
-  setEvent(containers) {
-    return this.render(containers);
   }
 }
 

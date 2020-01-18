@@ -33,3 +33,4 @@ export {
   DIRECTION_ICON,
   createEventSorterTemplate,
 };
+

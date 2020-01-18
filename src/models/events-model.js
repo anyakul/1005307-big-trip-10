@@ -1,6 +1,21 @@
 import {FilterType} from '../components/event-filter-component';
 import {SortType} from '../components/event-sorter-component';
 import {formatDuration, formatDate} from '../components/templates/date';
+import moment from 'moment';
+
+const isSameDay = (firstDate, secondDate) => {
+  return moment(firstDate).isSame(secondDate, `day`) && moment(firstDate).isSame(secondDate, `month`) && moment(firstDate).isSame(secondDate, `year`);
+};
+
+const getUniqueDays = (days) => {
+  let uniqueDays = [];
+  days.forEach((day, i) => {
+    if (i === 0 || uniqueDays.every((it) => isSameDay(it, day) === false)) {
+      uniqueDays.push(day);
+    }
+  });
+  return uniqueDays;
+};
 
 const getSortedPoints = (points, sortType) => {
   switch (sortType) {
@@ -20,6 +35,7 @@ const getSortedPoints = (points, sortType) => {
 export default class Events {
   constructor() {
     this._events = [];
+    this._pointsDates = [];
     this._filterChangeHandlers = [];
     this._sorterChangeHandlers = [];
     this._dataChangeHandlers = [];
@@ -43,28 +59,24 @@ export default class Events {
     return getSortedPoints(this.getEventsByFilter(this._activeFilterType), this._activeSortType);
   }
 
-  generateTripDays() {
-    this._tripDays = [];
-    this._currentCards = [];
-
-    this._events.forEach((eventItem, i) => {
-      let prevCard = i > 0 ? this._events[i - 1] : null;
-
-      if (prevCard && formatDate(eventItem.dateFrom) !== formatDate(prevCard.dateFrom)) {
-        this._tripDays.push(this._currentCards);
-        this._currentCards = [];
-      }
-      this._currentCards.push(eventItem);
-      if (i === this._events.length - 1) {
-        this._tripDays.push(this._currentCards);
-      }
-    });
-
-    return this._tripDays;
+  getPointsDates(points) {
+    const pointsDates = this._getPointsDates(points);
+    return pointsDates;
   }
 
   setEvents(events) {
-    this._events = Array.from(events);
+    if (events.length === 0) {
+      this._events = [];
+      this._eventDates = [];
+      return;
+    }
+    this._events = events
+      .map((event) => Object.assign({}, event, {startDate: event.dateFrom}, {endDate: event.dateFrom}))
+      .sort((a, b) => formatDuration(a.dateFrom, b.dateFrom) > 0);
+
+    this._eventsDates = this._getPointsDates(this._events);
+    //  updated trip-info
+    //this._callHandlers([this._dataChangeHandlers[0]]);
   }
 
   addEvent(point) {
@@ -84,8 +96,9 @@ export default class Events {
   }
 
   setSorter(sortType) {
-    this._activeSortType = sortType;
-    this._sorterChangeHandlers.forEach((handler) => handler());
+    if (Object.values(SortType).some((it) => it === sortType)) {
+      this._activeSortType = sortType;
+    }
   }
 
   setFilter(filterType) {
@@ -119,5 +132,10 @@ export default class Events {
 
   setSorterChangeHandler(handler) {
     this._sorterChangeHandlers.push(handler);
+  }
+  
+  _getPointsDates(points) {
+    const startDates = points.map((point) => point.dateFrom).sort((a, b) => formatDuration(a, b));
+    return getUniqueDays(startDates);
   }
 }

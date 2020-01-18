@@ -6,26 +6,24 @@ import {
   formatFullDate,
 } from './date';
 
-const generateExtraServicesMarkup = ({title, price, accepted}) => {
+const MAX_OFFERS_COUNT_TO_SHOW = 3;
+
+const generateExtraServicesMarkup = ({title, price}) => {
   return (
-    accepted ? (
-      `<li class="event__offer">
-        <span class="event__offer-title">
-          ${title}
-        </span>
-        &plus;
-        &euro;&nbsp;
-        <span class="event__offer-price">
-          ${price}
-        </span>
-      </li>`
-    ) : ``
+    `<li class="event__offer">
+      <span class="event__offer-title">
+        ${title}
+      </span>
+      &plus;
+      &euro;&nbsp;
+      <span class="event__offer-price">
+        ${price}
+      </span>
+    </li>`
   );
 };
 
-const createExtraServicesMarkup = makeTemplateGenerator(generateExtraServicesMarkup);
-
-const createCardTemplate = ({type, basePrice, destination, dateFrom, dateTo}) => {
+const createCardTemplate = ({type, dateFrom, dateTo, basePrice, destination}) => {
   const dateFromInCard = formatTime(dateFrom);
   const dateToInCard = formatTime(dateTo);
   const fullDateFrom = formatFullDate(dateFrom);
@@ -78,7 +76,8 @@ const createCardTemplate = ({type, basePrice, destination, dateFrom, dateTo}) =>
 };
 
 const createEventCardTemplate = (events) => {
-  const extraServices = createExtraServicesMarkup(events.offers);
+  const offers = events.offers.slice(0, MAX_OFFERS_COUNT_TO_SHOW).map((it) => generateExtraServicesMarkup(it)).join(`\n`);
+  //const extraServices = createExtraServicesMarkup(offers);
   const cardTemplate = createCardTemplate(events);
 
   return (
@@ -89,7 +88,7 @@ const createEventCardTemplate = (events) => {
           Offers:
         </h4>
         <ul class="event__selected-offers">
-          ${extraServices}
+          ${offers}
         </ul>
         <button class="event__rollup-btn" type="button">
           <span class="visually-hidden">
