@@ -3,8 +3,6 @@ import moment from 'moment';
 import SiteMenuComponent from '../components/site-menu';
 import AddEventButtonComponent from '../components/add-event-button';
 import {SortType} from '../components/event-sorter';
-
-import SortBoardComponent from '../components/sort-board';
 import NoEventsComponent from '../components/no-events';
 import TripDaysListComponent from '../components/trip-days-list';
 import TripDayComponent from '../components/trip-day';
@@ -88,7 +86,6 @@ class TripController {
     this._siteMenuComponent = new SiteMenuComponent();
     this._addEventButtonComponent = new AddEventButtonComponent();
     this._noEventComponent = new NoEventsComponent();
-    this._sortBoardContainer = new SortBoardComponent();
     this._tripInfoController = new TripInfoController(tripInfo, this._eventsModel);
     this._tripInfoController.render();
     this._filterController = new FilterController(tripControls, this._eventsModel);
