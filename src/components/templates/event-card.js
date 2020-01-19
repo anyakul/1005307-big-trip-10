@@ -80,8 +80,8 @@ const createCardTemplate = ({type, dateFrom, dateTo, basePrice, destination}) =>
 const createEventCardTemplate = (events) => {
   const truncateOffers = (offers) =>
     offers.length > OFFERS_TRUNCATE
-    ? offers.slice(0, OFFERS_TRUNCATE)
-    : offers;
+      ? offers.slice(0, OFFERS_TRUNCATE)
+      : offers;
   const extraServices = createExtraServicesMarkup(truncateOffers(events.offers));
   const cardTemplate = createCardTemplate(events);
 

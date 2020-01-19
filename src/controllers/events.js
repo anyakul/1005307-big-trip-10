@@ -2,14 +2,14 @@ import {render, replace} from '../utils/render';
 import {isEscKey} from '../utils/key-board';
 import EventCardComponent from '../components/event-card';
 import EventEditorComponent from '../components/event-editor';
-import EventsModel from '../models/events';
+// import EventsModel from '../models/events';
 
 const Mode = {
   DEFAULT: `default`,
   EDIT: `edit`,
 };
 
-const parseFormData = (formData) => {
+/* const parseFormData = (formData) => {
   return new EventsModel({
     'id': formData.id,
     'type': formData.type,
@@ -20,7 +20,7 @@ const parseFormData = (formData) => {
     'offers': formData.offers,
     'is_favorite': formData.isFavorite
   });
-};
+}; */
 
 class EventsController {
 
@@ -40,16 +40,14 @@ class EventsController {
     this._eventItem = eventItem;
     this._mode = mode;
     this._eventComponent = new EventCardComponent(this._eventItem);
-    this._eventEditorComponent = new EventEditorComponent(this._eventItem,/*, destinations, offers, Mode.EDIT*/);
-    const oldEventComponent = this._eventComponent;
-    const oldEventEditComponent = this._eventEditorComponent;
+    this._eventEditorComponent = new EventEditorComponent(this._eventItem, destinations, offers, Mode.EDIT);
     this._setCardListeners();
     render(this._container, this._eventComponent.getElement());
   }
 
   setDefaultView() {
     if (this._mode !== Mode.DEFAULT) {
-      return this._showCard();
+      this._showCard();
     }
   }
 

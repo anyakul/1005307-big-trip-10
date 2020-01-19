@@ -1,6 +1,5 @@
-import {RenderPosition, render} from '../utils/render';
+import {render} from '../utils/render';
 import moment from 'moment';
-import TripInfoComponent from '../components/trip-info-main';
 import SiteMenuComponent from '../components/site-menu';
 import AddEventButtonComponent from '../components/add-event-button';
 import {SortType} from '../components/event-sorter';
@@ -43,8 +42,8 @@ class TripController {
 
   _renderEvents(events, container) {
     return events.map((eventItem) => {
-      const eventsController = new EventsController(eventItem.id, eventItem, this._destinationsModel, this._offersModel, Mode.DEFAULT);
-      eventsController.render(eventItem, Mode.DEFAULT);
+      const eventsController = new EventsController(container, this._onViewChange);
+      eventsController.render(eventItem.id, eventItem, this._destinationsModel, this._offersModel, Mode.DEFAULT);
       return eventsController;
     });
   }
@@ -58,10 +57,10 @@ class TripController {
     });
   }
 
-  render(container, pointsModel, destinationsModel, offersModel, api) {
+  render() {
     this._events = this._eventsModel.getEvents();
     this._renderTemplates(this._events);
-    
+
     if (this._events.length === 0) {
       render(this._tripEvents, this._noEventComponent.getElement());
     } else {
@@ -72,7 +71,7 @@ class TripController {
       this._renderSortEvents();
     }
   }
-  
+
   _renderSortEvents() {
     const eventsDates = this._eventsModel.getPointsDates(this._events);
     render(this._tripEvents, this._tripDaysListElement);
@@ -80,7 +79,7 @@ class TripController {
       .reduce((days, day) => days.concat(day), []);
   }
 
-  _renderTemplates(events) {
+  _renderTemplates() {
     const header = this._container.querySelector(`header`);
     const tripMain = header.querySelector(`.trip-main`);
     const tripInfo = tripMain.querySelector(`.trip-info`);
@@ -99,8 +98,6 @@ class TripController {
   }
 
   _renderWithSortType() {
-    
-    this._eventsController = new EventsController();
     const events = this._eventsModel.getEvents();
 
     if (this._sortType !== SortType.EVENT) {

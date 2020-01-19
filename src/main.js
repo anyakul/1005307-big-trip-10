@@ -23,10 +23,10 @@ api.getEvents()
     tripController.render();
   });
 */
-Promise.all([api.getEvents/*, api.getDestinations(), api.getOffers()*/]).then((data) => {
-  const [points/*, destinations, offers*/] = data;
- // offersModel.setOffers(offers);
-  //destinationsModel.setDestinations(destinations);
+Promise.all([api.getEvents/* , api.getDestinations(), api.getOffers() */]).then((data) => {
+  const [points/* , destinations, offers */] = data;
+  // offersModel.setOffers(offers);
+  // destinationsModel.setDestinations(destinations);
   eventsModel.setEvents(points);
 
   tripController.render();

@@ -1,6 +1,6 @@
 import {FilterType} from '../components/event-filter';
 import {SortType} from '../components/event-sorter';
-import {formatDuration, formatDate} from '../components/templates/date';
+import {formatDuration} from '../components/templates/date';
 import moment from 'moment';
 
 const isSameDay = (firstDate, secondDate) => {
@@ -75,10 +75,8 @@ export default class Events {
       .sort((a, b) => formatDuration(a.dateFrom, b.dateFrom) > 0);
 
     this._eventsDates = this._getPointsDates(this._events);
-    //  updated trip-info
-    //this._callHandlers([this._dataChangeHandlers[0]]);
   }
-  
+
   _sumOffers(offerList) {
     return offerList.reduce((total, current) => total + current.price, 0);
   }
@@ -141,7 +139,7 @@ export default class Events {
   setSorterChangeHandler(handler) {
     this._sorterChangeHandlers.push(handler);
   }
-  
+
   _getPointsDates(points) {
     const startDates = points.map((point) => point.dateFrom).sort((a, b) => formatDuration(a, b));
     return getUniqueDays(startDates);
