@@ -36,11 +36,11 @@ class EventsController {
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
   }
 
-  render(eventItem, mode) {
+  render(id, eventItem, destinations, offers, mode) {
     this._eventItem = eventItem;
     this._mode = mode;
     this._eventComponent = new EventCardComponent(this._eventItem);
-    this._eventEditorComponent = new EventEditorComponent(this._eventItem);
+    this._eventEditorComponent = new EventEditorComponent(this._eventItem,/*, destinations, offers, Mode.EDIT*/);
     const oldEventComponent = this._eventComponent;
     const oldEventEditComponent = this._eventEditorComponent;
     this._setCardListeners();

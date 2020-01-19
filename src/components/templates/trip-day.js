@@ -1,7 +1,7 @@
 import {formatDate, formatMonthDay} from './date';
 
 const createTripDayTemplate = (day, events, count) => {
-  if (!day && !items && !count) {
+  if (!day && !events && !count) {
     return `<li class="trip-days__item  day">
         <div class="day__info"></div>
         <ul class="trip-events__list"></ul>

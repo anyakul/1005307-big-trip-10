@@ -1,8 +1,7 @@
 import {RenderPosition, render} from '../utils/render';
 import moment from 'moment';
-import TripInfoComponent from '../components/trip-info';
+import TripInfoComponent from '../components/trip-info-main';
 import SiteMenuComponent from '../components/site-menu';
-import TripCostComponent from '../components/trip-cost';
 import AddEventButtonComponent from '../components/add-event-button';
 import {SortType} from '../components/event-sorter';
 
@@ -14,6 +13,7 @@ import TripDayComponent from '../components/trip-day';
 import EventsController from './events';
 import SorterController from './sort';
 import FilterController from './filter';
+import TripInfoController from './trip-info';
 
 const Mode = {
   DEFAULT: `default`,
@@ -25,9 +25,12 @@ const isSameDay = (firstDate, secondDate) => {
 };
 class TripController {
 
-  constructor(container, eventsModel) {
+  constructor(container, eventsModel, destinationsModel, offersModel, api) {
     this._container = container;
     this._eventsModel = eventsModel;
+    this._destinationsModel = destinationsModel;
+    this._offersModel = offersModel;
+    this._api = api;
     this._eventsControllers = [];
     this._sortType = SortType.EVENT;
     this._thipDaysComponent = null;
@@ -40,7 +43,7 @@ class TripController {
 
   _renderEvents(events, container) {
     return events.map((eventItem) => {
-      const eventsController = new EventsController(container, this._onViewChange);
+      const eventsController = new EventsController(eventItem.id, eventItem, this._destinationsModel, this._offersModel, Mode.DEFAULT);
       eventsController.render(eventItem, Mode.DEFAULT);
       return eventsController;
     });
@@ -55,25 +58,26 @@ class TripController {
     });
   }
 
-  render() {
-    const tripEvents = this._container.querySelector(`.trip-events`);
-    const events = this._eventsModel.getEvents();
-    const eventsDates = this._eventsModel.getPointsDates(events);
-    this._renderTemplates(events);
-    const tripDaysListElement = new TripDaysListComponent().getElement();
-
-    this._filterController.render();
-    if (events.length === 0) {
-      render(tripEvents, this._noEventComponent.getElement());
+  render(container, pointsModel, destinationsModel, offersModel, api) {
+    this._events = this._eventsModel.getEvents();
+    this._renderTemplates(this._events);
+    
+    if (this._events.length === 0) {
+      render(this._tripEvents, this._noEventComponent.getElement());
     } else {
       this._eventsModel.setSorterChangeHandler(this._onSortTypeChange);
-      this._sorterController = new SorterController(tripEvents, this._eventsModel);
+      this._tripDaysListElement = new TripDaysListComponent().getElement();
+      this._sorterController = new SorterController(this._tripEvents, this._eventsModel);
       this._sorterController.render();
-
-      render(tripEvents, tripDaysListElement);
-      this._eventsControllers = this._renderTripDays(tripDaysListElement, eventsDates, events)
-        .reduce((days, day) => days.concat(day), []);
+      this._renderSortEvents();
     }
+  }
+  
+  _renderSortEvents() {
+    const eventsDates = this._eventsModel.getPointsDates(this._events);
+    render(this._tripEvents, this._tripDaysListElement);
+    this._eventsControllers = this._renderTripDays(this._tripDaysListElement, eventsDates, this._events)
+      .reduce((days, day) => days.concat(day), []);
   }
 
   _renderTemplates(events) {
@@ -81,19 +85,17 @@ class TripController {
     const tripMain = header.querySelector(`.trip-main`);
     const tripInfo = tripMain.querySelector(`.trip-info`);
     const tripControls = tripMain.querySelector(`.trip-controls`);
+    this._tripEvents = this._container.querySelector(`.trip-events`);
     this._siteMenuComponent = new SiteMenuComponent();
     this._addEventButtonComponent = new AddEventButtonComponent();
     this._noEventComponent = new NoEventsComponent();
     this._sortBoardContainer = new SortBoardComponent();
-    this._tripCostComponent = new TripCostComponent(events);
-    this._tripInfoComponent = new TripInfoComponent(events);
+    this._tripInfoController = new TripInfoController(tripInfo, this._eventsModel);
+    this._tripInfoController.render();
     this._filterController = new FilterController(tripControls, this._eventsModel);
-
     render(tripMain, this._addEventButtonComponent.getElement());
-    render(tripInfo, this._tripCostComponent.getElement());
-    render(tripInfo, this._tripInfoComponent.getElement(), RenderPosition.AFTERBEGIN);
-    
     render(tripControls, this._siteMenuComponent.getElement());
+    this._filterController.render();
   }
 
   _renderWithSortType() {
@@ -106,8 +108,7 @@ class TripController {
         .reduce((days, day) => days.concat(day), []);
     } else {
       this._sorterController.get();
-      this._eventsControllers = this._renderTripDays(tripDaysListElement, eventsDates, events)
-          .reduce((days, day) => days.concat(day), []);
+      this._renderSortEvents();
     }
   }
 

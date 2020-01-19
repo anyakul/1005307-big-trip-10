@@ -21,6 +21,7 @@ class Event {
       'offers': this.offers,
       'is_favorite': this.isFavorite
     };
+  }
 
   static parseEvent(data) {
     return new Event(data);

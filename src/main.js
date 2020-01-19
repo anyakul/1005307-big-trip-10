@@ -1,13 +1,33 @@
 import 'flatpickr/dist/flatpickr.min.css';
 import TripController from './controllers/trip';
-import {events} from './mock/trip-event';
 import EventsModel from './models/events';
-import API from './api';
+import DestinationsModel from './models/destinations';
+import OffersModel from './models/offers';
+import API from './api.js';
+
+const AUTHORIZATION = `Basic er883jdzbdw`;
+const END_POINT = `https://htmlacademy-es-10.appspot.com/big-trip/`;
+const api = new API(END_POINT, AUTHORIZATION);
 
 const body = document.querySelector(`body`);
 
 const eventsModel = new EventsModel();
-eventsModel.setEvents(events);
+const destinationsModel = new DestinationsModel();
+const offersModel = new OffersModel();
 
-const tripController = new TripController(body, eventsModel);
-tripController.render();
+const tripController = new TripController(body, eventsModel, destinationsModel, offersModel, api);
+/*
+api.getEvents()
+  .then((events) => {
+    eventsModel.setEvents(events);
+    tripController.render();
+  });
+*/
+Promise.all([api.getEvents/*, api.getDestinations(), api.getOffers()*/]).then((data) => {
+  const [points/*, destinations, offers*/] = data;
+ // offersModel.setOffers(offers);
+  //destinationsModel.setDestinations(destinations);
+  eventsModel.setEvents(points);
+
+  tripController.render();
+});

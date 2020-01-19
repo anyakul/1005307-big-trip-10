@@ -213,35 +213,30 @@ const createButtonsTemplate = ({isFavorite}) => {
   );
 };
 
-const createOfferTemplate = ({title, price, accepted}) => {
-  const isAccepted = accepted ? `checked` : ``;
-
-  return (
-    `<div class="event__offer-selector">
-      <input
-        class="event__offer-checkbox  visually-hidden"
-        id="event-offer-luggage-1"
-        type="checkbox"
-        name="event-offer-luggage"
-        ${isAccepted}
+const createOfferTemplate = ({title, price}) => (
+  `<div class="event__offer-selector">
+    <input
+      class="event__offer-checkbox  visually-hidden"
+      id="event-offer-luggage-1"
+      type="checkbox"
+      name="event-offer-luggage"
+    >
+    <label
+      class="event__offer-label"
+      for="event-offer-luggage-1"
       >
-      <label
-        class="event__offer-label"
-        for="event-offer-luggage-1"
-        >
-        <span
-          class="event__offer-title">
-          ${title}
-        </span>
-        &plus;
-        &euro;&nbsp;
-        <span class="event__offer-price">
-          ${price}
-        </span>
-      </label>
-    </div>`
-  );
-};
+      <span
+        class="event__offer-title">
+        ${title}
+      </span>
+      &plus;
+      &euro;&nbsp;
+      <span class="event__offer-price">
+        ${price}
+      </span>
+    </label>
+  </div>`
+);
 
 const createOffersTemplate = (events) => {
   const offerTemplate = createOfferTemplates(events.offers);

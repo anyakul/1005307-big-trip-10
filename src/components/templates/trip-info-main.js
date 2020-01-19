@@ -44,7 +44,7 @@ const getRoute = (events) => {
   return route;
 };
 
-const createTripInfoTemplate = (events) => {
+const createTripInfoMainTemplate = (events) => {
   const route = getRoute(events);
   const dates = getDates(events);
 
@@ -56,4 +56,4 @@ const createTripInfoTemplate = (events) => {
   );
 };
 
-export {createTripInfoTemplate};
+export {createTripInfoMainTemplate};

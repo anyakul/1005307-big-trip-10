@@ -78,6 +78,14 @@ export default class Events {
     //  updated trip-info
     //this._callHandlers([this._dataChangeHandlers[0]]);
   }
+  
+  _sumOffers(offerList) {
+    return offerList.reduce((total, current) => total + current.price, 0);
+  }
+
+  calcTotalAmount() {
+    return this._events.reduce((total, current) => total + current.basePrice + this._sumOffers(current.offers), 0);
+  }
 
   addEvent(point) {
     this._events = [].concat(point, this._points);

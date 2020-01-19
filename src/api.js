@@ -1,4 +1,4 @@
-import Events from './models/events.js';
+import Event from './models/event.js';
 import Destination from './models/destination';
 import Offer from './models/offer';
 
@@ -43,13 +43,13 @@ const API = class {
 
   createEvents(events) {
     return this._load({
-      url: `points/${id}`,
+      url: `points`,
       method: Method.PUT,
       body: JSON.stringify(data.toRAW()),
       headers: new Headers({'Content-Type': `application/json`})
     })
       .then((response) => response.json())
-      .then(Events.parseEvent);
+      .then(Event.parseEvent);
   }
 
   updatePoint(id, data) {
@@ -60,7 +60,7 @@ const API = class {
       headers: new Headers({'Content-Type': `application/json`})
     })
       .then((response) => response.json())
-      .then(Point.parsePoint);
+      .then(Event.parseEvent);
   }
 
   deleteTask(id) {
@@ -68,7 +68,7 @@ const API = class {
   }
 
   _load({url, method = Method.GET, body = null, headers = new Headers()}) {
-    headers.append(`Authorization`, this._authorizatioin);
+    headers.append(`Authorization`, this._authorization);
 
     return fetch(`${this._endPoint}/${url}`, {method, body, headers})
       .then(checkStatus)

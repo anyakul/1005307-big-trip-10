@@ -6,7 +6,7 @@ import {
   formatFullDate,
 } from './date';
 
-const MAX_OFFERS_COUNT_TO_SHOW = 3;
+const OFFERS_TRUNCATE = 3;
 
 const generateExtraServicesMarkup = ({title, price}) => {
   return (
@@ -78,7 +78,6 @@ const createCardTemplate = ({type, dateFrom, dateTo, basePrice, destination}) =>
 };
 
 const createEventCardTemplate = (events) => {
-  const OFFERS_TRUNCATE = 3;
   const truncateOffers = (offers) =>
     offers.length > OFFERS_TRUNCATE
     ? offers.slice(0, OFFERS_TRUNCATE)
