@@ -15,6 +15,7 @@ import TripInfoController from './trip-info';
 const Mode = {
   DEFAULT: `default`,
   EDIT: `edit`,
+  ADD: `add`,
 };
 
 const isSameDay = (firstDate, secondDate) => {
@@ -22,11 +23,11 @@ const isSameDay = (firstDate, secondDate) => {
 };
 class TripController {
 
-  constructor(container, eventsModel, destinationsModel, offersModel, api) {
+  constructor(container, eventsModel, /* destinationsModel, offersModel, */ api) {
     this._container = container;
     this._eventsModel = eventsModel;
-    this._destinationsModel = destinationsModel;
-    this._offersModel = offersModel;
+    // this._destinationsModel = destinationsModel;
+    // this._offersModel = offersModel;
     this._api = api;
     this._eventsControllers = [];
     this._sortType = SortType.EVENT;
@@ -90,8 +91,15 @@ class TripController {
     this._tripInfoController.render();
     this._filterController = new FilterController(tripControls, this._eventsModel);
     render(tripMain, this._addEventButtonComponent.getElement());
+    this._addEventButtonComponent.setClickHandler(() => this._renderAddEventsButton(this._tripEvents));
     render(tripControls, this._siteMenuComponent.getElement());
     this._filterController.render();
+  }
+
+  _renderAddEventsButton(container) {
+    this._newEventId = this._eventsModel.getEvents().length;
+    this._addEventFormController = new EventsController(container, this._onViewChange);
+    this._addEventFormController.render(this._newEventId, {}, this._destinationsModel, this._offersModel, Mode.ADD);
   }
 
   _renderWithSortType() {

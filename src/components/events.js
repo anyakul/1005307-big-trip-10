@@ -31,8 +31,6 @@ const getCorrectPreposition = (type) => {
     Preposition.PLACE : Preposition.TRANSPORT);
 };
 
-const createPhotos = (destination) => Object.values(destination.pictures);
-
 const generateEventsWithUniqueDestinationNames = (events) => {
   const eventsFiltered = events.filter((eventItem, index, self) =>
     index === self.findIndex((t) => (
@@ -55,7 +53,7 @@ export {
   EventTypeTransport,
   EventTypePlace,
   Cities,
-  createPhotos,
+  // createPhotos,
   getCorrectPreposition,
   generateEventsWithUniqueDestinationNames,
   createDestinationNames,

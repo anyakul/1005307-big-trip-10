@@ -2,14 +2,32 @@ import {render, replace} from '../utils/render';
 import {isEscKey} from '../utils/key-board';
 import EventCardComponent from '../components/event-card';
 import EventEditorComponent from '../components/event-editor';
-// import EventsModel from '../models/events';
+import EventsModel from '../models/events';
 
 const Mode = {
   DEFAULT: `default`,
   EDIT: `edit`,
+  ADD: `add`,
 };
 
-/* const parseFormData = (formData) => {
+const getDefaultEvent = (newEventId) => {
+  return ({
+    id: newEventId,
+    type: `sightseeing`,
+    startDate: new Date(),
+    endDate: new Date(),
+    destination: {
+      name: ``,
+      description: ``,
+      offers: []
+    },
+    price: 0,
+    offers: [],
+    isFavorite: false
+  });
+};
+
+const parseFormData = (formData) => {
   return new EventsModel({
     'id': formData.id,
     'type': formData.type,
@@ -20,7 +38,7 @@ const Mode = {
     'offers': formData.offers,
     'is_favorite': formData.isFavorite
   });
-}; */
+};
 
 class EventsController {
 
@@ -36,11 +54,13 @@ class EventsController {
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
   }
 
-  render(id, eventItem, destinations, offers, mode) {
+  render(id, eventItem, mode) {
     this._eventItem = eventItem;
     this._mode = mode;
-    this._eventComponent = new EventCardComponent(this._eventItem);
-    this._eventEditorComponent = new EventEditorComponent(this._eventItem, destinations, offers, Mode.EDIT);
+    
+
+    this._mode = mode;
+    this._eventComponent = new EventCardComponent(this._eventItem, mode);
     this._setCardListeners();
     render(this._container, this._eventComponent.getElement());
   }

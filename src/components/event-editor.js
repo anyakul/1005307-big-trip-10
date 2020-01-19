@@ -2,9 +2,10 @@ import AbstractSmartComponent from './abstract-smart';
 import {createEventEditorTemplate} from './templates/event-editor';
 
 class EventEditorComponent extends AbstractSmartComponent {
-  constructor(events) {
+  constructor(events, mode) {
     super();
     this._events = events;
+    this._mode = mode;
     this._rollUpButtonClickHandler = null;
     this._submitHandler = null;
     this._favoriteButtonHandler = null;
@@ -12,7 +13,7 @@ class EventEditorComponent extends AbstractSmartComponent {
   }
 
   getTemplate() {
-    return createEventEditorTemplate(this._events);
+    return createEventEditorTemplate(this._events, this._mode);
   }
 
   setSubmitHandler(handler) {

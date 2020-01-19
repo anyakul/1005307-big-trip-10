@@ -16,18 +16,9 @@ const destinationsModel = new DestinationsModel();
 const offersModel = new OffersModel();
 
 const tripController = new TripController(body, eventsModel, destinationsModel, offersModel, api);
-/*
+
 api.getEvents()
   .then((events) => {
     eventsModel.setEvents(events);
     tripController.render();
   });
-*/
-Promise.all([api.getEvents/* , api.getDestinations(), api.getOffers() */]).then((data) => {
-  const [points/* , destinations, offers */] = data;
-  // offersModel.setOffers(offers);
-  // destinationsModel.setDestinations(destinations);
-  eventsModel.setEvents(points);
-
-  tripController.render();
-});
