@@ -60,8 +60,7 @@ export default class Events {
   }
 
   getPointsDates(points) {
-    const pointsDates = this._getPointsDates(points);
-    return pointsDates;
+    return this._getPointsDates(points);
   }
 
   setEvents(events) {
@@ -71,7 +70,7 @@ export default class Events {
       return;
     }
     this._events = events
-      .map((event) => Object.assign({}, event, {startDate: event.dateFrom}, {endDate: event.dateFrom}))
+      .map((event) => Object.assign({}, event, {startDate: event.dateFrom}, {endDate: event.dateTo}))
       .sort((a, b) => formatDuration(a.dateFrom, b.dateFrom) > 0);
 
     this._eventsDates = this._getPointsDates(this._events);
@@ -82,7 +81,7 @@ export default class Events {
   }
 
   calcTotalAmount() {
-    return this._events.reduce((total, current) => total + current.basePrice + this._sumOffers(current.offers), 0);
+    return this._events.reduce((total, current) => total + current.price + this._sumOffers(current.offers), 0);
   }
 
   addEvent(point) {
@@ -141,7 +140,7 @@ export default class Events {
   }
 
   _getPointsDates(points) {
-    const startDates = points.map((point) => point.dateFrom).sort((a, b) => formatDuration(a, b));
+    const startDates = points.map((point) => point.startDate).sort((a, b) => formatDuration(a, b));
     return getUniqueDays(startDates);
   }
 }

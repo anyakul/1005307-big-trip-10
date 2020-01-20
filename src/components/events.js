@@ -49,11 +49,13 @@ const calculateSum = (items) => items.reduce((acc, it) => {
   return it + acc;
 }, 0);
 
+const createPhotos = (destination) => Object.values(destination.pictures);
+
 export {
   EventTypeTransport,
   EventTypePlace,
   Cities,
-  // createPhotos,
+  createPhotos,
   getCorrectPreposition,
   generateEventsWithUniqueDestinationNames,
   createDestinationNames,

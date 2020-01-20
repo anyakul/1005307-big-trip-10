@@ -3,14 +3,13 @@ import AbstractComponent from './abstract';
 import {createTripInfoMainTemplate} from './templates/trip-info-main';
 
 class TripInfoMainComponent extends AbstractComponent {
-  constructor(events, mode) {
+  constructor(events) {
     super();
     this._events = events;
-    this._mode = mode;
   }
 
   getTemplate() {
-    return createTripInfoMainTemplate(this._events, this._mode);
+    return createTripInfoMainTemplate(this._events);
   }
 }
 

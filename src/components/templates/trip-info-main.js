@@ -8,12 +8,14 @@ const getDates = (events) => {
     template = ` `;
   }
   if (events.length > 1) {
-    template = (`${formatMonthDay(events[1].dateFrom)}
+    template = (
+      `${formatMonthDay(events[1].startDate)}
       &nbsp;&mdash;&nbsp;
-      ${formatMonthDay(events[events.length - 1].dateTo)}`);
+      ${formatMonthDay(events[events.length - 1].endDate)}`
+    );
   }
   if (events.length === 1) {
-    template = (`${formatMonthDay(events[0].dateFrom)}`);
+    template = (`${formatMonthDay(events[0].startDate)}`);
   }
   return template;
 };

@@ -25,13 +25,13 @@ const generateExtraServicesMarkup = ({title, price}) => {
 
 const createExtraServicesMarkup = makeTemplateGenerator(generateExtraServicesMarkup);
 
-const createCardTemplate = ({type, dateFrom, dateTo, basePrice, destination}) => {
-  const dateFromInCard = formatTime(dateFrom);
-  const dateToInCard = formatTime(dateTo);
-  const fullDateFrom = formatFullDate(dateFrom);
-  const fullDateTo = formatFullDate(dateTo);
+const createCardTemplate = ({type, startDate, endDate, price, destination}) => {
+  const dateFromInCard = formatTime(startDate);
+  const dateToInCard = formatTime(endDate);
+  const fullDateFrom = formatFullDate(startDate);
+  const fullDateTo = formatFullDate(endDate);
   const preposition = getCorrectPreposition(type);
-  const timeInterval = formatDuration(dateFrom, dateTo);
+  const timeInterval = formatDuration(startDate, endDate);
 
   return (
     `<div class="event__type">
@@ -71,7 +71,7 @@ const createCardTemplate = ({type, dateFrom, dateTo, basePrice, destination}) =>
     <p class="event__price">
       &euro;&nbsp;
       <span class="event__price-value">
-        ${basePrice}
+        ${price}
       </span>
     </p>`
   );

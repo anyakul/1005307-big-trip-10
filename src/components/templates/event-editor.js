@@ -1,7 +1,7 @@
 import {makeTemplateGenerator} from './generator';
 import {EventTypeTransport,
   EventTypePlace,
-  // createPhotos,
+   createPhotos,
   getCorrectPreposition,
   createDestinationNames
 }
@@ -214,7 +214,7 @@ const createEditEventButtonsTemplate = ({isFavorite}) => {
 const createButtonsTemplate = (events, mode) => {
   const createButtons = (mode === mode.add) ?
     createAddNewEventButtonsTemplate() :
-    createEditEventButtonsTemplate();
+    createEditEventButtonsTemplate(events);
 
   return (
     `<button class="event__save-btn  btn  btn--blue" type="submit">
@@ -262,10 +262,10 @@ const createOffersTemplate = (events) => {
   );
 };
 
-const createDestinationDescriptionTemplate = ({destination}) => (
-  `<p class="event__destination-description">${destination.description}</p>`
+const createDestinationDescriptionTemplate = ({description}) => (
+  `<p class="event__destination-description">${description}</p>`
 );
-/*
+
 const createDestinationPicturesTemplate = ({src, description}) => (
   `<img
     class="event__photo"
@@ -273,20 +273,22 @@ const createDestinationPicturesTemplate = ({src, description}) => (
     alt="${description}"
   >`
 );
-*/
+
 const createDestinationTemplate = (events) => {
-  // const destinationPicturesTemplates = createDestinationPicturesTemplates(createPhotos(events.destination));
-  // const destinationDescriptionTemplates = createDestinationDescriptionTemplate(events);
+  const destinationPicturesTemplates = createDestinationPicturesTemplates(createPhotos(events.destination));
+  const destinationDescriptionTemplates = createDestinationDescriptionTemplate(events.destination);
 
   return (
     `<section class="event__section  event__section--destination">
       <h3 class="event__section-title event__section-title--destination">
         Destination
       </h3>
+      ${destinationDescriptionTemplates}
       <div class="event__photos-container">
         <div class="event__photos-tape">
-          
+          ${destinationPicturesTemplates} 
          </div>
+         
        </div>
      </section>`
   );
@@ -295,11 +297,11 @@ const createDestinationTemplate = (events) => {
 const createTripTypeTransportTemplates = makeTemplateGenerator(createTripTypeTransportTemplate);
 const createTripTypePlacesTemplates = makeTemplateGenerator(createTripTypePlacesTemplate);
 const createOfferTemplates = makeTemplateGenerator(createOfferTemplate);
-//const createDestinationPicturesTemplates = makeTemplateGenerator(createDestinationPicturesTemplate);
+const createDestinationPicturesTemplates = makeTemplateGenerator(createDestinationPicturesTemplate);
 const createDestinationNamesOptionTemplates = makeTemplateGenerator(createDestinationNamesOptionTemplate);
 
 const createEventEditorTemplate = (events, mode) => {
-  const destinationsTemplates = (mode === mode.add) ? ` ` : createDestinationTemplate(events);
+  const destinationsTemplates = (mode === mode.ADD) ? ` ` : createDestinationTemplate(events);
   return (
     `<li class="trip-events__item">
       <form class="trip-events__item event event--edit" action="#" method="post">
@@ -312,7 +314,7 @@ const createEventEditorTemplate = (events, mode) => {
         </header>
         <section class="event__details">
           ${createOffersTemplate(events)}
-          ${createDestinationTemplate}
+          ${createDestinationTemplate(events)}
         </section>
       </form>
     </li>`

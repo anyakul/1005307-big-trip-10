@@ -43,7 +43,7 @@ const parseFormData = (formData) => {
 class EventsController {
 
   constructor(container, onViewChange) {
-    this._event = null;
+    this._eventItem = null;
     this._mode = Mode.VIEW;
     this._container = container;
     this._eventComponent = null;
@@ -57,10 +57,8 @@ class EventsController {
   render(id, eventItem, mode) {
     this._eventItem = eventItem;
     this._mode = mode;
-    
-
-    this._mode = mode;
-    this._eventComponent = new EventCardComponent(this._eventItem, mode);
+    this._eventComponent = new EventCardComponent(this._eventItem);
+    this._eventEditorComponent = new EventEditorComponent(this._eventItem, Mode.EDIT);
     this._setCardListeners();
     render(this._container, this._eventComponent.getElement());
   }
