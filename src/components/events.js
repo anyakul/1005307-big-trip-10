@@ -19,11 +19,15 @@ const Preposition = {
   PLACE: `in`,
 };
 
-const Cities = {
-  LONDON: `London`,
-  MOSCOW: `Moscow`,
-  PARIS: `Paris`,
-  BANGKOK: `Bangkok`
+const Mode = {
+  DEFAULT: `default`,
+  EDIT: `edit`,
+  ADD: `add`,
+};
+
+
+const createPhotos = (destination) => {
+  return Object.values(destination.pictures);
 };
 
 const getCorrectPreposition = (type) => {
@@ -40,24 +44,11 @@ const generateEventsWithUniqueDestinationNames = (events) => {
   return eventsFiltered;
 };
 
-const createDestinationNames = () => Object.values(Cities)
-  .map((name) => ({
-    name,
-  }));
-
-const calculateSum = (items) => items.reduce((acc, it) => {
-  return it + acc;
-}, 0);
-
-const createPhotos = (destination) => Object.values(destination.pictures);
-
 export {
   EventTypeTransport,
   EventTypePlace,
-  Cities,
+  Mode,
   createPhotos,
   getCorrectPreposition,
   generateEventsWithUniqueDestinationNames,
-  createDestinationNames,
-  calculateSum
 };

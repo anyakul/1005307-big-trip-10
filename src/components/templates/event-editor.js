@@ -1,9 +1,9 @@
 import {makeTemplateGenerator} from './generator';
 import {EventTypeTransport,
   EventTypePlace,
-   createPhotos,
+  createPhotos,
   getCorrectPreposition,
-  createDestinationNames
+  Mode
 }
   from '../events';
 import {createTypes} from './common';
@@ -108,7 +108,7 @@ const createDestinationNamesOptionTemplate = ({name}) => (
 
 const createDestinationFieldGroup = ({type, destination}) => {
   const preposition = getCorrectPreposition(type);
-  const destinationNamesOptionTemplate = createDestinationNamesOptionTemplates(createDestinationNames());
+  const destinationNamesOptionTemplate = createDestinationNamesOptionTemplate(destination);
 
   return (
     `<div class="event__field-group event__field-group--destination">
@@ -130,9 +130,9 @@ const createDestinationFieldGroup = ({type, destination}) => {
   );
 };
 
-const createTimeTemplate = ({dateFrom, dateTo}) => {
-  const fullDateFrom = formatFullDate(dateFrom);
-  const fullDateTo = formatFullDate(dateTo);
+const createTimeTemplate = ({startDate, endDate}) => {
+  const fullDateFrom = formatFullDate(startDate);
+  const fullDateTo = formatFullDate(endDate);
 
   return (
     `<div class="event__field-group  event__field-group--time">
@@ -190,8 +190,7 @@ const createEditEventButtonsTemplate = ({isFavorite}) => {
   const isFavoriteValue = isFavorite ? `checked` : ``;
 
   return (
-    `<button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-    <button class="event__reset-btn" type="reset">Delete</button>
+    `<button class="event__reset-btn" type="reset">Delete</button>
     <input
       id="event-favorite-1"
       class="event__favorite-checkbox
@@ -212,7 +211,7 @@ const createEditEventButtonsTemplate = ({isFavorite}) => {
 };
 
 const createButtonsTemplate = (events, mode) => {
-  const createButtons = (mode === mode.ADD) ?
+  const createButtons = (mode === Mode.ADD) ?
     createAddNewEventButtonsTemplate() :
     createEditEventButtonsTemplate(events);
 
@@ -274,8 +273,8 @@ const createDestinationPicturesTemplate = ({src, description}) => (
   >`
 );
 
-const createDestinationTemplate = (events, mode) => {
-  const photos = (mode === mode.ADD) ? ` ` : createPhotos(events.destination);
+const createDestinationTemplate = (events) => {
+  const photos = createPhotos(events.destination);
   const destinationPicturesTemplates = createDestinationPicturesTemplates(photos);
   const destinationDescriptionTemplates = createDestinationDescriptionTemplate(events.destination);
 
@@ -298,10 +297,10 @@ const createTripTypeTransportTemplates = makeTemplateGenerator(createTripTypeTra
 const createTripTypePlacesTemplates = makeTemplateGenerator(createTripTypePlacesTemplate);
 const createOfferTemplates = makeTemplateGenerator(createOfferTemplate);
 const createDestinationPicturesTemplates = makeTemplateGenerator(createDestinationPicturesTemplate);
-const createDestinationNamesOptionTemplates = makeTemplateGenerator(createDestinationNamesOptionTemplate);
 
 const createEventEditorTemplate = (events, mode) => {
-  const destinationsTemplates = createDestinationTemplate(events, mode);
+  const destinationsTemplates = (mode !== Mode.ADD) ? createDestinationTemplate(events) : ` `;
+  const offerTemplates = (mode !== Mode.ADD) ? createOffersTemplate(events) : ` `;
   return (
     `<li class="trip-events__item">
       <form class="trip-events__item event event--edit" action="#" method="post">
@@ -313,7 +312,7 @@ const createEventEditorTemplate = (events, mode) => {
           ${createButtonsTemplate(events, mode)}
         </header>
         <section class="event__details">
-          ${createOffersTemplate(events)}
+          ${offerTemplates}
           ${destinationsTemplates}
         </section>
       </form>
@@ -321,4 +320,4 @@ const createEventEditorTemplate = (events, mode) => {
   );
 };
 
-export {createEventEditorTemplate};
+export {Mode, createEventEditorTemplate};

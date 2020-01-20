@@ -1,8 +1,8 @@
-import {render, replace} from '../utils/render';
+import {render, replace, remove, RenderPosition} from '../utils/render';
 import {isEscKey} from '../utils/key-board';
 import EventCardComponent from '../components/event-card';
 import EventEditorComponent from '../components/event-editor';
-import EventsModel from '../models/events';
+// import EventsModel from '../models/events';
 
 const Mode = {
   DEFAULT: `default`,
@@ -26,7 +26,7 @@ const getDefaultEvent = (newEventId) => {
     isFavorite: false
   });
 };
-
+/*
 const parseFormData = (formData) => {
   return new EventsModel({
     'id': formData.id,
@@ -39,7 +39,7 @@ const parseFormData = (formData) => {
     'is_favorite': formData.isFavorite
   });
 };
-
+*/
 class EventsController {
 
   constructor(container, onViewChange) {
@@ -55,12 +55,12 @@ class EventsController {
   }
 
   render(id, eventItem, mode) {
-    if (mode === Mode.add) {
-      const eventItem = getDefaultEvent();
-      const addEventComponent = new EventEditorComponent(eventItem, Mode.Add);
-      render(this._container, addEventComponent.getElement());
-    }
-    else {
+    if (mode === Mode.ADD) {
+      const eventIt = getDefaultEvent();
+      this._addEventComponent = new EventEditorComponent(eventIt, Mode.ADD);
+      this._setAddCardListeners();
+      render(this._container, this._addEventComponent.getElement(), RenderPosition.AFTERBEGIN);
+    } else {
       this._eventItem = eventItem;
       this._mode = mode;
       this._eventComponent = new EventCardComponent(this._eventItem);
@@ -80,14 +80,34 @@ class EventsController {
     this._eventComponent.setRollUpButtonClickHandler(() => this._showForm());
   }
 
-  _setEditCardListeners() {
+  _setListeners() {
     document.addEventListener(`keydown`, this._onEscKeyDown);
-    this._eventEditorComponent.setRollUpButtonClickHandler(() => {
-      return this._showCard();
+  }
+
+  _setAddCardListeners() {
+    this._addEventComponent.setCancelHandler((evt) => {
+      evt.preventDefault();
+      this._closeForm();
     });
+
+    this._addEventComponent.setSubmitHandler((evt) => {
+      evt.preventDefault();
+      this._closeForm();
+    });
+  }
+
+  _closeForm() {
+    remove(this._addEventComponent);
+  }
+
+  _setEditCardListeners() {
+    this._setListeners();
     this._eventEditorComponent.setSubmitHandler((evt) => {
       evt.preventDefault();
       this._showCard();
+    });
+    this._eventEditorComponent.setRollUpButtonClickHandler(() => {
+      return this._showCard();
     });
   }
 

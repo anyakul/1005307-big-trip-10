@@ -1,14 +1,12 @@
 import EventSorterComponent, {SortType} from '../components/event-sorter';
 import {render} from '../utils/render';
 
-export default class SortController {
+class SorterController {
   constructor(container, eventsModel) {
     this._container = container;
     this._eventsModel = eventsModel;
     this._activeSorterType = SortType.EVENT;
     this._sortComponent = null;
-
-    this._onSortTypeChange = this._onSortTypeChange.bind(this);
   }
 
   render() {
@@ -19,20 +17,14 @@ export default class SortController {
       isChecked: sorterType === this._activeSorterType,
     }));
 
-    this._sorterComponent = new EventSorterComponent(sorters);
+    this._sortComponent = new EventSorterComponent(sorters);
 
-    render(container, this._sorterComponent.getElement());
-
-    this._sorterComponent.setSortTypeChangeHandler(this._onSortTypeChange);
+    render(container, this._sortComponent.getElement());
   }
 
-  get() {
-    this._sorterComponent.getElement().children[0].innerHTML = `Day`;
-  }
-
-  _onSortTypeChange(sortType) {
-    this._sortType = sortType;
-    this._eventsModel.setSorter(sortType);
-    this._renderWithSortType();
+  setSorterTypeHandler(method) {
+    this._sortComponent.setSortTypeChangeHandler(method);
   }
 }
+
+export default SorterController;

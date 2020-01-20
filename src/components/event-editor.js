@@ -1,5 +1,6 @@
 import AbstractSmartComponent from './abstract-smart';
 import {createEventEditorTemplate} from './templates/event-editor';
+import {Mode} from './events';
 
 class EventEditorComponent extends AbstractSmartComponent {
   constructor(events, mode) {
@@ -9,7 +10,7 @@ class EventEditorComponent extends AbstractSmartComponent {
     this._rollUpButtonClickHandler = null;
     this._submitHandler = null;
     this._favoriteButtonHandler = null;
-    this._subscribeOnEvents();
+    this._subscribeOnEvents(mode);
   }
 
   getTemplate() {
@@ -18,6 +19,11 @@ class EventEditorComponent extends AbstractSmartComponent {
 
   setSubmitHandler(handler) {
     this.getElement().addEventListener(`submit`, handler);
+    this._submitHandler = handler;
+  }
+
+  setCancelHandler(handler) {
+    this.getElement().addEventListener(`reset`, handler);
     this._submitHandler = handler;
   }
 
@@ -33,13 +39,16 @@ class EventEditorComponent extends AbstractSmartComponent {
     this._subscribeOnEvents();
   }
 
-  _subscribeOnEvents() {
-    this.getElement().querySelector(`.event__favorite-checkbox`)
-      .addEventListener(`change`, () => {
-        this._events.isFavorite = !this._events.isFavorite;
-        this.rerender();
-      });
-
+  _subscribeOnEvents(mode) {
+    if (mode !== Mode.ADD) {
+      this.getElement().querySelector(`.event__favorite-checkbox`)
+        .addEventListener(`change`, () => {
+          this._events.isFavorite = !this._events.isFavorite;
+          this.rerender();
+        });
+    } else {
+      return;
+    }
     this.getElement().querySelector(`.event__type-list`).addEventListener(`change`, (evt) => {
       if (evt.target.tagName === `INPUT`) {
         this._events.type = evt.target.value;

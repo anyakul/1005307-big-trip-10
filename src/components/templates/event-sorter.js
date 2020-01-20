@@ -8,9 +8,10 @@ const createSortTemplate = ({name, isChecked = false}) => (
       type="radio"
       name="trip-sort"
       value="${name}"
+      data-sort-type="${name}"
       ${isChecked ? `checked` : ``}
     >
-    <label class="trip-sort__btn" for="sort-${name}">${name}</label>
+    <label class="trip-sort__btn" for="sort-${name}">${name} ${DIRECTION_ICON}</label>
   </div>`
 );
 
@@ -30,7 +31,5 @@ const DIRECTION_ICON =
   </svg>`;
 
 export {
-  DIRECTION_ICON,
   createEventSorterTemplate,
 };
-
