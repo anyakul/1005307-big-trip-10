@@ -34,6 +34,7 @@ class TripController {
     this._thipDaysComponent = null;
     this._onViewChange = this._onViewChange.bind(this);
     this._onSortTypeChange = this._onSortTypeChange.bind(this);
+    this._renderWithSortType = this._renderWithSortType.bind(this);
     this._eventsModel.setFilterChangeHandler(this._renderWithSortType);
     this._eventsModel.setSorterChangeHandler(this._onSortTypeChange);
     this._eventsModel.addDataChangeHandler(this._sortEvents);
@@ -71,6 +72,14 @@ class TripController {
     });
   }
 
+  _renderSortEventsByDefault(component, events) {
+    const eventsDates = this._eventsModel.getPointsDates(events);
+    render(this._tripEvents, this._tripDaysListElement);
+    this._eventsControllers = this._renderTripDays(component, eventsDates, events)
+      .reduce((days, day) => days.concat(day), []);
+    return this._eventsControllers;
+  }
+
   _renderHeaderTemplates() {
     const header = this._container.querySelector(`header`);
     const tripMain = header.querySelector(`.trip-main`);
@@ -89,18 +98,10 @@ class TripController {
     this._addEventButtonComponent.setClickHandler(() => this._renderAddEventsButton(this._tripEvents));
   }
 
-  _renderSortEventsByDefault(component, events) {
-    const eventsDates = this._eventsModel.getPointsDates(events);
-    render(this._tripEvents, this._tripDaysListElement);
-    this._eventsControllers = this._renderTripDays(component, eventsDates, events)
-      .reduce((days, day) => days.concat(day), []);
-   // return this._eventsControllers;
-  }
-
   _renderAddEventsButton(container) {
     this._newEventId = this._eventsModel.getEvents().length;
     this._addEventFormController = new EventsController(container, this._onViewChange);
-    this._addEventFormController.render(this._newEventId, {}, this._destinationsModel, this._offersModel, Mode.ADD);
+    this._addEventFormController.render(this._newEventId, {}, Mode.ADD);
   }
 
   _renderWithSortType() {
@@ -111,7 +112,7 @@ class TripController {
         .reduce((days, day) => days.concat(day), []);
     } else {
       this._sorterController.get();
-      this._renderSortEvents();
+      this._renderEvents(events, this._tripEvents);
     }
   }
 

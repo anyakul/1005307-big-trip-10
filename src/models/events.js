@@ -70,8 +70,8 @@ export default class Events {
       return;
     }
     this._events = events
-      .map((event) => Object.assign({}, event, {startDate: event.dateFrom}, {endDate: event.dateTo}))
-      .sort((a, b) => formatDuration(a.dateFrom, b.dateFrom) > 0);
+      .map((event) => Object.assign({}, event, {startDate: event.startDate}, {endDate: event.endDate}))
+      .sort((a, b) => formatDuration(a.startDate, b.startDate) > 0);
 
     this._eventsDates = this._getPointsDates(this._events);
   }

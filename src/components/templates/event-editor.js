@@ -163,7 +163,7 @@ const createTimeTemplate = ({dateFrom, dateTo}) => {
   );
 };
 
-const createPriceTemplate = ({basePrice}) => (
+const createPriceTemplate = ({price}) => (
   `<div class="event__field-group  event__field-group--price">
     <label
       class="event__label"
@@ -178,7 +178,7 @@ const createPriceTemplate = ({basePrice}) => (
       id="event-price-1"
       type="text"
       name="event-price"
-      value="${basePrice}">
+      value="${price}">
   </div>`
 );
 
@@ -212,7 +212,7 @@ const createEditEventButtonsTemplate = ({isFavorite}) => {
 };
 
 const createButtonsTemplate = (events, mode) => {
-  const createButtons = (mode === mode.add) ?
+  const createButtons = (mode === mode.ADD) ?
     createAddNewEventButtonsTemplate() :
     createEditEventButtonsTemplate(events);
 
@@ -274,8 +274,9 @@ const createDestinationPicturesTemplate = ({src, description}) => (
   >`
 );
 
-const createDestinationTemplate = (events) => {
-  const destinationPicturesTemplates = createDestinationPicturesTemplates(createPhotos(events.destination));
+const createDestinationTemplate = (events, mode) => {
+  const photos = (mode === mode.ADD) ? ` ` : createPhotos(events.destination);
+  const destinationPicturesTemplates = createDestinationPicturesTemplates(photos);
   const destinationDescriptionTemplates = createDestinationDescriptionTemplate(events.destination);
 
   return (
@@ -288,7 +289,6 @@ const createDestinationTemplate = (events) => {
         <div class="event__photos-tape">
           ${destinationPicturesTemplates} 
          </div>
-         
        </div>
      </section>`
   );
@@ -301,7 +301,7 @@ const createDestinationPicturesTemplates = makeTemplateGenerator(createDestinati
 const createDestinationNamesOptionTemplates = makeTemplateGenerator(createDestinationNamesOptionTemplate);
 
 const createEventEditorTemplate = (events, mode) => {
-  const destinationsTemplates = (mode === mode.ADD) ? ` ` : createDestinationTemplate(events);
+  const destinationsTemplates = createDestinationTemplate(events, mode);
   return (
     `<li class="trip-events__item">
       <form class="trip-events__item event event--edit" action="#" method="post">
@@ -314,7 +314,7 @@ const createEventEditorTemplate = (events, mode) => {
         </header>
         <section class="event__details">
           ${createOffersTemplate(events)}
-          ${createDestinationTemplate(events)}
+          ${destinationsTemplates}
         </section>
       </form>
     </li>`

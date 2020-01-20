@@ -55,12 +55,19 @@ class EventsController {
   }
 
   render(id, eventItem, mode) {
-    this._eventItem = eventItem;
-    this._mode = mode;
-    this._eventComponent = new EventCardComponent(this._eventItem);
-    this._eventEditorComponent = new EventEditorComponent(this._eventItem, Mode.EDIT);
-    this._setCardListeners();
-    render(this._container, this._eventComponent.getElement());
+    if (mode === Mode.add) {
+      const eventItem = getDefaultEvent();
+      const addEventComponent = new EventEditorComponent(eventItem, Mode.Add);
+      render(this._container, addEventComponent.getElement());
+    }
+    else {
+      this._eventItem = eventItem;
+      this._mode = mode;
+      this._eventComponent = new EventCardComponent(this._eventItem);
+      this._eventEditorComponent = new EventEditorComponent(this._eventItem, Mode.EDIT);
+      this._setCardListeners();
+      render(this._container, this._eventComponent.getElement());
+    }
   }
 
   setDefaultView() {

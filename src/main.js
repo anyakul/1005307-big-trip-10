@@ -15,10 +15,11 @@ const eventsModel = new EventsModel();
 const destinationsModel = new DestinationsModel();
 const offersModel = new OffersModel();
 
-const tripController = new TripController(body, eventsModel, destinationsModel, offersModel, api);
+const tripController = new TripController(body, eventsModel, /*destinationsModel, offersModel, */api);
 
 api.getEvents()
   .then((events) => {
     eventsModel.setEvents(events);
     tripController.render();
+    
   });
