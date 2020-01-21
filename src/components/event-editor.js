@@ -1,5 +1,6 @@
 import AbstractSmartComponent from './abstract-smart';
 import {createEventEditorTemplate} from './templates/event-editor';
+import {Mode} from './events';
 
 class EventEditorComponent extends AbstractSmartComponent {
   constructor(events, destinations, offers, mode) {
@@ -36,9 +37,11 @@ class EventEditorComponent extends AbstractSmartComponent {
   }
 
   recoveryListeners() {
-    this.setRollUpButtonClickHandler(this._rollUpButtonClickHandler);
+    (this._mode !== Mode.ADD) ?
+      this.setRollUpButtonClickHandler(this._rollUpButtonClickHandler) :
+      ` `;
     this.setSubmitHandler(this._submitHandler);
-    this._subscribeOnEvents();
+    this._subscribeOnEvents(this._mode);
   }
 
   _subscribeOnEvents() {
