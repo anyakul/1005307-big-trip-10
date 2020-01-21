@@ -5,16 +5,10 @@ import {
   formatFullDate,
 } from './date';
 
-import {ACTIVITY_EVENTS} from '../events';
-
-const getEventType = (event) => ACTIVITY_EVENTS.findIndex((it) => it.toLowerCase() === event) !== -1 ? `activity` : `transfer`;
-
-const Preposition = {
-  activity: `at`,
-  transfer: `to`
-};
-
-const OFFERS_TRUNCATE = 3;
+import {
+  getEventType,
+  OFFERS_TRUNCATE,
+  Preposition} from '../events';
 
 const generateExtraServicesMarkup = ({title, price}) => {
   return (

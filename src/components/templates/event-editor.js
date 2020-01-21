@@ -1,22 +1,14 @@
 import {TRANSFER_EVENTS,
   ACTIVITY_EVENTS,
-  Mode
+  Mode,
+  getEventType,
+  hasSameTitle,
+  capitalizeFirstLetter,
+  Preposition
 }
   from '../events';
 import {formatFullDate} from './date';
 
-const hasSameTitle = (array, it) => array.some((arrayIt) => array.length ? arrayIt.title === it.title : false);
-
-const capitalizeFirstLetter = (str) => {
-  return `${str.slice(0, 1).toUpperCase()}${str.slice(1)}`;
-};
-
-const getEventType = (event) => ACTIVITY_EVENTS.findIndex((it) => it.toLowerCase() === event) !== -1 ? `activity` : `transfer`;
-
-const Preposition = {
-  activity: `at`,
-  transfer: `to`
-};
 
 const createTripTypeImageTemplate = (type) => (
   `<img

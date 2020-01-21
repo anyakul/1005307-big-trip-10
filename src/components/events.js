@@ -29,10 +29,29 @@ const generateEventsWithUniqueDestinationNames = (events) => {
   return eventsFiltered;
 };
 
+const getEventType = (event) => ACTIVITY_EVENTS.findIndex((it) => it.toLowerCase() === event) !== -1 ? `activity` : `transfer`;
+
+const Preposition = {
+  activity: `at`,
+  transfer: `to`
+};
+
+const OFFERS_TRUNCATE = 3;
+
+const hasSameTitle = (array, it) => array.some((arrayIt) => array.length ? arrayIt.title === it.title : false);
+
+const capitalizeFirstLetter = (str) => {
+  return `${str.slice(0, 1).toUpperCase()}${str.slice(1)}`;
+};
+
 export {
   TRANSFER_EVENTS,
   ACTIVITY_EVENTS,
   Mode,
-  // getCorrectPreposition,
+  getEventType,
+  OFFERS_TRUNCATE,
+  hasSameTitle,
+  capitalizeFirstLetter,
+  Preposition,
   generateEventsWithUniqueDestinationNames,
 };

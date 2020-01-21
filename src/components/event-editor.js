@@ -38,24 +38,31 @@ class EventEditorComponent extends AbstractSmartComponent {
   recoveryListeners() {
     this.setRollUpButtonClickHandler(this._rollUpButtonClickHandler);
     this.setSubmitHandler(this._submitHandler);
-  //  this._subscribeOnEvents();
+    this._subscribeOnEvents();
   }
 
   _subscribeOnEvents() {
-    /* if (mode !== Mode.ADD) {
-      this.getElement().querySelector(`.event__favorite-checkbox`)
-        .addEventListener(`change`, () => {
-          this._events.isFavorite = !this._events.isFavorite;
-          this.rerender();
-        });
-    } else {
-      return;
-    }*/
-    this.getElement().querySelector(`.event__type-list`).addEventListener(`change`, (evt) => {
-      if (evt.target.tagName === `INPUT`) {
-        this._events.type = evt.target.value;
-        this.rerender();
+    const element = this.getElement();
+    element.querySelector(`.event__input--destination`).addEventListener(`change`, (evt) => {
+      const inputValue = evt.target.value.trim();
+      const isValidDestination = this._destinations.getAll().findIndex((it) => it.name === inputValue);
+      if (isValidDestination === -1) {
+        this._event.destination.name = ``;
+        this._details = false;
+      } else {
+        this._events.destination = Object.assign({}, this._events.destination, {name: evt.target.value.trim()});
+        this._details = true;
       }
+      this.rerender();
+    });
+
+    element.querySelector(`.event__type-list`).addEventListener(`change`, (evt) => {
+      this._availableOffers = this._offers.getOffersByType(evt.target.value);
+      this._event = Object.assign({}, this._event,
+          {type: evt.target.value},
+          {offers: []});
+
+      this.rerender();
     });
   }
 }
