@@ -1,8 +1,8 @@
 import 'flatpickr/dist/flatpickr.min.css';
 import TripController from './controllers/trip';
 import EventsModel from './models/events';
-// import DestinationsModel from './models/destinations';
-// import OffersModel from './models/offers';
+import DestinationsModel from './models/destinations';
+import OffersModel from './models/offers';
 import API from './api.js';
 
 const AUTHORIZATION = `Basic er883jdzbdw`;
@@ -12,13 +12,16 @@ const api = new API(END_POINT, AUTHORIZATION);
 const body = document.querySelector(`body`);
 
 const eventsModel = new EventsModel();
-// const destinationsModel = new DestinationsModel();
-// const offersModel = new OffersModel();
+const destinationsModel = new DestinationsModel();
+const offersModel = new OffersModel();
 
-const tripController = new TripController(body, eventsModel, /* destinationsModel, offersModel, */api);
+const tripController = new TripController(body, eventsModel, destinationsModel, offersModel, api);
 
-api.getEvents()
-  .then((events) => {
-    eventsModel.setEvents(events);
-    tripController.render();
-  });
+Promise.all([api.getEvents(), api.getDestinations(), api.getOffers()]).then((data) => {
+  const [points, destinations, offers] = data;
+  eventsModel.setEvents(points);
+  destinationsModel.setDestinations(destinations);
+  offersModel.setOffers(offers);
+
+  tripController.render();
+});

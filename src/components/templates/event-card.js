@@ -1,10 +1,18 @@
 import {makeTemplateGenerator} from './generator';
-import {getCorrectPreposition} from '../events';
 import {
   formatDuration,
   formatTime,
   formatFullDate,
 } from './date';
+
+import {ACTIVITY_EVENTS} from '../events';
+
+const getEventType = (event) => ACTIVITY_EVENTS.findIndex((it) => it.toLowerCase() === event) !== -1 ? `activity` : `transfer`;
+
+const Preposition = {
+  activity: `at`,
+  transfer: `to`
+};
 
 const OFFERS_TRUNCATE = 3;
 
@@ -30,7 +38,7 @@ const createCardTemplate = ({type, startDate, endDate, price, destination}) => {
   const dateToInCard = formatTime(endDate);
   const fullDateFrom = formatFullDate(startDate);
   const fullDateTo = formatFullDate(endDate);
-  const preposition = getCorrectPreposition(type);
+  const preposition = Preposition[getEventType(type)];
   const timeInterval = formatDuration(startDate, endDate);
 
   return (

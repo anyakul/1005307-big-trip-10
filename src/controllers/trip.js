@@ -18,12 +18,13 @@ const isSameDay = (firstDate, secondDate) => {
 };
 class TripController {
 
-  constructor(container, eventsModel, /* destinationsModel, offersModel, */ api) {
+  constructor(container, eventsModel, destinationsModel, offersModel, api) {
     this._container = container;
     this._eventsModel = eventsModel;
-    // this._destinationsModel = destinationsModel;
-    // this._offersModel = offersModel;
+    this._destinationsModel = destinationsModel;
+    this._offersModel = offersModel;
     this._api = api;
+    this._details = true;
     this._eventsControllers = [];
     this._sortType = SortType.EVENT;
     this._thipDaysComponent = null;
@@ -54,7 +55,7 @@ class TripController {
   _renderEvents(events, container) {
     return events.map((eventItem) => {
       const eventsController = new EventsController(container, this._onViewChange);
-      eventsController.render(eventItem.id, eventItem, Mode.DEFAULT);
+      eventsController.render(eventItem, this._destinationsModel, this._offersModel, Mode.EDIT);
       return eventsController;
     });
   }
@@ -112,7 +113,7 @@ class TripController {
   _renderAddEventsButton(container) {
     this._newEventId = this._eventsModel.getEvents().length;
     this._addEventFormController = new EventsController(container, this._onViewChange);
-    this._addEventFormController.render(this._newEventId, {}, Mode.ADD);
+    this._addEventFormController.render({}, this._destinationsModel, this._offersModel, Mode.ADD);
   }
 
   _onSortTypeChange(sortType) {
@@ -127,3 +128,4 @@ class TripController {
 }
 
 export default TripController;
+

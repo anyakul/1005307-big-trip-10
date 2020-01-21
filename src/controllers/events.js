@@ -5,7 +5,7 @@ import EventEditorComponent from '../components/event-editor';
 // import EventsModel from '../models/events';
 
 const Mode = {
-  DEFAULT: `default`,
+  VIEW: `view`,
   EDIT: `edit`,
   ADD: `add`,
 };
@@ -50,28 +50,26 @@ class EventsController {
     this._editEventComponent = null;
     // this._onDataChange = onDataChange;
     this._onViewChange = onViewChange;
-    // this._eventItem = eventItem;
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
   }
 
-  render(id, eventItem, mode) {
+  render(eventItem, destinations, availableOffers, mode) {
     if (mode === Mode.ADD) {
       const eventIt = getDefaultEvent();
-      this._addEventComponent = new EventEditorComponent(eventIt, Mode.ADD);
+      this._addEventComponent = new EventEditorComponent(eventIt, destinations, availableOffers, Mode.ADD);
       this._setAddCardListeners();
       render(this._container, this._addEventComponent.getElement(), RenderPosition.AFTERBEGIN);
     } else {
-      this._eventItem = eventItem;
-      this._mode = mode;
-      this._eventComponent = new EventCardComponent(this._eventItem);
-      this._eventEditorComponent = new EventEditorComponent(this._eventItem, Mode.EDIT);
-      this._setCardListeners();
+      this._eventComponent = new EventCardComponent(eventItem);
+      this._eventEditorComponent = new EventEditorComponent(eventItem, destinations, availableOffers, Mode.EDIT);
+
       render(this._container, this._eventComponent.getElement());
+      this._setCardListeners();
     }
   }
 
   setDefaultView() {
-    if (this._mode !== Mode.DEFAULT) {
+    if (this._mode === Mode.EDIT) {
       this._showCard();
     }
   }
@@ -113,7 +111,7 @@ class EventsController {
 
   _showCard() {
     replace(this._eventComponent, this._eventEditorComponent);
-    this._mode = Mode.DEFAULT;
+    this._mode = Mode.VIEW;
   }
 
   _showForm() {

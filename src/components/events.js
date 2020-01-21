@@ -1,38 +1,23 @@
-const EventTypeTransport = {
-  TAXI: `taxi`,
-  BUS: `bus`,
-  TRAIN: `train`,
-  SHIP: `ship`,
-  TRANSPORT: `transport`,
-  DRIVE: `drive`,
-  FLIGHT: `flight`,
-};
+const TRANSFER_EVENTS = [
+  `taxi`,
+  `bus`,
+  `train`,
+  `ship`,
+  `transport`,
+  `drive`,
+  `flight`
+];
 
-const EventTypePlace = {
-  CHECKIN: `check-in`,
-  SIGHTSEEING: `sightseeing`,
-  RESTAURANT: `restaurant`
-};
-
-const Preposition = {
-  TRANSPORT: `to`,
-  PLACE: `in`,
-};
+const ACTIVITY_EVENTS = [
+  `check-in`,
+  `sightseeing`,
+  `restaurant`
+];
 
 const Mode = {
   DEFAULT: `default`,
   EDIT: `edit`,
   ADD: `add`,
-};
-
-
-const createPhotos = (destination) => {
-  return Object.values(destination.pictures);
-};
-
-const getCorrectPreposition = (type) => {
-  return ((type === EventTypePlace.CHECKIN || type === EventTypePlace.SIGHTSEEING || type === EventTypePlace.RESTAURANT) ?
-    Preposition.PLACE : Preposition.TRANSPORT);
 };
 
 const generateEventsWithUniqueDestinationNames = (events) => {
@@ -45,10 +30,9 @@ const generateEventsWithUniqueDestinationNames = (events) => {
 };
 
 export {
-  EventTypeTransport,
-  EventTypePlace,
+  TRANSFER_EVENTS,
+  ACTIVITY_EVENTS,
   Mode,
-  createPhotos,
-  getCorrectPreposition,
+  // getCorrectPreposition,
   generateEventsWithUniqueDestinationNames,
 };

@@ -11,7 +11,7 @@ const createSortTemplate = ({name, isChecked = false}) => (
       data-sort-type="${name}"
       ${isChecked ? `checked` : ``}
     >
-    <label class="trip-sort__btn" for="sort-${name}">${name} ${DIRECTION_ICON}</label>
+    <label class="trip-sort__btn" for="sort-${name}">${name}</label>
   </div>`
 );
 
@@ -24,11 +24,6 @@ const createEventSorterTemplate = (sorters) => (
     <span class="trip-sort__item  trip-sort__item--offers">Offers</span>
   </form>`
 );
-
-const DIRECTION_ICON =
-  `<svg class="trip-sort__direction-icon" width="8" height="10" viewBox="0 0 8 10">
-    <path d="M2.888 4.852V9.694H5.588V4.852L7.91 5.068L4.238 0.00999987L0.548 5.068L2.888 4.852Z"/>
-  </svg>`;
 
 export {
   createEventSorterTemplate,

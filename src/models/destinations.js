@@ -1,4 +1,4 @@
-class Destinations {
+class DestinationsModel {
   constructor() {
     this._destinations = [];
     this._defaultDestination = {
@@ -24,4 +24,4 @@ class Destinations {
   }
 }
 
-export default Destinations;
+export default DestinationsModel;
