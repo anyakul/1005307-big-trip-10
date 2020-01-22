@@ -76,10 +76,6 @@ export default class Events {
     this._eventsDates = this._getPointsDates(this._events);
   }
 
-  _sumOffers(offerList) {
-    return offerList.reduce((total, current) => total + current.price, 0);
-  }
-
   calcTotalAmount() {
     let sum = 0;
     for (const eventItem of this._events) {

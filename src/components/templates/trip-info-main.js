@@ -1,6 +1,5 @@
 // Маршрут поездки
 import {formatMonthDay} from './date';
-import {generateEventsWithUniqueDestinationNames} from '../events';
 
 const getDates = (events) => {
   let template = null;
@@ -20,28 +19,20 @@ const getDates = (events) => {
   return template;
 };
 
-const getDestinationNameFirstAndLast = (events) => {
-  return (
-    [events[0].destination.name
-    + ` &mdash; ... &mdash; ` +
-    events[events.length - 1].destination.name]
-  );
-};
-
-const destinationName = ({destination}) => `${destination.name}`;
-const getDestinationNames = (events) => Object.values(events).map(destinationName).join(` &mdash; `);
-
 const getRoute = (events) => {
+  const cities = new Set();
+  events.map((point) => cities.add(point.destination.name));
+  const startPoint = events[0];
+  const finalPoint = events[events.length - 1];
   let route = null;
-  const eventsWithUniqueDestinationNames = generateEventsWithUniqueDestinationNames(events);
-  if (eventsWithUniqueDestinationNames.length > 3) {
-    route = getDestinationNameFirstAndLast(eventsWithUniqueDestinationNames);
-  }
-  if (eventsWithUniqueDestinationNames.length > 0) {
-    route = getDestinationNames(eventsWithUniqueDestinationNames);
-  }
-  if (eventsWithUniqueDestinationNames.length === 0) {
-    route = ` `;
+  if (events.length > 3) {
+    route = `${startPoint.destination.name} &mdash; ... &mdash; ${finalPoint.destination.name}`;
+  } else if (events.length === 3) {
+    route = `${startPoint.destination.name} &mdash; ${events[1].destination.name} &mdash; ${finalPoint.destination.name}`;
+  } else if (events.size === 2) {
+    route = `${startPoint.destination.name} &mdash; ${finalPoint.destination.name}`;
+  } else {
+    route = `${startPoint.destination.name} &mdash; ${startPoint.destination.name}`;
   }
   return route;
 };

@@ -20,15 +20,6 @@ const Mode = {
   ADD: `add`,
 };
 
-const generateEventsWithUniqueDestinationNames = (events) => {
-  const eventsFiltered = events.filter((eventItem, index, self) =>
-    index === self.findIndex((t) => (
-      t.destination.name === eventItem.destination.name
-    ))
-  );
-  return eventsFiltered;
-};
-
 const getEventType = (event) => ACTIVITY_EVENTS.findIndex((it) => it.toLowerCase() === event) !== -1 ? `activity` : `transfer`;
 
 const Preposition = {
@@ -53,5 +44,4 @@ export {
   hasSameTitle,
   capitalizeFirstLetter,
   Preposition,
-  generateEventsWithUniqueDestinationNames,
 };
