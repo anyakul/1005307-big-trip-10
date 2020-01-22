@@ -4,7 +4,8 @@ import {TRANSFER_EVENTS,
   getEventType,
   hasSameTitle,
   capitalizeFirstLetter,
-  Preposition
+  Preposition,
+  CancelButtonName
 }
   from '../events';
 import {formatFullDate} from './date';
@@ -171,7 +172,7 @@ const createFormHeaderTemplate = (event, destinations, mode) => {
   const eventTypeListSection = createEventTypeListSection(event);
   const destinationListSection = createDestinationListSection(id, destinations.getAll());
 
-  const resetButtonName = mode === Mode.ADD ? `Cancel` : `Delete`;
+  const resetButtonName = mode === Mode.ADD ? capitalizeFirstLetter(CancelButtonName.CANCEL) : capitalizeFirstLetter(CancelButtonName.DELETE);
   const isFavoriteButton = mode === Mode.ADD ? `` : createFavoriteButtonTemplate(id, isFavorite);
 
   return (
@@ -220,7 +221,7 @@ const createFormHeaderTemplate = (event, destinations, mode) => {
 const createDetailsTemplate = (event, destinations, availableOffers) => {
   const {id, type, destination, offers} = event;
   const eventDestination = destinations.getDestinationByName(destination.name);
-  const offersTemplate = availableOffers.length ? createOffersSection(id, type, offers, availableOffers) : ``;
+  const offersTemplate = availableOffers ? createOffersSection(id, type, offers, availableOffers) : ``;
   const destinationTemplate = createDestinationSection(eventDestination);
 
   return (
@@ -231,9 +232,9 @@ const createDetailsTemplate = (event, destinations, availableOffers) => {
   );
 };
 
-const createEventEditorTemplate = (event, destinations, availableOffers, mode) => {
+const createEventEditorTemplate = (event, destinations, availableOffers, mode, isDetails = true) => {
   const headerInner = createFormHeaderTemplate(event, destinations, mode);
-  const detailsSection = createDetailsTemplate(event, destinations, availableOffers);
+  const detailsSection = (isDetails === true) ? createDetailsTemplate(event, destinations, availableOffers) : ` `;
 
   return mode === Mode.ADD ?
     (`<form class="trip-events__item  event  event--edit" action="#" method="post">

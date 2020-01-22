@@ -2,7 +2,6 @@ import {render, replace, remove, RenderPosition} from '../utils/render';
 import {isEscKey} from '../utils/key-board';
 import EventCardComponent from '../components/event-card';
 import EventEditorComponent from '../components/event-editor';
-// import EventsModel from '../models/events';
 
 const Mode = {
   VIEW: `view`,
@@ -26,20 +25,7 @@ const getDefaultEvent = (newEventId) => {
     isFavorite: false
   });
 };
-/*
-const parseFormData = (formData) => {
-  return new EventsModel({
-    'id': formData.id,
-    'type': formData.type,
-    'date_from': formData.startDate,
-    'date_to': formData.endDate,
-    'destination': formData.destination,
-    'base_price': formData.price,
-    'offers': formData.offers,
-    'is_favorite': formData.isFavorite
-  });
-};
-*/
+
 class EventsController {
 
   constructor(container, onViewChange) {
@@ -48,7 +34,6 @@ class EventsController {
     this._container = container;
     this._eventComponent = null;
     this._editEventComponent = null;
-    // this._onDataChange = onDataChange;
     this._onViewChange = onViewChange;
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
   }
@@ -75,22 +60,25 @@ class EventsController {
   }
 
   _setCardListeners() {
-    this._eventComponent.setRollUpButtonClickHandler(() => this._showForm());
+    this._eventComponent.setRollupButtonClickHandler(() => this._showForm());
   }
 
   _setListeners() {
     document.addEventListener(`keydown`, this._onEscKeyDown);
   }
 
+  _eventListener(evt) {
+    evt.preventDefault();
+    this._closeForm();
+  }
+
   _setAddCardListeners() {
     this._addEventComponent.setCancelHandler((evt) => {
-      evt.preventDefault();
-      this._closeForm();
+      this._eventListener(evt);
     });
 
     this._addEventComponent.setSubmitHandler((evt) => {
-      evt.preventDefault();
-      this._closeForm();
+      this._eventListener(evt);
     });
   }
 
@@ -104,8 +92,8 @@ class EventsController {
       evt.preventDefault();
       this._showCard();
     });
-    this._eventEditorComponent.setRollUpButtonClickHandler(() => {
-      return this._showCard();
+    this._eventEditorComponent.setRollupButtonClickHandler(() => {
+      this._showCard();
     });
   }
 

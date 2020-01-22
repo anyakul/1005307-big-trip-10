@@ -3,7 +3,7 @@ import TripController from './controllers/trip';
 import EventsModel from './models/events';
 import DestinationsModel from './models/destinations';
 import OffersModel from './models/offers';
-import API from './api.js';
+import API from './api';
 
 const AUTHORIZATION = `Basic er883jdzbdw`;
 const END_POINT = `https://htmlacademy-es-10.appspot.com/big-trip/`;
@@ -17,8 +17,7 @@ const offersModel = new OffersModel();
 
 const tripController = new TripController(body, eventsModel, destinationsModel, offersModel, api);
 
-Promise.all([api.getEvents(), api.getDestinations(), api.getOffers()]).then((data) => {
-  const [points, destinations, offers] = data;
+Promise.all([api.getPoints(), api.getDestinations(), api.getOffers()]).then(([points, destinations, offers]) => {
   eventsModel.setEvents(points);
   destinationsModel.setDestinations(destinations);
   offersModel.setOffers(offers);

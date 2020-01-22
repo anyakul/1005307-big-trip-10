@@ -1,3 +1,5 @@
+const OFFERS_TRUNCATE = 3;
+
 const TRANSFER_EVENTS = [
   `taxi`,
   `bus`,
@@ -20,28 +22,32 @@ const Mode = {
   ADD: `add`,
 };
 
-const getEventType = (event) => ACTIVITY_EVENTS.findIndex((it) => it.toLowerCase() === event) !== -1 ? `activity` : `transfer`;
-
 const Preposition = {
-  activity: `at`,
-  transfer: `to`
+  ACTIVITY: `at`,
+  TRANSFER: `to`
 };
 
-const OFFERS_TRUNCATE = 3;
+const CancelButtonName = {
+  DELETE: `delete`,
+  CANCEL: `cancel`,
+};
 
-const hasSameTitle = (array, it) => array.some((arrayIt) => array.length ? arrayIt.title === it.title : false);
+const getEventType = (event) => ACTIVITY_EVENTS.findIndex((it) => it.toLowerCase() === event) !== -1 ? `ACTIVITY` : `TRANSFER`;
+
+const hasSameTitle = (array, it) => array.some((arrayIt) => array.length === 0 || arrayIt.title === it.title);
 
 const capitalizeFirstLetter = (str) => {
   return `${str.slice(0, 1).toUpperCase()}${str.slice(1)}`;
 };
 
 export {
+  OFFERS_TRUNCATE,
   TRANSFER_EVENTS,
   ACTIVITY_EVENTS,
   Mode,
+  Preposition,
+  CancelButtonName,
   getEventType,
-  OFFERS_TRUNCATE,
   hasSameTitle,
   capitalizeFirstLetter,
-  Preposition,
 };

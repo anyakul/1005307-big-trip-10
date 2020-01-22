@@ -17,9 +17,9 @@ class EventFilterComponent extends AbstractComponent {
     return createEventFilterTemplates(this._filters);
   }
 
-  setFiltersChangeHandler(handler) {
+  setChangeHandler(handler) {
     this.getElement().addEventListener(`change`, (evt) => {
-      return handler(evt.target.value);
+      handler(evt.target.value);
     });
   }
 }

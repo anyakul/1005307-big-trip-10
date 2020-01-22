@@ -10,6 +10,11 @@ import {
   OFFERS_TRUNCATE,
   Preposition} from '../events';
 
+const truncateOffers = (offers) =>
+  offers.length > OFFERS_TRUNCATE
+    ? offers.slice(0, OFFERS_TRUNCATE)
+    : offers;
+
 const generateExtraServicesMarkup = ({title, price}) => {
   return (
     `<li class="event__offer">
@@ -80,10 +85,6 @@ const createCardTemplate = ({type, startDate, endDate, price, destination}) => {
 };
 
 const createEventCardTemplate = (events) => {
-  const truncateOffers = (offers) =>
-    offers.length > OFFERS_TRUNCATE
-      ? offers.slice(0, OFFERS_TRUNCATE)
-      : offers;
   const extraServices = createExtraServicesMarkup(truncateOffers(events.offers));
   const cardTemplate = createCardTemplate(events);
 

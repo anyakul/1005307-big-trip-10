@@ -25,12 +25,12 @@ class FilterController {
 
     render(container, this._filterComponent.getElement());
 
-    this._filterComponent.setFiltersChangeHandler(this._onFilterChange);
+    this._filterComponent.setChangeHandler(this._onFilterChange);
   }
 
   _onFilterChange(filterType) {
+    this._eventsModel.setFilter(filterType);
     this._activeFilterType = filterType;
-    this._eventsModel.setFilter(this._activeFilterType);
   }
 
   _onDataChange() {

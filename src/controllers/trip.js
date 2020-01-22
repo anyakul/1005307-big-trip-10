@@ -1,5 +1,5 @@
 import {render} from '../utils/render';
-import moment from 'moment';
+
 import SiteMenuComponent from '../components/site-menu';
 import AddEventButtonComponent from '../components/add-event-button';
 import {SortType} from '../components/event-sorter';
@@ -12,10 +12,8 @@ import SorterController from './sort';
 import FilterController from './filter';
 import TripInfoController from './trip-info';
 import {Mode} from '../components/events';
+import {isSameDay} from '../utils/common';
 
-const isSameDay = (firstDate, secondDate) => {
-  return moment(firstDate).isSame(secondDate, `day`) && moment(firstDate).isSame(secondDate, `month`) && moment(firstDate).isSame(secondDate, `year`);
-};
 class TripController {
 
   constructor(container, eventsModel, destinationsModel, offersModel, api) {

@@ -1,22 +1,25 @@
 // Маршрут поездки
 import {formatMonthDay} from './date';
 
+const EventsLength = {
+  MORE: 3,
+  PAIR: 2,
+  ONLY: 1,
+  NONE: 0,
+};
+
 const getDates = (events) => {
-  let template = null;
-  if (events.length === 0) {
-    template = ` `;
-  }
-  if (events.length > 1) {
-    template = (
+  if (events.length > 0) {
+    return (
       `${formatMonthDay(events[1].startDate)}
       &nbsp;&mdash;&nbsp;
       ${formatMonthDay(events[events.length - 1].endDate)}`
     );
+  } else if (events.length === 1) {
+    return (`${formatMonthDay(events[0].startDate)}`);
+  } else {
+    return ` `;
   }
-  if (events.length === 1) {
-    template = (`${formatMonthDay(events[0].startDate)}`);
-  }
-  return template;
 };
 
 const getRoute = (events) => {
@@ -24,17 +27,15 @@ const getRoute = (events) => {
   events.map((point) => cities.add(point.destination.name));
   const startPoint = events[0];
   const finalPoint = events[events.length - 1];
-  let route = null;
-  if (events.length > 3) {
-    route = `${startPoint.destination.name} &mdash; ... &mdash; ${finalPoint.destination.name}`;
-  } else if (events.length === 3) {
-    route = `${startPoint.destination.name} &mdash; ${events[1].destination.name} &mdash; ${finalPoint.destination.name}`;
-  } else if (events.size === 2) {
-    route = `${startPoint.destination.name} &mdash; ${finalPoint.destination.name}`;
+  if (events.length > EventsLength.MORE) {
+    return `${startPoint.destination.name} &mdash; ... &mdash; ${finalPoint.destination.name}`;
+  } else if (events.length === EventsLength.MORE) {
+    return `${startPoint.destination.name} &mdash; ${events[1].destination.name} &mdash; ${finalPoint.destination.name}`;
+  } else if (events.length === EventsLength.PAIR) {
+    return `${startPoint.destination.name} &mdash; ${finalPoint.destination.name}`;
   } else {
-    route = `${startPoint.destination.name} &mdash; ${startPoint.destination.name}`;
+    return `${startPoint.destination.name} &mdash; ${startPoint.destination.name}`;
   }
-  return route;
 };
 
 const createTripInfoMainTemplate = (events) => {

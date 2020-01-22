@@ -12,11 +12,10 @@ class EventCardComponent extends AbstractComponent {
     return createEventCardTemplate(this._events);
   }
 
-  setRollUpButtonClickHandler(handler) {
+  setRollupButtonClickHandler(handler) {
     this.getElement().querySelector(`.event__rollup-btn`)
       .addEventListener(`click`, handler);
   }
 }
 
 export default EventCardComponent;
-

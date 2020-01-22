@@ -1,16 +1,12 @@
 import {FilterType} from '../components/event-filter';
 import {SortType} from '../components/event-sorter';
 import {formatDuration} from '../components/templates/date';
-import moment from 'moment';
-
-const isSameDay = (firstDate, secondDate) => {
-  return moment(firstDate).isSame(secondDate, `day`) && moment(firstDate).isSame(secondDate, `month`) && moment(firstDate).isSame(secondDate, `year`);
-};
+import {isSameDay} from '../utils/common';
 
 const getUniqueDays = (days) => {
   let uniqueDays = [];
   days.forEach((day, i) => {
-    if (i === 0 || uniqueDays.every((it) => isSameDay(it, day) === false)) {
+    if (i === 0 || uniqueDays.every((it) => !isSameDay(it, day))) {
       uniqueDays.push(day);
     }
   });
@@ -19,9 +15,6 @@ const getUniqueDays = (days) => {
 
 const getSortedPoints = (points, sortType) => {
   switch (sortType) {
-    case SortType.EVENT:
-      points.slice();
-      break;
     case SortType.TIME:
       points.slice().sort((a, b) => formatDuration(b.dateTo, b.dateFrom) - formatDuration(a.dateTo, a.dateFrom));
       break;
@@ -30,6 +23,10 @@ const getSortedPoints = (points, sortType) => {
       break;
   }
   return points;
+};
+
+const createFormatDuration = (point) => {
+  formatDuration(point.dateFrom, Date.now());
 };
 
 export default class Events {
@@ -45,12 +42,10 @@ export default class Events {
 
   getEventsByFilter(filterType) {
     switch (filterType) {
-      case FilterType.EVERYTHING:
-        return this._events;
       case FilterType.FUTURE:
-        return this._events.filter((point) => formatDuration(point.dateFrom, Date.now()) > 0);
+        return this._events.filter((point) => createFormatDuration(point) > 0);
       case FilterType.PAST:
-        return this._events.filter((point) => formatDuration(point.dateFrom, Date.now()) < 0);
+        return this._events.filter((point) => createFormatDuration(point) < 0);
     }
     return this._events;
   }

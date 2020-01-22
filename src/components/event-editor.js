@@ -10,9 +10,13 @@ class EventEditorComponent extends AbstractSmartComponent {
     this._mode = mode;
     this._offers = offers;
     this._availableOffers = this._offers.getOffersByType(this._events.type);
+    this._event = null;
     this._rollUpButtonClickHandler = null;
     this._submitHandler = null;
     this._favoriteButtonHandler = null;
+    this._cancelHandler = null;
+    this._startTimeHandler = null;
+    this._endTimeHandler = null;
     this._subscribeOnEvents(mode);
   }
 
@@ -27,19 +31,19 @@ class EventEditorComponent extends AbstractSmartComponent {
 
   setCancelHandler(handler) {
     this.getElement().addEventListener(`reset`, handler);
-    this._submitHandler = handler;
+    this._cancelHandler = handler;
   }
 
-  setRollUpButtonClickHandler(handler) {
+  setRollupButtonClickHandler(handler) {
     this.getElement().querySelector(`.event__rollup-btn`)
       .addEventListener(`click`, handler);
     this._rollUpButtonClickHandler = handler;
   }
 
   recoveryListeners() {
-    (this._mode !== Mode.ADD) ?
-      this.setRollUpButtonClickHandler(this._rollUpButtonClickHandler) :
-      ` `;
+    if (this._mode !== Mode.ADD) {
+      this.setRollupButtonClickHandler(this._rollupButtonClickHandler);
+    }
     this.setSubmitHandler(this._submitHandler);
     this._subscribeOnEvents(this._mode);
   }
@@ -48,8 +52,8 @@ class EventEditorComponent extends AbstractSmartComponent {
     const element = this.getElement();
     element.querySelector(`.event__input--destination`).addEventListener(`change`, (evt) => {
       const inputValue = evt.target.value.trim();
-      const isValidDestination = this._destinations.getAll().findIndex((it) => it.name === inputValue);
-      if (isValidDestination === -1) {
+      const isValidDestination = this._destinations.getAll().findIndex((it) => it.name === inputValue) === -1;
+      if (isValidDestination) {
         this._event.destination.name = ``;
         this._details = false;
       } else {

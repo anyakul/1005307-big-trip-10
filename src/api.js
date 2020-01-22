@@ -1,4 +1,4 @@
-import Event from './models/event.js';
+import Event from './models/event';
 import Destination from './models/destination';
 import Offer from './models/offer';
 
@@ -9,46 +9,48 @@ const Method = {
   DELETE: `DELETE`
 };
 
+const toJSON = (response) => response.json();
+
 const checkStatus = (response) => {
-  if (response.status >= 200 && response.status < 300) {
-    return response;
-  } else {
+  if (!response.ok) {
     throw new Error(`${response.status}: ${response.statusText}`);
   }
+
+  return response;
 };
 
-const API = class {
+class API {
   constructor(endPoint, authorization) {
     this._endPoint = endPoint;
     this._authorization = authorization;
   }
 
-  getEvents() {
+  getPoints() {
     return this._load({url: `points`})
-      .then((response) => response.json())
+      .then(toJSON)
       .then(Event.parseEvents);
   }
 
   getDestinations() {
     return this._load({url: `destinations`})
-              .then((response) => response.json())
+              .then(toJSON)
               .then(Destination.parseDestinations);
   }
 
   getOffers() {
     return this._load({url: `offers`})
-              .then((response) => response.json())
+              .then(toJSON)
               .then(Offer.parseOffers);
   }
 
-  createEvents(events) {
+  createPoints(events) {
     return this._load({
       url: `points`,
       method: Method.PUT,
       body: JSON.stringify(events.toRAW()),
       headers: new Headers({'Content-Type': `application/json`})
     })
-      .then((response) => response.json())
+      .then(toJSON)
       .then(Event.parseEvent);
   }
 
@@ -59,11 +61,11 @@ const API = class {
       body: JSON.stringify(data.toRAW()),
       headers: new Headers({'Content-Type': `application/json`})
     })
-      .then((response) => response.json())
+      .then(toJSON)
       .then(Event.parseEvent);
   }
 
-  deleteTask(id) {
+  deletePoint(id) {
     return this._load({url: `points/${id}`, method: Method.DELETE});
   }
 
@@ -76,6 +78,6 @@ const API = class {
         throw err;
       });
   }
-};
+}
 
 export default API;
