@@ -257,4 +257,3 @@ const createEventEditorTemplate = (event, destinations, availableOffers, mode) =
 };
 
 export {createEventEditorTemplate};
-

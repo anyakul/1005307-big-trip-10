@@ -81,7 +81,12 @@ export default class Events {
   }
 
   calcTotalAmount() {
-    return this._events.reduce((total, current) => total + current.price + this._sumOffers(current.offers), 0);
+    let sum = 0;
+    for (const eventItem of this._events) {
+      sum += eventItem.price;
+      sum += eventItem.offers.reduce((accumulator, currentValue) => accumulator + currentValue.price, 0);
+    }
+    return sum;
   }
 
   addEvent(point) {
