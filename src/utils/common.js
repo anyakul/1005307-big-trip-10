@@ -1,10 +1,7 @@
-const getTypeName = (type) => type[0].toUpperCase() + type.slice(1);
+import moment from 'moment';
 
-const createTypes = (checkedType, array) => Object.values(array)
-  .map((type) => ({
-    type,
-    name: getTypeName(type),
-    isChecked: type === checkedType,
-  }));
+const isSameDay = (firstDate, secondDate) => {
+  return moment(firstDate).isSame(secondDate, `day`) && moment(firstDate).isSame(secondDate, `month`) && moment(firstDate).isSame(secondDate, `year`);
+};
 
-export {createTypes};
+export {isSameDay};

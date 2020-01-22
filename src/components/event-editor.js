@@ -1,18 +1,45 @@
-import AbstractSmartComponent from './abstract-smart-component';
-import {createEventEditorTemplate} from '../templates/event-editor';
+import AbstractSmartComponent from './abstract-smart';
+import {createEventEditorTemplate} from './templates/event-editor';
+import {Mode} from './events';
+import flatpickr from 'flatpickr';
+import {formatFullDate, formatDuration} from './templates/date';
 
 class EventEditorComponent extends AbstractSmartComponent {
-  constructor(events) {
+  constructor(events, destinations, offers, mode) {
     super();
     this._events = events;
-    this._rollUpButtonClickHandler = null;
+    this._destinations = destinations;
+    this._offers = offers;
+    this._availableOffers = this._offers.getOffersByType(this._events.type);
+    this._eventForReset = Object.assign({}, event);
+
+    this._mode = mode;
+    this._details = mode === Mode.EDIT;
+
     this._submitHandler = null;
-    this._favoriteButtonHandler = null;
+    this._deleteHandler = null;
+    this._flatpickr = null;
+
+    this._applyFlatpickr();
     this._subscribeOnEvents();
   }
 
   getTemplate() {
-    return createEventEditorTemplate(this._events);
+    return createEventEditorTemplate(this._events, this._destinations, this._availableOffers, this._mode, this._details);
+  }
+
+  setSubmitHandler(handler) {
+    this._submitHandler = handler;
+    if (this._mode === Mode.ADD) {
+      this.getElement().addEventListener(`submit`, this._submitHandler);
+    } else {
+      this.getElement().querySelector(`form`).addEventListener(`submit`, this._submitHandler);
+    }
+  }
+
+  setCancelHandler(handler) {
+    this.getElement().addEventListener(`reset`, handler);
+    this._cancelHandler = handler;
   }
 
   setSubmitHandler(handler) {
@@ -20,30 +47,109 @@ class EventEditorComponent extends AbstractSmartComponent {
     this._submitHandler = handler;
   }
 
-  setRollUpButtonClickHandler(handler) {
+  setRollupButtonClickHandler(handler) {
     this.getElement().querySelector(`.event__rollup-btn`)
       .addEventListener(`click`, handler);
     this._rollUpButtonClickHandler = handler;
   }
 
   recoveryListeners() {
-    this.setRollUpButtonClickHandler(this._rollUpButtonClickHandler);
+    if (this._mode !== Mode.ADD) {
+      this.setRollupButtonClickHandler(this._rollupButtonClickHandler);
+    }
     this.setSubmitHandler(this._submitHandler);
-    this._subscribeOnEvents();
+    this._subscribeOnEvents(this._mode);
+    this._setValidation();
+  }
+
+  rerender() {
+    super.rerender();
+    this._applyFlatpickr();
+  }
+
+  reset() {
+    this._events = Object.assign({}, this._eventForReset);
+    this.rerender();
+  }
+
+  _setValidation() {
+    const startDateInput = this._element.querySelector(`input[name=event-start-time]`);
+
+    if (formatDuration(this._events.startDate, this._events.endDate) > 0) {
+      startDateInput.setCustomValidity(`The start time should be earlier than the end time`);
+    } else {
+      startDateInput.setCustomValidity(``);
+    }
   }
 
   _subscribeOnEvents() {
-    this.getElement().querySelector(`.event__favorite-checkbox`)
-      .addEventListener(`change`, () => {
-        this._events.isFavorite = !this._events.isFavorite;
-        this.rerender();
-      });
+    const element = this.getElement();
 
-    this.getElement().querySelector(`.event__type-list`).addEventListener(`change`, (evt) => {
-      if (evt.target.tagName === `INPUT`) {
-        this._events.type = evt.target.value;
-        this.rerender();
+    if (this._mode === Mode.EDIT) {
+      element.querySelector(`.event__favorite-checkbox`).addEventListener(`change`, () => {
+        this._events = Object.assign({}, this._events, {isFavorite: !this._events.isFavorite});
+      });
+    }
+
+    element.querySelector(`.event__type-list`).addEventListener(`change`, (evt) => {
+      this._availableOffers = this._offers.getOffersByType(evt.target.value);
+      this._events = Object.assign({}, this._events,
+          {type: evt.target.value},
+          {offers: []});
+
+      this.rerender();
+    });
+
+    element.querySelector(`.event__input--destination`).addEventListener(`change`, (evt) => {
+      const inputValue = evt.target.value.trim();
+      const isValidDestination = this._destinations.getAll().findIndex((it) => it.name === inputValue) === -1;
+      if (isValidDestination) {
+        this._events.destination.name = ``;
+        this._details = false;
+      } else {
+        this._events.destination = Object.assign({}, this._events.destination, {name: evt.target.value.trim()});
+        this._details = true;
       }
+      this.rerender();
+    });
+
+    element.querySelector(`input[name=event-start-time]`).addEventListener(`change`, (evt) => {
+      this._events.startDate = formatFullDate(evt.target.value);
+      this._setValidation();
+    });
+
+    element.querySelector(`input[name=event-end-time]`).addEventListener(`change`, (evt) => {
+      this._events.endDate = formatFullDate(evt.target.value);
+      this._setValidation();
+    });
+
+    element.querySelector(`.event__input--price`).addEventListener(`change`, (evt) => {
+      this._events.price = +evt.target.value;
+    });
+  }
+
+  _applyFlatpickr() {
+    if (this._flatpickr) {
+      Object.values(this._flatpickr).forEach((it) => it.destroy());
+      this._flatpickr = null;
+    }
+
+    const [startDateInput, endDateInput] = Array.from(this.getElement().querySelectorAll(`.event__input--time`));
+
+    this._flatpickr = Object.assign({}, {START: {}, END: {}});
+
+    this._flatpickr.START = flatpickr(startDateInput, {
+      enableTime: true,
+      allowInput: true,
+      defaultDate: this._events.startDate,
+      formatDate: formatFullDate
+    });
+
+    this._flatpickr.END = flatpickr(endDateInput, {
+      enableTime: true,
+      allowInput: true,
+      defaultDate: this._events.endDate,
+      formatDate: formatFullDate
     });
   }
 }

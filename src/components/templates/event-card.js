@@ -1,33 +1,44 @@
 import {makeTemplateGenerator} from './generator';
-import {getCorrectPreposition} from '../components/event-card';
-import {formatDuration, castFullDateFormat, castTimeFormat} from '../utils/date';
+import {
+  formatDuration,
+  formatTime,
+  formatFullDate,
+} from './date';
 
-const generateExtraServicesMarkup = ({title, price, accepted}) => {
+import {
+  getEventType,
+  OFFERS_TRUNCATE,
+  Preposition} from '../events';
+
+const truncateOffers = (offers) =>
+  offers.length > OFFERS_TRUNCATE
+    ? offers.slice(0, OFFERS_TRUNCATE)
+    : offers;
+
+const generateExtraServicesMarkup = ({title, price}) => {
   return (
-    accepted ? (
-      `<li class="event__offer">
-        <span class="event__offer-title">
-          ${title}
-        </span>
-        &plus;
-        &euro;&nbsp;
-        <span class="event__offer-price">
-          ${price}
-        </span>
-      </li>`
-    ) : ``
+    `<li class="event__offer">
+      <span class="event__offer-title">
+        ${title}
+      </span>
+      &plus;
+      &euro;&nbsp;
+      <span class="event__offer-price">
+        ${price}
+      </span>
+    </li>`
   );
 };
 
 const createExtraServicesMarkup = makeTemplateGenerator(generateExtraServicesMarkup);
 
-const createCardTemplate = ({type, basePrice, destination, dateFrom, dateTo}) => {
-  const castDateFrom = castTimeFormat(dateFrom);
-  const castDateTo = castTimeFormat(dateTo);
-  const fullDateFrom = castFullDateFormat(dateFrom);
-  const fullDateTo = castFullDateFormat(dateTo);
-  const preposition = getCorrectPreposition(type);
-  const timeInterval = formatDuration(dateFrom, dateTo);
+const createCardTemplate = ({type, startDate, endDate, price, destination}) => {
+  const dateFromInCard = formatTime(startDate);
+  const dateToInCard = formatTime(endDate);
+  const fullDateFrom = formatFullDate(startDate);
+  const fullDateTo = formatFullDate(endDate);
+  const preposition = Preposition[getEventType(type)];
+  const timeInterval = formatDuration(startDate, endDate);
 
   return (
     `<div class="event__type">
@@ -50,14 +61,14 @@ const createCardTemplate = ({type, basePrice, destination, dateFrom, dateTo}) =>
           class="event__start-time"
           datetime="${fullDateFrom}"
           >
-          ${castDateFrom}
+          ${dateFromInCard}
         </time>
         &mdash;
         <time
           class="event__end-time"
           datetime="${fullDateTo}"
           >
-          ${castDateTo}
+          ${dateToInCard}
         </time>
       </p>
       <p class="event__duration">
@@ -67,14 +78,14 @@ const createCardTemplate = ({type, basePrice, destination, dateFrom, dateTo}) =>
     <p class="event__price">
       &euro;&nbsp;
       <span class="event__price-value">
-        ${basePrice}
+        ${price}
       </span>
     </p>`
   );
 };
 
 const createEventCardTemplate = (events) => {
-  const extraServices = createExtraServicesMarkup(events.offers);
+  const extraServices = createExtraServicesMarkup(truncateOffers(events.offers));
   const cardTemplate = createCardTemplate(events);
 
   return (

@@ -1,5 +1,5 @@
-import AbstractComponent from './abstract-component';
-import {DIRECTION_ICON, createSortFormTemplate} from '../templates/event-sorter';
+import AbstractComponent from './abstract';
+import {createEventSorterTemplate} from './templates/event-sorter';
 
 const SortType = {
   EVENT: `event`,
@@ -7,36 +7,25 @@ const SortType = {
   PRICE: `price`,
 };
 
-const SortTypeName = {
-  [SortType.EVENT]: `Event`,
-  [SortType.TIME]: `Time ${DIRECTION_ICON}`,
-  [SortType.PRICE]: `Price ${DIRECTION_ICON}`,
-};
-
-const createSorters = (checkedType) => Object.entries(SortTypeName)
-  .map(([type, name]) => ({type, name, isChecked: type === checkedType}));
-
 class EventSorterComponent extends AbstractComponent {
-  constructor() {
+  constructor(sorters) {
     super();
-
-    this._currentSortType = SortType.EVENT;
-    this._sorters = createSorters(this._currentSortType);
+    this._sorters = sorters;
+    this._active = SortType.PRICE;
   }
 
   getTemplate() {
-    return createSortFormTemplate(this._sorters);
+    return createEventSorterTemplate(this._sorters);
   }
 
-  setSortChangeHandler(handler) {
-    this.getElement().addEventListener(`change`, (evt) => {
-      const sortType = evt.target.value;
+  setSortTypeChangeHandler(handler) {
+    this.getElement().addEventListener(`click`, (evt) => {
+      const {sortType} = evt.target.dataset;
 
-      if (this._currentSortType !== sortType) {
-        this._currentSortType = sortType;
+      if (sortType && sortType !== this._active) {
+        this._active = sortType;
+        handler(this._active);
       }
-
-      handler(this._currentSortType);
     });
   }
 }

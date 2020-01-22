@@ -1,33 +1,6 @@
-import {createEventCardTemplate} from '../templates/event-card';
-import AbstractComponent from './abstract-component';
+import AbstractComponent from './abstract';
+import {createEventCardTemplate} from './templates/event-card';
 
-const EventTypeTransport = {
-  TAXI: `taxi`,
-  BUS: `bus`,
-  TRAIN: `train`,
-  SHIP: `ship`,
-  TRANSPORT: `transport`,
-  DRIVE: `drive`,
-  FLIGHT: `flight`,
-};
-
-const EventTypePlace = {
-  CHECKIN: `check-in`,
-  SIGHTSEEING: `sightseeing`,
-  RESTAURANT: `restaurant`
-};
-
-const Preposition = {
-  TRANSPORT: `to`,
-  PLACE: `in`,
-};
-
-const getCorrectPreposition = (type) => {
-  return ((type === EventTypePlace.CHECKIN || type === EventTypePlace.SIGHTSEEING || type === EventTypePlace.RESTAURANT) ?
-    Preposition.PLACE : Preposition.TRANSPORT);
-};
-
-const createPhotos = (destination) => Object.values(destination.pictures);
 
 class EventCardComponent extends AbstractComponent {
   constructor(events) {
@@ -39,15 +12,10 @@ class EventCardComponent extends AbstractComponent {
     return createEventCardTemplate(this._events);
   }
 
-  setRollUpButtonClickHandler(handler) {
+  setRollupButtonClickHandler(handler) {
     this.getElement().querySelector(`.event__rollup-btn`)
       .addEventListener(`click`, handler);
   }
 }
 
 export default EventCardComponent;
-export {EventTypeTransport,
-  EventTypePlace,
-  createPhotos,
-  getCorrectPreposition,
-};

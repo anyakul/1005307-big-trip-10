@@ -1,128 +1,127 @@
-import {RenderPosition, render, remove} from '../utils/render';
+import {render} from '../utils/render';
 
-import TripInfoComponent from '../components/trip-info';
 import SiteMenuComponent from '../components/site-menu';
-import EventFilterComponent from '../components/event-filter';
-import TripCostComponent from '../components/trip-cost';
 import AddEventButtonComponent from '../components/add-event-button';
-import EventSorterComponent, {SortType} from '../components/event-sorter';
-import DayBoardComponent from '../components/day-board';
-import SortBoardComponent from '../components/sort-board';
-import {castDateFormat} from '../utils/date';
+import {SortType} from '../components/event-sorter';
+import NoEventsComponent from '../components/no-events';
+import TripDaysListComponent from '../components/trip-days-list';
+import TripDayComponent from '../components/trip-day';
 
-import PointController from './point';
+import EventsController from './events';
+import SorterController from './sort';
+import FilterController from './filter';
+import TripInfoController from './trip-info';
+import {Mode} from '../components/events';
+import {isSameDay} from '../utils/common';
 
 class TripController {
 
-  constructor(container) {
+  constructor(container, eventsModel, destinationsModel, offersModel, api) {
     this._container = container;
-    this._events = [];
-    this._sortedEvents = [];
-    this._pointControllers = [];
-    this._siteMenuComponent = new SiteMenuComponent();
-    this._eventFilterComponent = new EventFilterComponent();
-    this._addEventButtonComponent = new AddEventButtonComponent();
-    this._eventSorterComponent = new EventSorterComponent();
-    this._sortBoardContainer = new SortBoardComponent();
-
+    this._eventsModel = eventsModel;
+    this._destinationsModel = destinationsModel;
+    this._offersModel = offersModel;
+    this._api = api;
+    this._details = true;
+    this._eventsControllers = [];
+    this._sortType = SortType.EVENT;
+    this._thipDaysComponent = null;
     this._onViewChange = this._onViewChange.bind(this);
     this._onSortTypeChange = this._onSortTypeChange.bind(this);
-
-    this._tripEvents = this._container.querySelector(`.trip-events`);
-    this._eventSorterComponent.setSortChangeHandler(this._onSortTypeChange);
+    this._renderWithSortType = this._renderWithSortType.bind(this);
+    this._eventsModel.setFilterChangeHandler(this._onSortTypeChange);
+    this._eventsModel.setSorterChangeHandler(this._renderWithSortType);
+    this._eventsModel.addDataChangeHandler(this._sortEvents);
   }
 
-  render(events) {
+  render() {
+    const events = this._eventsModel.getEvents();
+    this._renderHeaderTemplates();
+    this._addEventButtonComponent.setClickHandler(() => this._renderAddEventsButton(this._tripDaysListElement));
+    if (events.length === 0) {
+      render(this._tripEvents, this._noEventComponent.getElement());
+    } else {
+      this._eventsModel.setSorterChangeHandler(this._onSortTypeChange);
+      this._tripDaysListElement = new TripDaysListComponent().getElement();
+      this._sorterController = new SorterController(this._tripEvents, this._eventsModel);
+      this._sorterController.render();
+      this._sorterController.setSorterTypeHandler(this._onSortTypeChange);
+      this._renderSortEventsByDefault(this._tripDaysListElement, events);
+    }
+  }
+
+  _renderEvents(events, container) {
+    return events.map((eventItem) => {
+      const eventsController = new EventsController(container, this._onViewChange);
+      eventsController.render(eventItem, this._destinationsModel, this._offersModel, Mode.EDIT);
+      return eventsController;
+    });
+  }
+
+  _renderTripDays(container, eventsDates, events) {
+    return eventsDates.map((day, i) => {
+      const dayEvents = events.filter((event) => isSameDay(event.startDate, day));
+      const tripDayComponent = new TripDayComponent(day, dayEvents, i);
+      render(container, tripDayComponent.getElement());
+      return this._renderEvents(dayEvents, tripDayComponent.getElement().children[1]);
+    });
+  }
+
+  _renderSortEventsByDefault(component, events) {
+    const eventsDates = this._eventsModel.getPointsDates(events);
+    render(this._tripEvents, this._tripDaysListElement);
+    this._eventsControllers = this._renderTripDays(component, eventsDates, events)
+      .reduce((days, day) => days.concat(day), []);
+    return this._eventsControllers;
+  }
+
+  _renderSortEvents(events) {
+    this._eventsControllers = this._renderEvents(events, this._tripDaysListElement)
+      .reduce((days, day) => days.concat(day), []);
+    return this._eventsControllers;
+  }
+
+  _renderWithSortType() {
+    const events = this._eventsModel.getEvents();
+
+    if (this._sortType !== SortType.EVENT) {
+      this._eventsControllers = this._renderSortEvents(events);
+    } else {
+      this._renderSortEventsByDefault(this._tripDaysListElement, events);
+    }
+  }
+
+  _renderHeaderTemplates() {
     const header = this._container.querySelector(`header`);
     const tripMain = header.querySelector(`.trip-main`);
     const tripInfo = tripMain.querySelector(`.trip-info`);
     const tripControls = tripMain.querySelector(`.trip-controls`);
-
-    this._events = events;
-
-    this._tripCostComponent = new TripCostComponent(this._events);
-    this._dayBoardComponent = new DayBoardComponent(this._events);
-    this._tripInfoComponent = new TripInfoComponent(this._events);
-
-    render(tripMain, this._addEventButtonComponent, RenderPosition.BEFOREEND);
-    render(tripInfo, this._tripCostComponent, RenderPosition.AFTERBEGIN);
-    render(tripInfo, this._tripInfoComponent, RenderPosition.AFTERBEGIN);
-    render(tripControls, this._siteMenuComponent, RenderPosition.BEFOREEND);
-    render(tripControls, this._eventFilterComponent, RenderPosition.BEFOREEND);
-    render(this._tripEvents, this._eventSorterComponent, RenderPosition.AFTERBEGIN);
-    render(this._tripEvents, this._dayBoardComponent, RenderPosition.BEFOREEND);
-
-    this._showSortEvents(this._sortEventsDefault());
+    this._tripEvents = this._container.querySelector(`.trip-events`);
+    this._siteMenuComponent = new SiteMenuComponent();
+    this._addEventButtonComponent = new AddEventButtonComponent();
+    this._noEventComponent = new NoEventsComponent();
+    this._tripInfoController = new TripInfoController(tripInfo, this._eventsModel);
+    this._filterController = new FilterController(tripControls, this._eventsModel);
+    this._tripInfoController.render();
+    render(tripControls, this._siteMenuComponent.getElement());
+    this._filterController.render();
+    render(tripMain, this._addEventButtonComponent.getElement());
   }
 
-  _sortEventsDefault() {
-    if (this._sortBoardContainer) {
-      remove(this._sortBoardContainer);
-    }
-    const pointControllers = [];
-    this._events.forEach((card) => {
-      const tripEventsList = this._tripEvents.querySelectorAll(`.trip-events__list`);
-      tripEventsList.innerHTML = ``;
-
-      tripEventsList.forEach((tripEventItem) => {
-        if (tripEventItem.dataset.date === castDateFormat(card.dateFrom)) {
-          const pointController = new PointController(tripEventItem, this._onViewChange);
-          pointController.render(card);
-          pointControllers.push(pointController);
-        }
-      });
-    });
-    return pointControllers;
-  }
-
-  _sortEvents() {
-    if (this._sortBoardContainer) {
-      remove(this._sortBoardContainer);
-    }
-    if (this._dayBoardComponent) {
-      remove(this._dayBoardComponent);
-    }
-    render(this._tripEvents, this._sortBoardContainer, RenderPosition.BEFOREEND);
-    const pointControllers = [];
-    this._sortedEvents.forEach((card) => {
-      const tripEventsList = this._tripEvents.querySelector(`.trip-events__list`);
-      const pointController = new PointController(tripEventsList, this._onViewChange);
-      pointController.render(card);
-      pointControllers.push(pointController);
-    });
-    return pointControllers;
-  }
-
-  _showSortEvents(method) {
-    this._pointControllers = this._pointControllers.concat(method);
+  _renderAddEventsButton(container) {
+    this._newEventId = this._eventsModel.getEvents().length;
+    this._addEventFormController = new EventsController(container, this._onViewChange);
+    this._addEventFormController.render({}, this._destinationsModel, this._offersModel, Mode.ADD);
   }
 
   _onSortTypeChange(sortType) {
-
-    switch (sortType) {
-      case SortType.EVENT:
-        render(this._tripEvents, this._dayBoardComponent, RenderPosition.BEFOREEND);
-        this._showSortEvents(this._sortEventsDefault());
-        break;
-
-      case SortType.PRICE:
-        this._sortedEvents = this._events.slice().sort((a, b) => b.basePrice - a.basePrice);
-        this._showSortEvents(this._sortEvents());
-        break;
-
-      case SortType.TIME:
-        this._sortedEvents = this._events.slice().sort((a, b) => {
-          const durationFirst = a.dateToUnix - a.dateFromUnix;
-          const durationSecond = b.dateToUnix - b.dateFromUnix;
-          return durationSecond - durationFirst;
-        });
-        this._showSortEvents(this._sortEvents());
-        break;
-    }
+    this._sortType = sortType;
+    this._eventsModel.setSorter(sortType);
+    this._renderWithSortType();
   }
 
   _onViewChange() {
-    this._pointControllers.forEach((it) => it.setDefaultView());
+    this._eventsControllers.forEach((it) => it.setDefaultView());
   }
 }
 

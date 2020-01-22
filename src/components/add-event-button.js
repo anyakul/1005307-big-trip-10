@@ -1,12 +1,9 @@
-import AbstractComponent from './abstract-component';
-
-const createButtonTemplate = () => (
-  `<button class="trip-main__event-add-btn btn btn--big btn--yellow" type="button">New event</button>`
-);
+import AbstractComponent from './abstract';
+import {createAddEventButtonTemplate} from './templates/add-event-button';
 
 class AddEventButtonComponent extends AbstractComponent {
   getTemplate() {
-    return createButtonTemplate();
+    return createAddEventButtonTemplate();
   }
 
   setClickHandler(handler) {

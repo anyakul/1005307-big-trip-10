@@ -1,5 +1,5 @@
-import AbstractComponent from './abstract-component.js';
-import {createMenuTemplate} from '../templates/site-menu';
+import AbstractComponent from './abstract';
+import {createMenuTemplate} from './templates/site-menu';
 
 const MenuTab = {
   TABLE: `table`,
