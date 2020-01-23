@@ -54,6 +54,10 @@ export default class Events {
     return getSortedPoints(this.getEventsByFilter(this._activeFilterType), this._activeSortType);
   }
 
+  getEventsAll() {
+    return this._events;
+  }
+
   getPointsDates(points) {
     return this._getPointsDates(points);
   }

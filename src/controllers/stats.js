@@ -1,5 +1,5 @@
 import StatsComponent from '../components/stats';
-import {render} from '../utils/render';
+import {render, RenderPosition} from '../utils/render';
 
 const StatsTypes = {
   MONEY: `money`,
@@ -8,9 +8,10 @@ const StatsTypes = {
 };
 
 class StatsController {
-  constructor(container) {
+  constructor(container, eventsModel) {
     this._container = container;
     this._statsComponent = null;
+    this._eventsModel = eventsModel;
   }
 
   render() {
@@ -18,9 +19,9 @@ class StatsController {
       name: statsType,
     }));
 
-    this._statsComponent = new StatsComponent(stats);
+    this._statsComponent = new StatsComponent(stats, this._eventsModel);
 
-    render(this._container, this._statsComponent.getElement());
+    render(this._container, this._statsComponent.getElement(), RenderPosition.AFTERBEGIN);
   }
 }
 
