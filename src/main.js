@@ -5,6 +5,11 @@ import DestinationsModel from './models/destinations';
 import OffersModel from './models/offers';
 import API from './api';
 
+const PageMode = {
+  TABLE: `table`,
+  STATS: `stats`,
+};
+
 const AUTHORIZATION = `Basic er883jdzbdw`;
 const END_POINT = `https://htmlacademy-es-10.appspot.com/big-trip/`;
 const api = new API(END_POINT, AUTHORIZATION);
@@ -15,12 +20,12 @@ const eventsModel = new EventsModel();
 const destinationsModel = new DestinationsModel();
 const offersModel = new OffersModel();
 
-const tripController = new TripController(body, eventsModel, destinationsModel, offersModel, api);
+const tripController = new TripController(body, eventsModel, destinationsModel, offersModel, api, PageMode.STATS);
 
 Promise.all([api.getPoints(), api.getDestinations(), api.getOffers()]).then(([points, destinations, offers]) => {
   eventsModel.setEvents(points);
   destinationsModel.setDestinations(destinations);
   offersModel.setOffers(offers);
 
-  tripController.render();
+  tripController.render(PageMode.TABLE);
 });

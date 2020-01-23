@@ -11,12 +11,19 @@ import EventsController from './events';
 import SorterController from './sort';
 import FilterController from './filter';
 import TripInfoController from './trip-info';
+import StatsController from './stats';
 import {Mode} from '../components/events';
 import {isSameDay} from '../utils/common';
 
+const PageMode = {
+  TABLE: `table`,
+  STATS: `stats`,
+};
+
 class TripController {
 
-  constructor(container, eventsModel, destinationsModel, offersModel, api) {
+  constructor(container, eventsModel, destinationsModel, offersModel, api, pageMode) {
+    this._pageMode = pageMode;
     this._container = container;
     this._eventsModel = eventsModel;
     this._destinationsModel = destinationsModel;
@@ -35,10 +42,14 @@ class TripController {
   }
 
   render() {
-    const events = this._eventsModel.getEvents();
+    this._events = this._eventsModel.getEvents();
     this._renderHeaderTemplates();
     this._addEventButtonComponent.setClickHandler(() => this._renderAddEventsButton(this._tripDaysListElement));
-    if (events.length === 0) {
+    return (this._pageMode === PageMode.TABLE) ? this._renderTablePage() : this._renderStatsPage();
+  }
+
+  _renderTablePage() {
+    if (this._events.length === 0) {
       render(this._tripEvents, this._noEventComponent.getElement());
     } else {
       this._eventsModel.setSorterChangeHandler(this._onSortTypeChange);
@@ -46,8 +57,13 @@ class TripController {
       this._sorterController = new SorterController(this._tripEvents, this._eventsModel);
       this._sorterController.render();
       this._sorterController.setSorterTypeHandler(this._onSortTypeChange);
-      this._renderSortEventsByDefault(this._tripDaysListElement, events);
+      this._renderSortEventsByDefault(this._tripDaysListElement, this._events);
     }
+  }
+
+  _renderStatsPage() {
+    this._statsController = new StatsController(this._tripEvents);
+    this._statsController.render();
   }
 
   _renderEvents(events, container) {
@@ -101,11 +117,14 @@ class TripController {
     this._addEventButtonComponent = new AddEventButtonComponent();
     this._noEventComponent = new NoEventsComponent();
     this._tripInfoController = new TripInfoController(tripInfo, this._eventsModel);
-    this._filterController = new FilterController(tripControls, this._eventsModel);
+
+    render(tripMain, this._addEventButtonComponent.getElement());
     this._tripInfoController.render();
     render(tripControls, this._siteMenuComponent.getElement());
-    this._filterController.render();
-    render(tripMain, this._addEventButtonComponent.getElement());
+    if (this._pageMode !== PageMode.STATS) {
+      this._filterController = new FilterController(tripControls, this._eventsModel);
+      this._filterController.render();
+    }
   }
 
   _renderAddEventsButton(container) {
