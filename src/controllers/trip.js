@@ -40,7 +40,7 @@ class TripController {
     this._events = this._eventsModel.getEvents();                  //console.log('trip',this._events);
     this._renderHeaderTemplates();
     this._addEventButtonComponent.setClickHandler(() => this._renderAddEventsButton(this._tripDaysListElement));
-  //  this._renderStatsPage();
+   // this._renderStatsPage();
     this._renderTablePage();      //console.log('trip',this._events);
   }
 

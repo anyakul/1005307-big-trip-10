@@ -37,18 +37,20 @@ export default class EventsModel {
     this._filterChangeHandlers = [];
     this._sorterChangeHandlers = [];
     this._dataChangeHandlers = [];
-    this._activeFilterType = FilterType.PAST;
+    this._activeFilterType = FilterType.FUTURE;
     this._activeSortType = SortType.EVENT;
   }
+                                               
+  getEventsByFilter(filterType) {
+    const now = Date.now();
 
-  getEventsByFilter(filterType) {   //console.log('events', this._events);
-                                                       
     switch (filterType) {
-      case FilterType.FUTURE: // console.log(this._events.filter((point) => createFormatDuration(point) > 0));  
-        return this._events.filter((point) => createFormatDuration(point) < 0);
-      case FilterType.PAST:   //  console.log(this._events.filter((point) => createFormatDuration(point) < 0)); 
-        return this._events.filter((point) => createFormatDuration(point) > 0);
+      case FilterType.FUTURE:
+        return this._events.filter(({startDate}) => startDate > now);
+      case FilterType.PAST:
+        return this._events.filter(({startDate}) => startDate < now);
     }
+
     return this._events;
   }
 
@@ -70,9 +72,10 @@ export default class EventsModel {
       this._eventDates = [];
       return;
     }
+    
     this._events = events
-      .map((event) => Object.assign({}, event, {startDate: event.startDate}, {endDate: event.endDate}))
-      .sort((a, b) => formatDuration(a.startDate, b.startDate) > 0);
+      .map((event) => Object.assign({}, event, {startDate: new Date(event.startDate)}, {endDate: new Date(event.endDate)}))
+      .sort((a, b) => calcDuration(a.startDate, b.startDate) > 0);
 
     this._eventsDates = this._getPointsDates(this._events);
   }

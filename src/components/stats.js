@@ -181,17 +181,35 @@ const renderTransportChart = (element, points) => {
 const formatTimeValue = ([format, value]) => `${String(value).padStart(2, `0`)}${format}`;
 const formatDurationTime = (duration) => Object.entries(duration).map(formatTimeValue).join(` `);
 const formatDuration = (value) => {
-  const {days: D, hours: H, minutes: M} = value;
+  const date = new Date(value);
+  const hour = `${date.getDate()} h` ;
+  return hour;
+}
 
- // if (D > 0) {
-    return formatDurationTime({D, H, M});
- // }
- // if (H > 0) {
-  //  return formatDurationTime({H, M});
- // }
-
- // return formatDurationTime({M});
-};
+const timer = (value) => {
+  // Берем разницу дат в секундах
+ // let delta = Math.floor((endTime - new Date()) / 1000);
+  // Вычисляем количество ПОЛНЫХ дней
+//  let days = Math.floor(value / 86400);
+  // А теперь вычитаем из секунд количество дней, выраженных в секундах
+  //value -= days / 86400;
+  // В оставшихся секунд вычленяем количество полных часов
+//  
+  // Также их потом вычитаем, выразив в секундах
+  //value -= hours * 3600;
+  // Из оставшихся секунд берем минуты
+//  
+  // Опять вычитаем
+ // value -= minutes * 60;
+  // И наконец секунды
+  // В теории  деление по модулю на 60 не обязателен
+ // let seconds = delta % 60;
+  // Итоговая дата
+  let diffDays = Math.ceil(value / (1000 * 3600 * 24)); 
+let hours = Math.floor(value / 3600) % 24;
+let minutes = Math.floor(value / 60) % 60;
+  return `${diffDays}d ${hours}h ${minutes}m`;
+} 
 
 const renderTimeChart = (element, events) => {
   const types = [];
@@ -206,7 +224,7 @@ const renderTimeChart = (element, events) => {
 
     const labels = chartData.map((item) => `${emojis.get(item.name)} ${item.name}`);
     const values = chartData.map((item) => item.duration);
-    console.log(formatDuration(values));
+//    console.log(formatDuration(values));
 
   return new Chart(element, {
     plugins: [ChartDataLabels],
@@ -228,7 +246,7 @@ const renderTimeChart = (element, events) => {
       plugins: {
         datalabels: {
           formatter(value) {
-            return formatDuration(value);
+            return timer(value);
           }
         }
       },
@@ -265,8 +283,8 @@ class StatsComponent extends AbstractComponent {
     const moneyBlock = element.querySelector(`.statistics__chart--money`);
     const transportBlock = element.querySelector(`.statistics__chart--transport`);
     const timeBlock = element.querySelector(`.statistics__chart--spend`);
- //   this._moneyChart = renderMoneyChart(moneyBlock, this._events);
- //   this._transportChart = renderTransportChart(transportBlock, this._events);
+    this._moneyChart = renderMoneyChart(moneyBlock, this._events);
+    this._transportChart = renderTransportChart(transportBlock, this._events);
     this._timeChart = renderTimeChart(timeBlock, this._events);
   }
 }
