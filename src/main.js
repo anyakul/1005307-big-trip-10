@@ -21,6 +21,8 @@ Promise.all([api.getPoints(), api.getDestinations(), api.getOffers()]).then(([po
   eventsModel.setEvents(points);
   destinationsModel.setDestinations(destinations);
   offersModel.setOffers(offers);
+  
+//  console.log('main', tripController);
 
   tripController.render();
 });

@@ -13,7 +13,7 @@ const createStatsCanvasTemplates = makeTemplateGenerator(createStatsCanvasTempla
 const createStatsTemplates = (statsTypes) => {
   return (
     `<section class="statistics">
-      <h2 class="">Trip statistics</h2>
+      <h2 class="visually-hidden">Trip statistics</h2>
       ${createStatsCanvasTemplates(statsTypes)}
     </section>`
   );

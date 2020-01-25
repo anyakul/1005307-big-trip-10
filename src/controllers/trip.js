@@ -36,22 +36,23 @@ class TripController {
   }
 
   render() {
-    this._events = this._eventsModel.getEvents();
+    
+    this._events = this._eventsModel.getEvents();                  //console.log('trip',this._events);
     this._renderHeaderTemplates();
     this._addEventButtonComponent.setClickHandler(() => this._renderAddEventsButton(this._tripDaysListElement));
-    this._renderStatsPage();
-    this._renderTablePage();
+  //  this._renderStatsPage();
+    this._renderTablePage();      //console.log('trip',this._events);
   }
 
-  _renderTablePage() {
+  _renderTablePage() {                                            console.log('renderTablepage', this._events);
     if (this._events.length === 0) {
       render(this._tripEvents, this._noEventComponent.getElement());
     } else {
-      this._eventsModel.setSorterChangeHandler(this._onSortTypeChange);
+   /* //   this._eventsModel.setSorterChangeHandler(this._onSortTypeChange); */
       this._tripDaysListElement = new TripDaysListComponent().getElement();
       this._sorterController = new SorterController(this._tripEvents, this._eventsModel);
       this._sorterController.render();
-      this._sorterController.setSorterTypeHandler(this._onSortTypeChange);
+  //    this._sorterController.setSorterTypeHandler(this._onSortTypeChange);
       this._renderSortEventsByDefault(this._tripDaysListElement, this._events);
     }
   }
@@ -118,7 +119,7 @@ class TripController {
     render(tripMain, this._addEventButtonComponent.getElement());
     this._tripInfoController.render();
     render(tripControls, this._siteMenuComponent.getElement());
-    this._filterController = new FilterController(tripControls, this._eventsModel);
+    this._filterController = new FilterController(tripControls, this._eventsModel);        // console.log(tripControls, this._eventsModel);
     this._filterController.render();
   }
 

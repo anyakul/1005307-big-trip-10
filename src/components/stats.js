@@ -1,13 +1,19 @@
 import AbstractComponent from './abstract';
 import {createStatsTemplates} from './templates/stats';
-
+import {TYPES} from '../data/types';
 import Chart from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
-import {TYPES} from '../data/types';
+//import {calcDuration, formatDuration} from './templates/date';
+import moment, {duration} from 'moment';
 
-const getSumByType = (type, points) => points
+const getSumByType = (type, events) => events
   .reduce((acc, item) => item.type === type
     ? acc + item.price
+    : acc, 0);
+
+const getDurationByType = (type, events) => events
+  .reduce((acc, item) => item.type === type
+    ? acc + duration(moment(item.endDate).diff(item.startDate))
     : acc, 0);
 
 const padding = {
@@ -70,14 +76,18 @@ const emojis = new Map().set(`ship`, String.fromCodePoint())
     .set(`drive`, String.fromCodePoint(0x1F697))
     .set(`taxi`, String.fromCodePoint(0x1F695));
 
-const renderMoneyChart = (element, events) => {
-
-  const types = [];
+const getUniqueTypes = (events, types) => {
   events.map((point) => {
     if (!types.includes(point.type)) {
       types.push(point.type);
     }
   });
+}
+
+const renderMoneyChart = (element, events) => {
+  const types = [];
+  getUniqueTypes(events, types);
+
   const chartData = types.map((label) => {
     return {
       name: label,
@@ -87,7 +97,7 @@ const renderMoneyChart = (element, events) => {
 
   const labels = chartData.map((item) => `${emojis.get(item.name)} ${item.name}`);
   const values = chartData.map((item) => item.total);
-
+  console.log(values);
   return new Chart(element, {
     plugins: [ChartDataLabels],
     type: `horizontalBar`,
@@ -168,6 +178,73 @@ const renderTransportChart = (element, points) => {
   });
 };
 
+const formatTimeValue = ([format, value]) => `${String(value).padStart(2, `0`)}${format}`;
+const formatDurationTime = (duration) => Object.entries(duration).map(formatTimeValue).join(` `);
+const formatDuration = (value) => {
+  const {days: D, hours: H, minutes: M} = value;
+
+ // if (D > 0) {
+    return formatDurationTime({D, H, M});
+ // }
+ // if (H > 0) {
+  //  return formatDurationTime({H, M});
+ // }
+
+ // return formatDurationTime({M});
+};
+
+const renderTimeChart = (element, events) => {
+  const types = [];
+  getUniqueTypes(events, types);
+
+  const chartData = types.map((label) => {
+    return {
+      name: label,
+      duration: getDurationByType(label, events)
+    };
+  }).sort((a, b) => b.duration - a.duration);
+
+    const labels = chartData.map((item) => `${emojis.get(item.name)} ${item.name}`);
+    const values = chartData.map((item) => item.duration);
+    console.log(formatDuration(values));
+
+  return new Chart(element, {
+    plugins: [ChartDataLabels],
+    type: `horizontalBar`,
+    label: `TIME`,
+    fontSize: 16,
+    data: {
+      labels,
+      datasets: datasetConf(values, `Time spent`)
+    },
+    options: {
+      layout: padding,
+      title: {
+        display: true,
+        text: `TIME`,
+        position: `left`,
+        fontSize: 20
+      },
+      plugins: {
+        datalabels: {
+          formatter(value) {
+            return formatDuration(value);
+          }
+        }
+      },
+    /*  tooltips: {
+        callbacks: {
+          label: (value) => {
+            return value;
+          }
+        }
+      },*/
+      scales: scalesConf,
+      legend: legendConf,
+    }
+  });
+};
+
 class StatsComponent extends AbstractComponent {
   constructor(statsTypes, model) {
     super();
@@ -187,8 +264,10 @@ class StatsComponent extends AbstractComponent {
     const element = this.getElement();
     const moneyBlock = element.querySelector(`.statistics__chart--money`);
     const transportBlock = element.querySelector(`.statistics__chart--transport`);
-    this._moneyChart = renderMoneyChart(moneyBlock, this._events);
-    this._transportChart = renderTransportChart(transportBlock, this._events);
+    const timeBlock = element.querySelector(`.statistics__chart--spend`);
+ //   this._moneyChart = renderMoneyChart(moneyBlock, this._events);
+ //   this._transportChart = renderTransportChart(transportBlock, this._events);
+    this._timeChart = renderTimeChart(timeBlock, this._events);
   }
 }
 

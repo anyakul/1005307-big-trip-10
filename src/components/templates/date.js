@@ -1,6 +1,7 @@
 import moment, {duration} from 'moment';
 
 const calcDuration = (start, end) => duration(moment(end).diff(start))._data;
+
 const formatTimeValue = ([format, value]) => `${String(value).padStart(2, `0`)}${format}`;
 const formatDurationTime = (durations) => Object.entries(durations).map(formatTimeValue).join(` `);
 
@@ -38,5 +39,6 @@ export {
   formatTime,
   formatFullDate,
   formatDate,
-  formatMonthDay
+  formatMonthDay,
+  calcDuration,
 };

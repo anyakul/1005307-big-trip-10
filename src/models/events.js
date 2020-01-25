@@ -2,7 +2,8 @@ import {FilterType} from '../components/event-filter';
 import {SortType} from '../components/event-sorter';
 import {formatDuration} from '../components/templates/date';
 import {isSameDay} from '../utils/common';
-
+import moment, {duration} from 'moment';
+const calcDuration = (start, end) => moment(end).diff(start);
 const getUniqueDays = (days) => {
   let uniqueDays = [];
   days.forEach((day, i) => {
@@ -25,33 +26,34 @@ const getSortedPoints = (points, sortType) => {
   return points;
 };
 
-const createFormatDuration = (point) => {
-  formatDuration(point.dateFrom, Date.now());
+const createFormatDuration = (point) => {  
+   return calcDuration(point.startDate, Date.now());  
 };
 
-export default class Events {
+export default class EventsModel {
   constructor() {
     this._events = [];
     this._pointsDates = [];
     this._filterChangeHandlers = [];
     this._sorterChangeHandlers = [];
     this._dataChangeHandlers = [];
-    this._activeFilterType = FilterType.EVERYTHING;
+    this._activeFilterType = FilterType.PAST;
     this._activeSortType = SortType.EVENT;
   }
 
-  getEventsByFilter(filterType) {
+  getEventsByFilter(filterType) {   //console.log('events', this._events);
+                                                       
     switch (filterType) {
-      case FilterType.FUTURE:
-        return this._events.filter((point) => createFormatDuration(point) > 0);
-      case FilterType.PAST:
+      case FilterType.FUTURE: // console.log(this._events.filter((point) => createFormatDuration(point) > 0));  
         return this._events.filter((point) => createFormatDuration(point) < 0);
+      case FilterType.PAST:   //  console.log(this._events.filter((point) => createFormatDuration(point) < 0)); 
+        return this._events.filter((point) => createFormatDuration(point) > 0);
     }
     return this._events;
   }
 
-  getEvents() {
-    return getSortedPoints(this.getEventsByFilter(this._activeFilterType), this._activeSortType);
+  getEvents() { // console.log('ura',this.getEventsByFilter(this._activeFilterType/*, this._activeSortType*/));                                                                                    //    console.log(this._activeFilterType);
+    return /*getSortedPoints(*/this.getEventsByFilter(this._activeFilterType/*, this._activeSortType*/);
   }
 
   getEventsAll() {
