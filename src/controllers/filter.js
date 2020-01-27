@@ -28,13 +28,13 @@ class FilterController {
 
     this._filterComponent.setChangeHandler(this._onFilterChange); 
                                                                          
-                                                                       //  console.log(this._onFilterChange);
-                                                                       //   console.log(`результат`, this._filterComponent.setChangeHandler(this._onFilterChange));
+                                                                //       console.log('filter',this._onFilterChange);
+                                                               //console.log(`результат`, this._filterComponent.setChangeHandler(this._onFilterChange));
   }
 
-  _onFilterChange(filterType) {
-    this._eventsModel.setFilter(filterType);                     
-    this._activeFilterType = filterType;                               //  console.log(`yes`, this._activeFilterType);
+  _onFilterChange(filterType) {                                  console.log(`yes0`, filterType);
+    this._eventsModel.setFilter(filterType);                     console.log(`yes1`, this._eventsModel.setFilter(filterType));
+    this._activeFilterType = filterType;                         console.log(`yes2`, this._activeFilterType);
   }
 
   _onDataChange() { 

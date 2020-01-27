@@ -23,6 +23,14 @@ class StatsController {
 
     render(this._container, this._statsComponent.getElement(), RenderPosition.AFTERBEGIN);
   }
+
+  hide() {
+    this._statsComponent.hide();
+  }
+
+  show() {
+    this._statsComponent.show();
+  }
 }
 
 export default StatsController;

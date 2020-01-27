@@ -3,7 +3,9 @@ import {SortType} from '../components/event-sorter';
 import {formatDuration} from '../components/templates/date';
 import {isSameDay} from '../utils/common';
 import moment, {duration} from 'moment';
+
 const calcDuration = (start, end) => moment(end).diff(start);
+
 const getUniqueDays = (days) => {
   let uniqueDays = [];
   days.forEach((day, i) => {
@@ -17,17 +19,13 @@ const getUniqueDays = (days) => {
 const getSortedPoints = (points, sortType) => {
   switch (sortType) {
     case SortType.TIME:
-      points.slice().sort((a, b) => formatDuration(b.dateTo, b.dateFrom) - formatDuration(a.dateTo, a.dateFrom));
+      points.slice().sort((a, b) => calcDuration(b.endDate, b.startDate) - calcDuration(a.endDate, a.startDate));
       break;
     case SortType.PRICE:
-      points.slice().sort((a, b) => b.basePrice - a.basePrice);
+      points.slice().sort((a, b) => b.price - a.price);
       break;
   }
   return points;
-};
-
-const createFormatDuration = (point) => {  
-   return calcDuration(point.startDate, Date.now());  
 };
 
 export default class EventsModel {
@@ -37,11 +35,11 @@ export default class EventsModel {
     this._filterChangeHandlers = [];
     this._sorterChangeHandlers = [];
     this._dataChangeHandlers = [];
-    this._activeFilterType = FilterType.FUTURE;
+ //   this._activeFilterType = FilterType.PAST;
     this._activeSortType = SortType.EVENT;
   }
                                                
-  getEventsByFilter(filterType) {
+  getEventsByFilter(filterType) {                                     //  console.log(`events1`, filterType); 
     const now = Date.now();
 
     switch (filterType) {
@@ -54,7 +52,7 @@ export default class EventsModel {
     return this._events;
   }
 
-  getEvents() { // console.log('ura',this.getEventsByFilter(this._activeFilterType/*, this._activeSortType*/));                                                                                    //    console.log(this._activeFilterType);
+  getEvents() {  // console.log('ura',this.getEventsByFilter(this._activeFilterType/*, this._activeSortType*/));                                                                                    //    console.log(this._activeFilterType);
     return /*getSortedPoints(*/this.getEventsByFilter(this._activeFilterType/*, this._activeSortType*/);
   }
 
@@ -74,10 +72,6 @@ export default class EventsModel {
     }
     
     this._events = events
-      .map((event) => Object.assign({}, event, {startDate: new Date(event.startDate)}, {endDate: new Date(event.endDate)}))
-      .sort((a, b) => calcDuration(a.startDate, b.startDate) > 0);
-
-    this._eventsDates = this._getPointsDates(this._events);
   }
 
   calcTotalAmount() {
@@ -112,7 +106,7 @@ export default class EventsModel {
   }
 
   setFilter(filterType) {
-    this._activeFilterType = filterType;
+    this._activeFilterType = filterType;                          console.log(`events0`, this._activeFilterType);  
     this._filterChangeHandlers.forEach((handler) => handler());
   }
 
@@ -122,10 +116,15 @@ export default class EventsModel {
     if (index === -1) {
       return false;
     }
-
-    this._events = [].concat(this._events.slice(0, index), eventItem, this._events.slice(index + 1));
+    this._events[index] = Object.assign({}, eventItem);
+    this._callHandlers([this._dataChangeHandlers[0]]);
 
     return true;
+    concole.log(this._callHandlers(this._dataChangeHandlers));
+  }
+  
+  _callHandlers(handlers) {
+    handlers.forEach((handler) => handler());
   }
 
   _getEventById(id) {
@@ -136,7 +135,7 @@ export default class EventsModel {
     this._dataChangeHandlers.push(handler);
   }
 
-  setFilterChangeHandler(handler) {
+  setFilterChangeHandler(handler) {                    console.log('event2', handler);
     this._filterChangeHandlers.push(handler);
   }
 

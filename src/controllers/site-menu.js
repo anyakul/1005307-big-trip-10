@@ -13,9 +13,9 @@ class SiteMenuController {
 
     this._activeTab = MenuTab.TABLE;
     this._siteMenuComponent = null;
-    this._onDataChange = this._onDataChange.bind(this);
-    this._eventsModel.addDataChangeHandler(this._onDataChange);
-    this._onSiteMenuChange = this._onSiteMenuChange.bind(this);
+    //this._onDataChange = this._onDataChange.bind(this);
+  //  this._eventsModel.addDataChangeHandler(this._onDataChange);
+   // this._onSiteMenuChange = this._onSiteMenuChange.bind(this);
   }
 
   render() {
@@ -30,14 +30,27 @@ class SiteMenuController {
     render(this._container, this._siteMenuComponent.getElement());
   }
 
-  _onSiteMenuChange(menuTab) {
+  setMenuChangeHandler(table, stats) {
+    this._siteMenuComponent.setClickHandler((evt) => {
+      this._siteMenuComponent.setActiveTab(evt.target);
+      if (evt.target.value === MenuTab.TABLE) {
+        table.show();
+        stats.hide();
+      } else {
+        table.hide();
+        stats.show();
+      }
+    });
+  }
+
+  /*_onSiteMenuChange(menuTab) {
     this._eventsModel.setSiteMenu(menuTab);
     this._activeMenuTab = menuTab;
   }
 
   _onDataChange() {
     this.render();
-  }
+  }*/
 }
 
 export default SiteMenuController;

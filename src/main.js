@@ -25,4 +25,12 @@ Promise.all([api.getPoints(), api.getDestinations(), api.getOffers()]).then(([po
 //  console.log('main', tripController);
 
   tripController.render();
+  
+   
+ //         this.getElement().addEventListener(`change`, (evt) => {                 //  console.log( handler(evt.target.value));
+ //          tripController.render();                                                                //  return   handler(evt.target.value);                            
+                                                                           //   console.log(evt.target.value);
+ //           });
+ 
+                                      
 });

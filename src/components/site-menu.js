@@ -6,6 +6,8 @@ const MenuTab = {
   STATS: `stats`,
 };
 
+const ACTIVE_TAB_CLASS = `trip-tabs__btn--active`;
+
 const MenuTabName = {
   [MenuTab.TABLE]: `Table`,
   [MenuTab.STATS]: `Stats`,
@@ -26,22 +28,21 @@ class SiteMenuComponent extends AbstractComponent {
     return createMenuTemplate(this._tabs);
   }
 
-  setTabChangeHandler(handler) {
-    this.getElement().addEventListener(`click`, (evt) => {
-      evt.preventDefault();
-
-      if (evt.target.tagName !== `A`) {
-        return;
-      }
-
-      const menuTab = evt.target.dataset.menuTab;
-      if (this._activeTab === menuTab) {
-        return;
-      }
-
-      this._activeTab = menuTab;
-      handler(this._activeTab);
+  setClickHandler(handler) {
+    this._tableTab = this._element.children[0];
+    this._statsTab = this._element.children[1];
+    this.getElement().querySelectorAll(`.trip-tabs__btn`).forEach((tab) => {
+      tab.addEventListener(`click`, handler);
     });
+  }
+
+  setActiveTab(active) {
+    if (active.value === this._active) {
+      return;
+    }
+    this._element.querySelector(`.${ACTIVE_TAB_CLASS}`).classList.remove(ACTIVE_TAB_CLASS);
+    active.classList.add(ACTIVE_TAB_CLASS);
+    this._active = active.value;
   }
 }
 

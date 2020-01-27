@@ -2,6 +2,7 @@ import {render, replace, remove, RenderPosition} from '../utils/render';
 import {isEscKey} from '../utils/key-board';
 import EventCardComponent from '../components/event-card';
 import EventEditorComponent from '../components/event-editor';
+import EventsModel from '../models/events';
 
 const Mode = {
   VIEW: `view`,
@@ -26,30 +27,54 @@ const getDefaultEvent = (newEventId) => {
   });
 };
 
+const parseFormData = (formData) => {
+  return new EventsModel({
+    'id': formData.id,
+    'type': formData.type,
+    'date_from': formData.startDate,
+    'date_to': formData.endDate,
+    'destination': formData.destination,
+    'base_price': formData.price,
+    'offers': formData.offers,
+    'is_favorite': formData.isFavorite
+  });
+};
+
 class EventsController {
 
-  constructor(container, onViewChange) {
+  constructor(container, onDataChange, onViewChange) {
     this._eventItem = null;
     this._mode = Mode.VIEW;
     this._container = container;
     this._eventComponent = null;
-    this._editEventComponent = null;
+    this._eventEditorComponent = null;
     this._onViewChange = onViewChange;
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
+    this._onDataChange = onDataChange;
   }
 
-  render(eventItem, destinations, availableOffers, mode) {
+  render(id, eventItem, destinations, availableOffers, mode) {
     if (mode === Mode.ADD) {
       const eventIt = getDefaultEvent();
       this._addEventComponent = new EventEditorComponent(eventIt, destinations, availableOffers, Mode.ADD);
       this._setAddCardListeners();
       render(this._container, this._addEventComponent.getElement(), RenderPosition.AFTERBEGIN);
     } else {
-      this._eventComponent = new EventCardComponent(eventItem);
-      this._eventEditorComponent = new EventEditorComponent(eventItem, destinations, availableOffers, Mode.EDIT);
+      this._eventItem = eventItem;
+      const oldEventComponent = this._eventComponent;
+      const oldEditEventComponent = this._eventEditorComponent;
 
-      render(this._container, this._eventComponent.getElement());
+      this._eventComponent = new EventCardComponent(this._eventItem);
+      this._eventEditorComponent = new EventEditorComponent(this._eventItem, destinations, availableOffers, Mode.EDIT);
+
       this._setCardListeners();
+
+      if (oldEventComponent && oldEditEventComponent) {
+        replace(this._eventComponent, oldEventComponent);
+        replace(this._eventEditorComponent, oldEditEventComponent);
+      } else {
+        render(this._container, this._eventComponent.getElement());
+      }
     }
   }
 
@@ -81,21 +106,35 @@ class EventsController {
       this._eventListener(evt);
     });
   }
-
+//  this.rerender();
   _closeForm() {
     remove(this._addEventComponent);
   }
 
-  _setEditCardListeners() {
-    this._setListeners();
+  //this._setListeners();
+ 
+ _setEditCardListeners() {
+  
     this._eventEditorComponent.setSubmitHandler((evt) => {
       evt.preventDefault();
+      const data = this._eventEditorComponent.getFormData();
+      const formData = parseFormData(data);
+      console.log(data);
+      console.log(formData);
+      this._onDataChange(this, this._eventItem, formData);
       this._showCard();
     });
     this._eventEditorComponent.setRollupButtonClickHandler(() => {
+      this._eventEditorComponent.reset();
       this._showCard();
-    });
+    })
   }
+
+  /*destroy() {
+    remove(this._eventEditorComponent);
+    remove(this._eventComponent);
+    document.removeEventListener(`keydown`, this._onEscKeyDown);
+  }*/
 
   _showCard() {
     replace(this._eventComponent, this._eventEditorComponent);

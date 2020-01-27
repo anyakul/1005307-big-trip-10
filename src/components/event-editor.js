@@ -22,6 +22,7 @@ class EventEditorComponent extends AbstractSmartComponent {
 
     this._applyFlatpickr();
     this._subscribeOnEvents();
+    this._eventForReset = Object.assign({}, event);
   }
 
   getTemplate() {
@@ -42,11 +43,6 @@ class EventEditorComponent extends AbstractSmartComponent {
     this._cancelHandler = handler;
   }
 
-  setSubmitHandler(handler) {
-    this.getElement().addEventListener(`submit`, handler);
-    this._submitHandler = handler;
-  }
-
   setRollupButtonClickHandler(handler) {
     this.getElement().querySelector(`.event__rollup-btn`)
       .addEventListener(`click`, handler);
@@ -57,7 +53,7 @@ class EventEditorComponent extends AbstractSmartComponent {
     if (this._mode !== Mode.ADD) {
       this.setRollupButtonClickHandler(this._rollupButtonClickHandler);
     }
-    this.setSubmitHandler(this._submitHandler);
+  //  this.setSubmitHandler(this._submitHandler);
     this._subscribeOnEvents(this._mode);
     this._setValidation();
   }
@@ -68,7 +64,7 @@ class EventEditorComponent extends AbstractSmartComponent {
   }
 
   reset() {
-    this._events = Object.assign({}, this._eventForReset);
+ //   this._events = Object.assign({}, this._eventForReset);
     this.rerender();
   }
 
@@ -126,6 +122,24 @@ class EventEditorComponent extends AbstractSmartComponent {
     element.querySelector(`.event__input--price`).addEventListener(`change`, (evt) => {
       this._events.price = +evt.target.value;
     });
+  }
+
+  getFormData() {
+    const form = this._mode === Mode.ADD ? this.getElement() : this.getElement().querySelector(`form`);
+    const formData = new FormData(form);
+
+    const newPoint = {
+      id: this._events.id,
+      type: this._events.type,
+      startDate: formData.get(`event-start-time`),
+      endDate: formData.get(`event-end-time`),
+      destination: Object.assign({}, this._destinations.getDestinationByName(formData.get(`event-destination`))),
+      price: formData.get(`event-price`),
+      offers: this._events.offers,
+      isFavorite: this._events.isFavorite
+    };
+//console.log(newPoint);
+    return newPoint;
   }
 
   _applyFlatpickr() {
