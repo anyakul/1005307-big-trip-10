@@ -1,4 +1,4 @@
-import SiteMenuComponent from '../components/site-menu';
+//import SiteMenuComponent from './components/site-menu';
 import {render} from '../utils/render';
 
 const MenuTab = {
@@ -28,19 +28,6 @@ class SiteMenuController {
     this._siteMenuComponent = new SiteMenuComponent(menuTabs);
 
     render(this._container, this._siteMenuComponent.getElement());
-  }
-
-  setMenuChangeHandler(table, stats) {
-    this._siteMenuComponent.setClickHandler((evt) => {
-      this._siteMenuComponent.setActiveTab(evt.target);
-      if (evt.target.value === MenuTab.TABLE) {
-        table.show();
-        stats.hide();
-      } else {
-        table.hide();
-        stats.show();
-      }
-    });
   }
 
   /*_onSiteMenuChange(menuTab) {

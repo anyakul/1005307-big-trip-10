@@ -11,8 +11,8 @@ class TripInfoController {
   }
 
   render() {
-    const events = this._eventsModel.getEvents();
-    this._tripInfoMainComponent = new TripInfoMainComponent(events);
+   // const events = this._eventsModel.getEvents();
+    this._tripInfoMainComponent = new TripInfoMainComponent(this._eventsModel.getEvents());
     this._tripInfoCostComponent = new TripInfoCostComponent(this._eventsModel.calcTotalAmount());
     render(this._container, this._tripInfoMainComponent.getElement());
     render(this._container, this._tripInfoCostComponent.getElement());

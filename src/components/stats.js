@@ -187,27 +187,9 @@ const formatDuration = (value) => {
 }
 
 const timer = (value) => {
-  // Берем разницу дат в секундах
- // let delta = Math.floor((endTime - new Date()) / 1000);
-  // Вычисляем количество ПОЛНЫХ дней
-//  let days = Math.floor(value / 86400);
-  // А теперь вычитаем из секунд количество дней, выраженных в секундах
-  //value -= days / 86400;
-  // В оставшихся секунд вычленяем количество полных часов
-//  
-  // Также их потом вычитаем, выразив в секундах
-  //value -= hours * 3600;
-  // Из оставшихся секунд берем минуты
-//  
-  // Опять вычитаем
- // value -= minutes * 60;
-  // И наконец секунды
-  // В теории  деление по модулю на 60 не обязателен
- // let seconds = delta % 60;
-  // Итоговая дата
   let diffDays = Math.ceil(value / (1000 * 3600 * 24)); 
-let hours = Math.floor(value / 3600) % 24;
-let minutes = Math.floor(value / 60) % 60;
+  let hours = Math.floor(value / 3600) % 24;
+  let minutes = Math.floor(value / 60) % 60;
   return `${diffDays}d ${hours}h ${minutes}m`;
 } 
 
