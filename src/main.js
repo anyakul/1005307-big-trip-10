@@ -49,8 +49,8 @@ Promise.all([api.getPoints(), api.getDestinations(), api.getOffers()]).then(([po
   destinationsModel.setDestinations(destinations);
   offersModel.setOffers(offers);
 
-  siteMenuComponent.setTabChangeHandler((evt) => {
-    if (evt.target.value === MenuTab.TABLE) {
+  siteMenuComponent.setTabChangeHandler((menuTab) => {
+    if (menuTab === MenuTab.TABLE) {
       tripController.show();
       statsController.hide();
     } else {

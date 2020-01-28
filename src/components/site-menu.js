@@ -27,8 +27,20 @@ class SiteMenuComponent extends AbstractComponent {
   }
 
   setTabChangeHandler(handler) {
-    this.getElement().querySelectorAll(`.trip-tabs__btn`).forEach((tab) => {
-      tab.addEventListener(`click`, handler);
+    this.getElement().addEventListener(`click`, (evt) => {
+      evt.preventDefault();
+
+      if (evt.target.tagName !== `A`) {
+        return;
+      }
+
+      const menuTab = evt.target.dataset.menuTab;
+      if (this._activeTab === menuTab) {
+        return;
+      }
+
+      this._activeTab = menuTab;
+      handler(this._activeTab);
     });
   }
 }

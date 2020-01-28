@@ -98,7 +98,7 @@ class TripController {
     this._sortType = sortType;
     switch (sortType) {
       case SortType.TIME:
-        sortedEvents = this._events.slice().sort((a, b) => calcDuration(b.endDate, b.startDate) - calcDuration(a.endDate, a.startDate));
+        sortedEvents = this._events.slice().sort((a, b) => calcDuration(b.startDate, b.endDate) - calcDuration(a.startDate, a.endDate));
         this._sortEvents(sortedEvents, sortType);
         break;
      case SortType.PRICE:  
@@ -114,6 +114,10 @@ class TripController {
     this._eventsControllers.forEach((eventController) => eventController.destroy());
     this._eventsControllers = [];
   }
+  
+  show() {
+    this._container.classList.remove(HIDE_CLASS);
+  }
 
   hide() {
     this._container.classList.add(HIDE_CLASS);
@@ -127,12 +131,12 @@ class TripController {
    
   _sortEvents(sortedEvents, sortType) {
     this._thipDaysComponent.forEach((day) => remove(day));
+    this._removeEvents();
     
     if (sortType === SortType.EVENT) {
-      this._removeEvents(); this._renderSortEventsByDefault(this._tripDaysListElement, this._events);
+      this._renderSortEventsByDefault(this._tripDaysListElement, this._events);
     }
      else {
-       this._removeEvents();
        this._renderSortEvents(sortedEvents);
      }
   }

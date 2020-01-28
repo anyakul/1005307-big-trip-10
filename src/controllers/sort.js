@@ -23,7 +23,7 @@ class SorterController {
   }
 
   setSorterTypeHandler(method) {              
-    this._sortComponent.setSortTypeChangeHandler(method);    //console.log('sort',this._sortComponent.setSortTypeChangeHandler(method););
+    this._sortComponent.setSortTypeChangeHandler(method);
   }
 }
 

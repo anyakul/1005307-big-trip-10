@@ -44,6 +44,7 @@ class EventsController {
 
   constructor(container, onDataChange, onViewChange) {
     this._eventItem = null;
+    this._addEventComponent = null;
     this._mode = Mode.VIEW;
     this._container = container;
     this._eventComponent = null;
@@ -80,6 +81,9 @@ class EventsController {
 
   setDefaultView() {
     if (this._mode === Mode.EDIT) {
+      if (this._addEventComponent) {
+        remove(this._addEventComponent);
+      }
       this._showCard();
     }
   }

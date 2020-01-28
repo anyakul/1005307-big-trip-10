@@ -88,7 +88,7 @@ export default class EventsModel {
 
   setSorter(sortType) {
     if (Object.values(SortType).some((it) => it === sortType)) {
-      this._activeSortType = sortType;                                  //  console.log('events1',this._activeSortType);
+      this._activeSortType = sortType;
     }
   }
 
