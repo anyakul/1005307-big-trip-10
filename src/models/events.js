@@ -39,20 +39,20 @@ export default class EventsModel {
     this._activeSortType = SortType.EVENT;
   }
                                                
-  getEventsByFilter(filterType) {                                     //  console.log(`events1`, filterType); 
+  getEventsByFilter(filterType) {                                    //   console.log(`events1`, filterType, this._events); 
     const now = Date.now();
 
-    switch (filterType) {
-      case FilterType.FUTURE:
-        return this._events.filter(({startDate}) => startDate > now);
+    switch (filterType) {  
+      case FilterType.FUTURE: {  console.log(`events1`, now, this._events[0].startDate, filterType, this._events,this._events.filter(({startDate}) => startDate > now));
+      return this._events.filter(({startDate}) => Date.parse(startDate) > now);}
       case FilterType.PAST:
-        return this._events.filter(({startDate}) => startDate < now);
+        return this._events.filter(({startDate}) => Date.parse(startDate) < now);
     }
 
     return this._events;
   }
 
-  getEvents() {  // console.log('ura',this.getEventsByFilter(this._activeFilterType/*, this._activeSortType*/));                                                                                    //    console.log(this._activeFilterType);
+  getEvents() {    console.log('events2',this._activeFilterType, this.getEventsByFilter(this._activeFilterType/*, this._activeSortType*/));                                                                                    //    console.log(this._activeFilterType);
     return /*getSortedPoints(*/this.getEventsByFilter(this._activeFilterType/*, this._activeSortType*/);
   }
 
@@ -106,7 +106,7 @@ export default class EventsModel {
   }
 
   setFilter(filterType) {
-    this._activeFilterType = filterType;                          console.log(`events0`, this._activeFilterType);  
+    this._activeFilterType = filterType;                           console.log(`events0`, this._activeFilterType);  
     this._filterChangeHandlers.forEach((handler) => handler());
   }
 
@@ -135,7 +135,7 @@ export default class EventsModel {
     this._dataChangeHandlers.push(handler);
   }
 
-  setFilterChangeHandler(handler) {                    console.log('event2', handler);
+  setFilterChangeHandler(handler) {                   // console.log('event2', handler);
     this._filterChangeHandlers.push(handler);
   }
 

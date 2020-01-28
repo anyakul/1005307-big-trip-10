@@ -130,11 +130,11 @@ class EventsController {
     })
   }
 
-  /*destroy() {
+  destroy() { console.log('remove',this._eventEditorComponent,this._eventComponent);
     remove(this._eventEditorComponent);
     remove(this._eventComponent);
     document.removeEventListener(`keydown`, this._onEscKeyDown);
-  }*/
+  }
 
   _showCard() {
     replace(this._eventComponent, this._eventEditorComponent);

@@ -38,39 +38,37 @@ const tripEvents = pageBodyContainer.querySelector(`.trip-events`);
 
 const tripController = new TripController(tripEvents, eventsModel, destinationsModel, offersModel, api);
 
-const tripInfoController = new TripInfoController(tripInfo, eventsModel);
 const statsController = new StatsController(pageBodyContainer, eventsModel);
 
 const filterController = new FilterController(tripControls, eventsModel);        // console.log(tripControls, this._eventsModel);
 const addEventButtonComponent = new AddEventButtonComponent();
 render(tripMain, addEventButtonComponent.getElement());
-
+const tripInfoController = new TripInfoController(tripInfo, eventsModel);
 const siteMenuComponent = new SiteMenu();
 render(tripControls, siteMenuComponent.getElement());
-
-siteMenuComponent.setTabChangeHandler((evt) => {
-  if (evt.target.value === MenuTab.TABLE) {
-    tripController.show();
-    statsController.hide();
-  } 
-  else {
-    statsController.show();
-    tripController.hide();
-  }
-});
 
 Promise.all([api.getPoints(), api.getDestinations(), api.getOffers()]).then(([points, destinations, offers]) => {
   eventsModel.setEvents(points);
   destinationsModel.setDestinations(destinations);
   offersModel.setOffers(offers);
-
+  
+  siteMenuComponent.setTabChangeHandler((evt) => {
+    if (evt.target.value === MenuTab.TABLE) {
+      tripController.show();
+      statsController.hide();
+    } 
+    else {
+      statsController.show();
+      tripController.hide();
+    }
+  });
   tripInfoController.render();
   filterController.render();
   statsController.render();
   tripController.render();
   statsController.hide();
 
-//  console.log('main', tripController);
+  console.log(points);
  // setMenuControllers.setMenuChangeHandler(tripController, statsController);
   
   

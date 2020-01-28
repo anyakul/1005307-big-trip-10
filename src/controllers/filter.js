@@ -6,11 +6,13 @@ class FilterController {
     this._container = container;
     this._eventsModel = eventsModel;
                                                                      
-    this._activeFilterType = FilterType.EVERYTHING;                   // console.log(this._activeFilterType);
+    this._activeFilterType = FilterType.EVERYTHING;                    
     this._filterComponent = null;
-    this._onDataChange = this._onDataChange.bind(this);
-    this._eventsModel.addDataChangeHandler(this._onDataChange);
+    
+    this._onDataChange = this._onDataChange.bind(this);    
     this._onFilterChange = this._onFilterChange.bind(this);
+
+    this._eventsModel.addDataChangeHandler(this._onDataChange);
   }
 
   render() {
@@ -33,8 +35,8 @@ class FilterController {
   }
 
   _onFilterChange(filterType) {                                  console.log(`yes0`, filterType);
-    this._eventsModel.setFilter(filterType);                     console.log(`yes1`, this._eventsModel.setFilter(filterType));
-    this._activeFilterType = filterType;                         console.log(`yes2`, this._activeFilterType);
+    this._eventsModel.setFilter(filterType);                 //    console.log(`yes1`, this._eventsModel.setFilter(filterType));
+    this._activeFilterType = filterType;                     //   console.log(`yes2`, this._activeFilterType);
   }
 
   _onDataChange() { 
