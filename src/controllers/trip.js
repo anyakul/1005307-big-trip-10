@@ -4,10 +4,9 @@ import {SortType} from '../components/event-sorter';
 import NoEventsComponent from '../components/no-events';
 import TripDaysListComponent from '../components/trip-days-list';
 import TripDayComponent from '../components/trip-day';
-import {formatDuration, calcDuration} from '../components/templates/date';
+import {calcDuration} from '../components/templates/date';
 import EventsController from './events';
 import SorterController from './sort';
-import StatsController from './stats';
 import {Mode} from '../components/events';
 import {isSameDay} from '../utils/common';
 
@@ -27,7 +26,6 @@ class TripController {
     this._thipDaysComponent = [];
     this._onViewChange = this._onViewChange.bind(this);
     this._onSortTypeChange = this._onSortTypeChange.bind(this);
-    this._renderWithSortType = this._renderWithSortType.bind(this);
     this._onDataChange = this._onDataChange.bind(this);
     this._onFilterChange = this._onFilterChange.bind(this);
     eventsModel.setFilterChangeHandler(this._onFilterChange);
@@ -38,10 +36,7 @@ class TripController {
   render() {
     this._noEventComponent = new NoEventsComponent();
     this._events = this._eventsModel.getEvents();
-    this._renderTablePage();
-  }
 
-  _renderTablePage() {
     if (this._events.length === 0) {
       render(this._tripEvents, this._noEventComponent.getElement());
     } else {
@@ -51,11 +46,6 @@ class TripController {
       this._sorterController.setSorterTypeHandler(this._onSortTypeChange);
       this._renderSortEventsByDefault(this._tripDaysListElement, this._events);
     }
-  }
-
-  _renderStatsPage() {
-    this._statsController = new StatsController(this._pageBodyContainer, this._eventsModel);
-    this._statsController.render();
   }
 
   _renderEvents(events, container) {
@@ -77,7 +67,7 @@ class TripController {
   }
 
   _renderSortEventsByDefault(component, events) {
-    const eventsDates = this._eventsModel.getPointsDates(events);  // console.log(this._tripDaysListElement);
+    const eventsDates = this._eventsModel.getPointsDates(events);
     render(this._container, this._tripDaysListElement);
     this._eventsControllers = this._renderTripDays(component, eventsDates, events)
       .reduce((days, day) => days.concat(day), []);
@@ -93,16 +83,6 @@ class TripController {
     return this._eventsControllers;
   }
 
-  _renderWithSortType() {
-    const events = this._eventsModel.getEvents();
-
-    if (this._sortType !== SortType.EVENT) {
-      this._eventsControllers = this._renderSortEvents(events);
-    } else {
-      this._renderSortEventsByDefault(this._tripDaysListElement, events);
-    }
-  }
-
   renderAddEventsButton(addEventButtonComponent) {
     this._onViewChange();
     this._addEventButtonComponent = addEventButtonComponent;
@@ -113,7 +93,7 @@ class TripController {
     this._addEventFormController.render(this._newEventId, {}, this._destinationsModel, this._offersModel, Mode.ADD);
   }
 
-  _onSortTypeChange(sortType) { console.log('trip', sortType);
+  _onSortTypeChange(sortType) {
     let sortedEvents = [];
     this._sortType = sortType;
     switch (sortType) {
@@ -134,11 +114,6 @@ class TripController {
     this._eventsControllers.forEach((eventController) => eventController.destroy());
     this._eventsControllers = [];
   }
-  
-   _removeSortEvents() {
-    this._eventsControllers.forEach((eventController) => eventController.destroy());
-    this._eventsControllers = [];
-  }
 
   hide() {
     this._container.classList.add(HIDE_CLASS);
@@ -147,7 +122,7 @@ class TripController {
   _updateEvents() {
     this._thipDaysComponent.forEach((day) => remove(day));
     this._removeEvents();
-   this._renderSortEventsByDefault(this._tripDaysListElement, this._events);
+    this._renderSortEventsByDefault(this._tripDaysListElement, this._events);
   }
    
   _sortEvents(sortedEvents, sortType) {
@@ -157,9 +132,9 @@ class TripController {
       this._removeEvents(); this._renderSortEventsByDefault(this._tripDaysListElement, this._events);
     }
      else {
-       this._removeSortEvents(); this._renderSortEvents(sortedEvents)
+       this._removeEvents();
+       this._renderSortEvents(sortedEvents);
      }
-    
   }
 
   _onViewChange() {
