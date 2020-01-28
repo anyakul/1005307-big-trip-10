@@ -53,7 +53,6 @@ class EventEditorComponent extends AbstractSmartComponent {
     if (this._mode !== Mode.ADD) {
       this.setRollupButtonClickHandler(this._rollupButtonClickHandler);
     }
-  //  this.setSubmitHandler(this._submitHandler);
     this._subscribeOnEvents(this._mode);
     this._setValidation();
   }
@@ -64,7 +63,6 @@ class EventEditorComponent extends AbstractSmartComponent {
   }
 
   reset() {
- //   this._events = Object.assign({}, this._eventForReset);
     this.rerender();
   }
 
@@ -138,7 +136,6 @@ class EventEditorComponent extends AbstractSmartComponent {
       offers: this._events.offers,
       isFavorite: this._events.isFavorite
     };
-//console.log(newPoint);
     return newPoint;
   }
 

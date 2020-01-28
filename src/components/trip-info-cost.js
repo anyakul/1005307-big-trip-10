@@ -10,6 +10,11 @@ class TripCostComponent extends AbstractComponent {
   getTemplate() {
     return createTripInfoCostTemplate(this._cost);
   }
+
+  update(amount) {
+    this._costsAmount = amount;
+    this.getElement().querySelector(`.trip-info__cost-value`).innerHTML = amount;
+  }
 }
 
 export default TripCostComponent;

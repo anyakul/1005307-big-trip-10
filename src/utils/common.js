@@ -6,10 +6,6 @@ const isSameDay = (firstDate, secondDate) => {
 
 export {isSameDay};
 
-const getDatesDiff = (a, b) => {
-  return moment(a) - moment(b);
-};
-
 export const calculateDurationFromMs = (mseconds) => {
 
   const diffDuration = moment.duration(mseconds);

@@ -2,7 +2,7 @@ import {FilterType} from '../components/event-filter';
 import {SortType} from '../components/event-sorter';
 import {formatDuration} from '../components/templates/date';
 import {isSameDay} from '../utils/common';
-import moment, {duration} from 'moment';
+import moment from 'moment';
 
 const calcDuration = (start, end) => moment(end).diff(start);
 
@@ -35,16 +35,15 @@ export default class EventsModel {
     this._filterChangeHandlers = [];
     this._sorterChangeHandlers = [];
     this._dataChangeHandlers = [];
- //   this._activeFilterType = FilterType.PAST;
     this._activeSortType = SortType.EVENT;
   }
-                                               
-  getEventsByFilter(filterType) {                                    //   console.log(`events1`, filterType, this._events); 
+
+  getEventsByFilter(filterType) {
     const now = Date.now();
 
-    switch (filterType) {  
-      case FilterType.FUTURE: {  console.log(`events1`, now, this._events[0].startDate, filterType, this._events,this._events.filter(({startDate}) => startDate > now));
-      return this._events.filter(({startDate}) => Date.parse(startDate) > now);}
+    switch (filterType) {
+      case FilterType.FUTURE:
+        return this._events.filter(({startDate}) => Date.parse(startDate) > now)
       case FilterType.PAST:
         return this._events.filter(({startDate}) => Date.parse(startDate) < now);
     }
@@ -52,7 +51,7 @@ export default class EventsModel {
     return this._events;
   }
 
-  getEvents() {    console.log('events2',this._activeFilterType, this.getEventsByFilter(this._activeFilterType/*, this._activeSortType*/));                                                                                    //    console.log(this._activeFilterType);
+  getEvents() {
     return /*getSortedPoints(*/this.getEventsByFilter(this._activeFilterType/*, this._activeSortType*/);
   }
 
@@ -70,8 +69,8 @@ export default class EventsModel {
       this._eventDates = [];
       return;
     }
-    
-    this._events = events
+
+    this._events = events;
   }
 
   calcTotalAmount() {
@@ -106,7 +105,7 @@ export default class EventsModel {
   }
 
   setFilter(filterType) {
-    this._activeFilterType = filterType;                           console.log(`events0`, this._activeFilterType);  
+    this._activeFilterType = filterType;
     this._filterChangeHandlers.forEach((handler) => handler());
   }
 
@@ -117,12 +116,11 @@ export default class EventsModel {
       return false;
     }
     this._events[index] = Object.assign({}, eventItem);
-    this._callHandlers([this._dataChangeHandlers[0]]);
+    this._callHandlers(this._dataChangeHandlers);
 
     return true;
-    concole.log(this._callHandlers(this._dataChangeHandlers));
   }
-  
+
   _callHandlers(handlers) {
     handlers.forEach((handler) => handler());
   }
@@ -135,7 +133,7 @@ export default class EventsModel {
     this._dataChangeHandlers.push(handler);
   }
 
-  setFilterChangeHandler(handler) {                   // console.log('event2', handler);
+  setFilterChangeHandler(handler) {
     this._filterChangeHandlers.push(handler);
   }
 

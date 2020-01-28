@@ -3,7 +3,6 @@ import {createStatsTemplates} from './templates/stats';
 import {TYPES} from '../data/types';
 import Chart from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
-//import {calcDuration, formatDuration} from './templates/date';
 import moment, {duration} from 'moment';
 
 const getSumByType = (type, events) => events
@@ -82,7 +81,7 @@ const getUniqueTypes = (events, types) => {
       types.push(point.type);
     }
   });
-}
+};
 
 const renderMoneyChart = (element, events) => {
   const types = [];
@@ -97,7 +96,6 @@ const renderMoneyChart = (element, events) => {
 
   const labels = chartData.map((item) => `${emojis.get(item.name)} ${item.name}`);
   const values = chartData.map((item) => item.total);
-  console.log(values);
   return new Chart(element, {
     plugins: [ChartDataLabels],
     type: `horizontalBar`,
@@ -178,20 +176,12 @@ const renderTransportChart = (element, points) => {
   });
 };
 
-const formatTimeValue = ([format, value]) => `${String(value).padStart(2, `0`)}${format}`;
-const formatDurationTime = (duration) => Object.entries(duration).map(formatTimeValue).join(` `);
-const formatDuration = (value) => {
-  const date = new Date(value);
-  const hour = `${date.getDate()} h` ;
-  return hour;
-}
-
 const timer = (value) => {
-  let diffDays = Math.ceil(value / (1000 * 3600 * 24)); 
+  let diffDays = Math.ceil(value / (1000 * 3600 * 24));
   let hours = Math.floor(value / 3600) % 24;
   let minutes = Math.floor(value / 60) % 60;
   return `${diffDays}d ${hours}h ${minutes}m`;
-} 
+};
 
 const renderTimeChart = (element, events) => {
   const types = [];
@@ -204,9 +194,8 @@ const renderTimeChart = (element, events) => {
     };
   }).sort((a, b) => b.duration - a.duration);
 
-    const labels = chartData.map((item) => `${emojis.get(item.name)} ${item.name}`);
-    const values = chartData.map((item) => item.duration);
-//    console.log(formatDuration(values));
+  const labels = chartData.map((item) => `${emojis.get(item.name)} ${item.name}`);
+  const values = chartData.map((item) => item.duration);
 
   return new Chart(element, {
     plugins: [ChartDataLabels],
@@ -232,13 +221,6 @@ const renderTimeChart = (element, events) => {
           }
         }
       },
-    /*  tooltips: {
-        callbacks: {
-          label: (value) => {
-            return value;
-          }
-        }
-      },*/
       scales: scalesConf,
       legend: legendConf,
     }

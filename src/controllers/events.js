@@ -106,31 +106,27 @@ class EventsController {
       this._eventListener(evt);
     });
   }
-//  this.rerender();
+
   _closeForm() {
     remove(this._addEventComponent);
   }
 
-  //this._setListeners();
- 
- _setEditCardListeners() {
-  
+  _setEditCardListeners() {
+
     this._eventEditorComponent.setSubmitHandler((evt) => {
       evt.preventDefault();
       const data = this._eventEditorComponent.getFormData();
       const formData = parseFormData(data);
-      console.log(data);
-      console.log(formData);
       this._onDataChange(this, this._eventItem, formData);
       this._showCard();
     });
     this._eventEditorComponent.setRollupButtonClickHandler(() => {
       this._eventEditorComponent.reset();
       this._showCard();
-    })
+    });
   }
 
-  destroy() { console.log('remove',this._eventEditorComponent,this._eventComponent);
+  destroy() {
     remove(this._eventEditorComponent);
     remove(this._eventComponent);
     document.removeEventListener(`keydown`, this._onEscKeyDown);

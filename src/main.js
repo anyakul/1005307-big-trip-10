@@ -9,7 +9,6 @@ import DestinationsModel from './models/destinations';
 import OffersModel from './models/offers';
 import StatsController from './controllers/stats';
 import API from './api';
-import SiteMenu from './components/site-menu';
 import AddEventButtonComponent from './components/add-event-button';
 
 const MenuTab = {
@@ -20,8 +19,6 @@ const MenuTab = {
 const AUTHORIZATION = `Basic er883jdzbdw`;
 const END_POINT = `https://htmlacademy-es-10.appspot.com/big-trip/`;
 const api = new API(END_POINT, AUTHORIZATION);
-
-const body = document.querySelector(`body`);
 
 const eventsModel = new EventsModel();
 const destinationsModel = new DestinationsModel();
@@ -34,30 +31,28 @@ const tripInfo = tripMain.querySelector(`.trip-info`);
 
 const main = document.querySelector(`main`);
 const pageBodyContainer = main.querySelector(`.page-body__container`);
-const tripEvents = pageBodyContainer.querySelector(`.trip-events`);    
+const tripEvents = pageBodyContainer.querySelector(`.trip-events`);
 
 const tripController = new TripController(tripEvents, eventsModel, destinationsModel, offersModel, api);
-
 const statsController = new StatsController(pageBodyContainer, eventsModel);
 
-const filterController = new FilterController(tripControls, eventsModel);        // console.log(tripControls, this._eventsModel);
+const filterController = new FilterController(tripControls, eventsModel);
 const addEventButtonComponent = new AddEventButtonComponent();
 render(tripMain, addEventButtonComponent.getElement());
 const tripInfoController = new TripInfoController(tripInfo, eventsModel);
-const siteMenuComponent = new SiteMenu();
+const siteMenuComponent = new SiteMenuComponent();
 render(tripControls, siteMenuComponent.getElement());
 
 Promise.all([api.getPoints(), api.getDestinations(), api.getOffers()]).then(([points, destinations, offers]) => {
   eventsModel.setEvents(points);
   destinationsModel.setDestinations(destinations);
   offersModel.setOffers(offers);
-  
+
   siteMenuComponent.setTabChangeHandler((evt) => {
     if (evt.target.value === MenuTab.TABLE) {
       tripController.show();
       statsController.hide();
-    } 
-    else {
+    } else {
       statsController.show();
       tripController.hide();
     }
@@ -67,16 +62,4 @@ Promise.all([api.getPoints(), api.getDestinations(), api.getOffers()]).then(([po
   statsController.render();
   tripController.render();
   statsController.hide();
-
-  console.log(points);
- // setMenuControllers.setMenuChangeHandler(tripController, statsController);
-  
-  
-   
- //         this.getElement().addEventListener(`change`, (evt) => {                 //  console.log( handler(evt.target.value));
- //          tripController.render();                                                                //  return   handler(evt.target.value);                            
-                                                                           //   console.log(evt.target.value);
- //           });
- 
-                                      
 });
