@@ -101,10 +101,14 @@ class TripController {
     }
   }
 
-  _renderAddEventsButton(container) {
+  renderAddEventsButton(addEventButtonComponent) {
+    this._onViewChange();
+    this._addEventButtonComponent = addEventButtonComponent;
+    this._addEventButtonComponent.setDisabled(true);
+
     this._newEventId = this._eventsModel.getEvents().length;
-    this._addEventFormController = new EventsController(container, this._onDataChange, this._onViewChange);
-    this._addEventFormController.render({}, this._destinationsModel, this._offersModel, Mode.ADD);
+    this._addEventFormController = new EventsController(this._tripDaysListElement, this._onDataChange, this._onViewChange);
+    this._addEventFormController.render(this._newEventId, {}, this._destinationsModel, this._offersModel, Mode.ADD);
   }
 
   _onSortTypeChange(sortType) {

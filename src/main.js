@@ -39,6 +39,7 @@ const statsController = new StatsController(pageBodyContainer, eventsModel);
 const filterController = new FilterController(tripControls, eventsModel);
 const addEventButtonComponent = new AddEventButtonComponent();
 render(tripMain, addEventButtonComponent.getElement());
+
 const tripInfoController = new TripInfoController(tripInfo, eventsModel);
 const siteMenuComponent = new SiteMenuComponent();
 render(tripControls, siteMenuComponent.getElement());
@@ -61,5 +62,6 @@ Promise.all([api.getPoints(), api.getDestinations(), api.getOffers()]).then(([po
   filterController.render();
   statsController.render();
   tripController.render();
+  addEventButtonComponent.setClickHandler(() => tripController.renderAddEventsButton(addEventButtonComponent));
   statsController.hide();
 });

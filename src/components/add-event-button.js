@@ -9,6 +9,10 @@ class AddEventButtonComponent extends AbstractComponent {
   setClickHandler(handler) {
     this.getElement().addEventListener(`click`, handler);
   }
+
+  setDisabled(value) {
+    this._element.disabled = value;
+  }
 }
 
 export default AddEventButtonComponent;
