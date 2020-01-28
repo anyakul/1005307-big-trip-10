@@ -22,8 +22,8 @@ class SorterController {
     render(container, this._sortComponent.getElement());
   }
 
-  setSorterTypeHandler(method) {
-    this._sortComponent.setSortTypeChangeHandler(method);
+  setSorterTypeHandler(method) {              
+    this._sortComponent.setSortTypeChangeHandler(method);    //console.log('sort',this._sortComponent.setSortTypeChangeHandler(method););
   }
 }
 

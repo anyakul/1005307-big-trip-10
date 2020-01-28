@@ -112,7 +112,6 @@ class EventsController {
   }
 
   _setEditCardListeners() {
-
     this._eventEditorComponent.setSubmitHandler((evt) => {
       evt.preventDefault();
       const data = this._eventEditorComponent.getFormData();

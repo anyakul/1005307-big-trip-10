@@ -11,7 +11,7 @@ class EventSorterComponent extends AbstractComponent {
   constructor(sorters) {
     super();
     this._sorters = sorters;
-    this._active = SortType.PRICE;
+    this._active = SortType.EVENT;
   }
 
   getTemplate() {
@@ -23,7 +23,7 @@ class EventSorterComponent extends AbstractComponent {
       const {sortType} = evt.target.dataset;
 
       if (sortType && sortType !== this._active) {
-        this._active = sortType;
+        this._active = sortType;                      //   console.log('event-sorter',this._active);
         handler(this._active);
       }
     });

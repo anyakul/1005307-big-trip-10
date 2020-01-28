@@ -16,18 +16,6 @@ const getUniqueDays = (days) => {
   return uniqueDays;
 };
 
-const getSortedPoints = (points, sortType) => {
-  switch (sortType) {
-    case SortType.TIME:
-      points.slice().sort((a, b) => calcDuration(b.endDate, b.startDate) - calcDuration(a.endDate, a.startDate));
-      break;
-    case SortType.PRICE:
-      points.slice().sort((a, b) => b.price - a.price);
-      break;
-  }
-  return points;
-};
-
 export default class EventsModel {
   constructor() {
     this._events = [];
@@ -100,7 +88,7 @@ export default class EventsModel {
 
   setSorter(sortType) {
     if (Object.values(SortType).some((it) => it === sortType)) {
-      this._activeSortType = sortType;
+      this._activeSortType = sortType;                                  //  console.log('events1',this._activeSortType);
     }
   }
 
