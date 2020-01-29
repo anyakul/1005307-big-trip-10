@@ -54,7 +54,8 @@ class EventsController {
     this._onDataChange = onDataChange;
   }
 
-  render(id, eventItem, destinations, availableOffers, mode) {
+  render(id, eventItem, destinations, availableOffers, mode, addEventButtonComponent) {
+    this._addEventButtonComponent = addEventButtonComponent
     if (mode === Mode.ADD) {
       const eventIt = getDefaultEvent();
       this._addEventComponent = new EventEditorComponent(eventIt, destinations, availableOffers, Mode.ADD);
@@ -114,7 +115,9 @@ class EventsController {
   }
 
   _closeForm() {
-    remove(this._addEventComponent);   //console.log('evt1=', this._addEventComponent );
+    this._addEventButtonComponent.setDisabled(false);
+    remove(this._addEventComponent);
+    //console.log('evt1=', this._addEventComponent );
   }
 
   _setEditCardListeners() {

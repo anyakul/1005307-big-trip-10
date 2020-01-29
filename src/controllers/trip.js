@@ -14,6 +14,7 @@ const HIDE_CLASS = `trip-events--hidden`;
 class TripController {
 
   constructor(container, eventsModel, destinationsModel, offersModel, api) {
+    
     this._addEventButtonComponent = null;
     this._container = container;
     this._eventsModel = eventsModel;
@@ -86,11 +87,11 @@ class TripController {
   renderAddEventsButton(addEventButtonComponent) {
     this._addEventButtonComponent = addEventButtonComponent;
     this._onViewChange();
-    this._addEventButtonComponent = addEventButtonComponent;
     this._addEventButtonComponent.setDisabled(true);
     this._newEventId = this._eventsModel.getEvents().length;
     this._addEventFormController = new EventsController(this._tripDaysListElement, this._onDataChange, this._onViewChange);
-    this._addEventFormController.render(this._newEventId, {}, this._destinationsModel, this._offersModel, Mode.ADD);
+    this._addEventFormController.render(this._newEventId, {}, this._destinationsModel, this._offersModel, Mode.ADD, this._addEventButtonComponent);
+    this._eventsControllers.push(this._addEventFormController);
   }
 
   _onSortTypeChange(sortType) {
@@ -112,6 +113,7 @@ class TripController {
 
   _removeEvents(addEventButtonComponent) {
     remove(this._tripDayComponent);
+    
     this._eventsControllers.forEach((eventController) => eventController.destroy());
     this._eventsControllers = [];
   }
@@ -128,8 +130,6 @@ class TripController {
     this._thipDays.forEach((day) => remove(day));
     this._removeEvents();
     this._renderSortEventsByDefault(this._tripDaysListElement, this._events);
-    
-    
   }
 
   _sortEvents(sortedEvents, sortType) {
@@ -143,8 +143,9 @@ class TripController {
     }
   }
 
-  _onViewChange() {
+  _onViewChange() {    
     this._eventsControllers.forEach((it) => it.setDefaultView());
+    
   }
     /*if (newEvent === null) {
       this._api.deletePoint(oldEvent.id).then(() => {
