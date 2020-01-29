@@ -49,7 +49,7 @@ Promise.all([api.getPoints(), api.getDestinations(), api.getOffers()]).then(([po
   destinationsModel.setDestinations(destinations);
   offersModel.setOffers(offers);
 
-  siteMenuComponent.setTabChangeHandler((menuTab) => {
+  siteMenuComponent.setOnTabChange((menuTab) => {
     if (menuTab === MenuTab.TABLE) {
       tripController.show();
       statsController.hide();
@@ -62,6 +62,6 @@ Promise.all([api.getPoints(), api.getDestinations(), api.getOffers()]).then(([po
   filterController.render();
   statsController.render();
   tripController.render();
-  addEventButtonComponent.setClickHandler(() => tripController.renderAddEventsButton(addEventButtonComponent));
+  addEventButtonComponent.setOnClick(() => tripController.renderAddEventsButton(addEventButtonComponent));
   statsController.hide();
 });

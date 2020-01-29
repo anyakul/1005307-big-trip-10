@@ -7,7 +7,7 @@ import moment from 'moment';
 const calcDuration = (start, end) => moment(end).diff(start);
 
 const getUniqueDays = (days) => {
-  let uniqueDays = [];
+  const uniqueDays = [];
   days.forEach((day, i) => {
     if (i === 0 || uniqueDays.every((it) => !isSameDay(it, day))) {
       uniqueDays.push(day);
@@ -19,7 +19,6 @@ const getUniqueDays = (days) => {
 export default class EventsModel {
   constructor() {
     this._events = [];
-    this._pointsDates = [];
     this._filterChangeHandlers = [];
     this._sorterChangeHandlers = [];
     this._dataChangeHandlers = [];
@@ -40,7 +39,7 @@ export default class EventsModel {
   }
 
   getEvents() {
-    return /*getSortedPoints(*/this.getEventsByFilter(this._activeFilterType/*, this._activeSortType*/);
+    return this.getEventsByFilter(this._activeFilterType);
   }
 
   getEventsAll() {
@@ -117,15 +116,15 @@ export default class EventsModel {
     return this._events.findIndex((eventItem) => eventItem.id === id);
   }
 
-  addDataChangeHandler(handler) {
+  addOnDataChange(handler) {
     this._dataChangeHandlers.push(handler);
   }
 
-  setFilterChangeHandler(handler) {
+  setOnFilterChange(handler) {
     this._filterChangeHandlers.push(handler);
   }
 
-  setSorterChangeHandler(handler) {
+  setOnSorterChange(handler) {
     this._sorterChangeHandlers.push(handler);
   }
 

@@ -29,21 +29,21 @@ class EventEditorComponent extends AbstractSmartComponent {
     return createEventEditorTemplate(this._events, this._destinations, this._availableOffers, this._mode, this._details);
   }
 
-  setSubmitHandler(handler) {
-    this._submitHandler = handler;
-    if (this._mode === Mode.ADD) {
-      this.getElement().addEventListener(`submit`, this._submitHandler);
+  setOnSubmit(handler) {
+    this._submitHandler = handler;          
+    if (this._mode === Mode.ADD) { 
+      this.getElement().addEventListener(`submit`, this._submitHandler); console.log('handler=',this._submitHandler);
     } else {
       this.getElement().querySelector(`form`).addEventListener(`submit`, this._submitHandler);
     }
   }
 
-  setCancelHandler(handler) {
+  setOnCancel(handler) {
     this.getElement().addEventListener(`reset`, handler);
     this._cancelHandler = handler;
   }
 
-  setRollupButtonClickHandler(handler) {
+  setOnRollupButtonClick(handler) {
     this.getElement().querySelector(`.event__rollup-btn`)
       .addEventListener(`click`, handler);
     this._rollUpButtonClickHandler = handler;
@@ -51,7 +51,7 @@ class EventEditorComponent extends AbstractSmartComponent {
 
   recoveryListeners() {
     if (this._mode !== Mode.ADD) {
-      this.setRollupButtonClickHandler(this._rollupButtonClickHandler);
+      this.setOnRollupButtonClick(this._rollupButtonClickHandler);
     }
     this._subscribeOnEvents(this._mode);
     this._setValidation();
@@ -126,7 +126,7 @@ class EventEditorComponent extends AbstractSmartComponent {
     const form = this._mode === Mode.ADD ? this.getElement() : this.getElement().querySelector(`form`);
     const formData = new FormData(form);
 
-    const newPoint = {
+    return {
       id: this._events.id,
       type: this._events.type,
       startDate: formData.get(`event-start-time`),
@@ -136,7 +136,6 @@ class EventEditorComponent extends AbstractSmartComponent {
       offers: this._events.offers,
       isFavorite: this._events.isFavorite
     };
-    return newPoint;
   }
 
   _applyFlatpickr() {

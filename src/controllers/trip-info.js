@@ -9,7 +9,7 @@ class TripInfoController {
     this._tripInfoMainComponent = null;
     this._tripInfoCostComponent = null;
     this._updateInfo = this._updateInfo.bind(this);
-    this._eventsModel.addDataChangeHandler(this._updateInfo);
+    this._eventsModel.addOnDataChange(this._updateInfo);
   }
 
   render() {

@@ -50,7 +50,7 @@ const legendConf = {
   display: false
 };
 
-const datasetConf = (values, lab) => {
+const getDatasetConf = (values, lab) => {
   return [
     {
       label: lab,
@@ -103,7 +103,7 @@ const renderMoneyChart = (element, events) => {
     fontSize: 16,
     data: {
       labels,
-      datasets: datasetConf(values, `Money spent`)
+      datasets: getDatasetConf(values, `Money spent`)
     },
     options: {
       layout: padding,
@@ -153,7 +153,7 @@ const renderTransportChart = (element, points) => {
     fontSize: 16,
     data: {
       labels,
-      datasets: datasetConf(values, `Count`)
+      datasets: getDatasetConf(values, `Count`)
     },
     options: {
       layout: padding,
@@ -176,10 +176,10 @@ const renderTransportChart = (element, points) => {
   });
 };
 
-const timer = (value) => {
-  let diffDays = Math.ceil(value / (1000 * 3600 * 24));
-  let hours = Math.floor(value / 3600) % 24;
-  let minutes = Math.floor(value / 60) % 60;
+const formatDuration = (value) => {
+  const diffDays = Math.ceil(value / (1000 * 3600 * 24));
+  const hours = Math.floor(value / 3600) % 24;
+  const minutes = Math.floor(value / 60) % 60;
   return `${diffDays}d ${hours}h ${minutes}m`;
 };
 
@@ -204,7 +204,7 @@ const renderTimeChart = (element, events) => {
     fontSize: 16,
     data: {
       labels,
-      datasets: datasetConf(values, `Time spent`)
+      datasets: getDatasetConf(values, `Time spent`)
     },
     options: {
       layout: padding,
@@ -217,7 +217,7 @@ const renderTimeChart = (element, events) => {
       plugins: {
         datalabels: {
           formatter(value) {
-            return timer(value);
+            return formatDuration(value);
           }
         }
       },

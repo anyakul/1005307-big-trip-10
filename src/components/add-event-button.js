@@ -6,7 +6,7 @@ class AddEventButtonComponent extends AbstractComponent {
     return createAddEventButtonTemplate();
   }
 
-  setClickHandler(handler) {
+  setOnClick(handler) {
     this.getElement().addEventListener(`click`, handler);
   }
 

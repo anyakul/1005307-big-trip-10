@@ -11,7 +11,7 @@ class FilterController {
     this._onDataChange = this._onDataChange.bind(this);
     this._onFilterChange = this._onFilterChange.bind(this);
 
-    this._eventsModel.addDataChangeHandler(this._onDataChange);
+    this._eventsModel.addOnDataChange(this._onDataChange);
   }
 
   render() {
@@ -25,7 +25,7 @@ class FilterController {
 
     render(container, this._filterComponent.getElement());
 
-    this._filterComponent.setChangeHandler(this._onFilterChange);
+    this._filterComponent.setOnChange(this._onFilterChange);
   }
 
   _onFilterChange(filterType) {

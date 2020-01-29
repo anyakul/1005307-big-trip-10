@@ -89,41 +89,44 @@ class EventsController {
   }
 
   _setCardListeners() {
-    this._eventComponent.setRollupButtonClickHandler(() => this._showForm());
+    this._eventComponent.setOnRollupButtonClick(() => this._showForm());
   }
 
   _setListeners() {
     document.addEventListener(`keydown`, this._onEscKeyDown);
   }
 
-  _eventListener(evt) {
-    evt.preventDefault();
+  _setEventListener(evt) {
+    evt.preventDefault();             
     this._closeForm();
   }
 
   _setAddCardListeners() {
-    this._addEventComponent.setCancelHandler((evt) => {
-      this._eventListener(evt);
+    document.addEventListener(`keydown`, this._onEscKeyDownAddCard);
+    this._addEventComponent.setOnCancel((evt) => {   
+      this._setEventListener(evt);
     });
 
-    this._addEventComponent.setSubmitHandler((evt) => {
-      this._eventListener(evt);
+    this._addEventComponent.setOnSubmit((evt) => {
+      evt.preventDefault();
+      this._setEventListener(evt);
     });
   }
 
   _closeForm() {
-    remove(this._addEventComponent);
+    remove(this._addEventComponent);   //console.log('evt1=', this._addEventComponent );
   }
 
   _setEditCardListeners() {
-    this._eventEditorComponent.setSubmitHandler((evt) => {
+    this._setListeners();
+    this._eventEditorComponent.setOnSubmit((evt) => {
       evt.preventDefault();
       const data = this._eventEditorComponent.getFormData();
       const formData = parseFormData(data);
       this._onDataChange(this, this._eventItem, formData);
       this._showCard();
     });
-    this._eventEditorComponent.setRollupButtonClickHandler(() => {
+    this._eventEditorComponent.setOnRollupButtonClick(() => {
       this._eventEditorComponent.reset();
       this._showCard();
     });
@@ -150,6 +153,13 @@ class EventsController {
   _onEscKeyDown(evt) {
     if (isEscKey(evt)) {
       this._showCard();
+      document.removeEventListener(`keydown`, this._onEscKeyDown);
+    }
+  }
+  
+  _onEscKeyDownAddForm(evt) {
+    if (isEscKey(evt)) {
+      remove(this._addEventComponent);
       document.removeEventListener(`keydown`, this._onEscKeyDown);
     }
   }

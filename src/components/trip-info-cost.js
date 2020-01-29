@@ -12,8 +12,8 @@ class TripCostComponent extends AbstractComponent {
   }
 
   update(amount) {
-    this._costsAmount = amount;
-    this.getElement().querySelector(`.trip-info__cost-value`).innerHTML = amount;
+    this._cost = amount;
+    this.getElement().querySelector(`.trip-info__cost-value`).innerHTML = this._cost;
   }
 }
 

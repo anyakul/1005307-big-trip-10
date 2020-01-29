@@ -26,7 +26,7 @@ class SiteMenuComponent extends AbstractComponent {
     return createMenuTemplate(this._tabs);
   }
 
-  setTabChangeHandler(handler) {
+  setOnTabChange(handler) {
     this.getElement().addEventListener(`click`, (evt) => {
       evt.preventDefault();
 
