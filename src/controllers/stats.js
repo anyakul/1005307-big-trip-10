@@ -1,7 +1,7 @@
 import StatsComponent from '../components/stats';
 import {render, RenderPosition} from '../utils/render';
 
-const StatsTypes = {
+const StatsType = {
   MONEY: `money`,
   TRANSPORT: `transport`,
   SPEND: `spend`,
@@ -15,7 +15,7 @@ class StatsController {
   }
 
   render() {
-    const stats = Object.values(StatsTypes).map((statsType) => ({
+    const stats = Object.values(StatsType).map((statsType) => ({
       name: statsType,
     }));
 

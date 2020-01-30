@@ -11,7 +11,7 @@ class AddEventButtonComponent extends AbstractComponent {
   }
 
   setDisabled(value) {
-    this._element.disabled = value;
+    this.getElement().disabled = value;
   }
 }
 

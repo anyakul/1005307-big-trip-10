@@ -1,4 +1,3 @@
-// Абстрактный компонент
 import {createElement} from '../utils/render';
 
 const HIDE_CLASS = `visually-hidden`;
@@ -29,11 +28,11 @@ class AbstractComponent {
   }
 
   show() {
-    this._element.classList.remove(HIDE_CLASS);
+    this.getElement().classList.remove(HIDE_CLASS);
   }
 
   hide() {
-    this._element.classList.add(HIDE_CLASS);
+    this.getElement().classList.add(HIDE_CLASS);
   }
 }
 
