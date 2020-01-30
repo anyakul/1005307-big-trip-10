@@ -53,9 +53,11 @@ Promise.all([api.getPoints(), api.getDestinations(), api.getOffers()]).then(([po
     if (menuTab === MenuTab.TABLE) {
       tripController.show();
       statsController.hide();
+      filterController.show();
     } else {
       statsController.show();
       tripController.hide();
+      filterController.hide();
     }
   });
   tripInfoController.render();

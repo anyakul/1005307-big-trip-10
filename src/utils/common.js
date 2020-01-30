@@ -5,7 +5,7 @@ const isSameDay = (firstDate, secondDate) => {
 };
 
 export {isSameDay};
-
+/*
 export const calculateDurationFromMs = (mseconds) => {
 
   const diffDuration = moment.duration(mseconds);
@@ -26,3 +26,4 @@ export const calculateDurationFromMs = (mseconds) => {
 
   return duration;
 };
+*/

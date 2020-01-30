@@ -143,13 +143,15 @@ class EventsController {
       evt.preventDefault();
       const data = this._eventEditorComponent.getFormData();
       const formData = parseFormData(data);
-      this._onDataChange(this, this._eventItem, formData);
+      this._onDataChange(this, this._eventItem, data);
       this._showCard();
+      console.log(formData);
     });
     this._eventEditorComponent.setOnRollupButtonClick(() => { // console.log('this._eventEditorComponent=',this._eventEditorComponent);
        this._eventEditorComponent.reset();                    // console.log('this._eventEditorComponent=',this._eventEditorComponent)
      this._showCard();
     });
+    
   }
 
   destroy() {
@@ -181,8 +183,8 @@ class EventsController {
       this._eventComponent.getElement().style.animation = ``;
 
       this._eventEditorComponent.setData({
-        saveButtonText: `Save`,
-        deleteButtonText: `Delete`,
+        saveButtonText: `Saving`,
+        deleteButtonText: `Deleting`,
       });
     }, SHAKE_ANIMATION_TIMEOUT);
   }

@@ -4,6 +4,11 @@ import {Mode} from './events';
 import flatpickr from 'flatpickr';
 import {formatFullDate, formatDuration} from './templates/date';
 
+const DefaultData = {
+  deleteButtonText: `Delete`,
+  saveButtonText: `Save`,
+};
+
 class EventEditorComponent extends AbstractSmartComponent {
   constructor(events, destinations, offers, mode) {
     super();
@@ -15,7 +20,7 @@ class EventEditorComponent extends AbstractSmartComponent {
 
     this._mode = mode;
     this._details = mode === Mode.EDIT;
-
+    this._externalData = DefaultData;
     this._submitHandler = null;
     this._deleteHandler = null;
     this._flatpickr = null;
@@ -36,6 +41,11 @@ class EventEditorComponent extends AbstractSmartComponent {
     } else {
       this.getElement().querySelector(`form`).addEventListener(`submit`, this._submitHandler);
     }
+  }
+
+  setData(data) {
+    this._externalData = Object.assign({}, DefaultData, data);
+    this.rerender();
   }
 
   setOnCancel(handler) {
