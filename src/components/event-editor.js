@@ -30,8 +30,8 @@ class EventEditorComponent extends AbstractSmartComponent {
   }
 
   setOnSubmit(handler) {
-    this._submitHandler = handler;          
-    if (this._mode === Mode.ADD) { 
+    this._submitHandler = handler; 
+    if (this._mode === Mode.ADD) {
       this.getElement().addEventListener(`submit`, this._submitHandler); console.log('handler=',this._submitHandler);
     } else {
       this.getElement().querySelector(`form`).addEventListener(`submit`, this._submitHandler);

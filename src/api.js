@@ -46,7 +46,7 @@ class API {
   createPoints(events) {
     return this._load({
       url: `points`,
-      method: Method.PUT,
+      method: Method.POST,
       body: JSON.stringify(events.toRAW()),
       headers: new Headers({'Content-Type': `application/json`})
     })

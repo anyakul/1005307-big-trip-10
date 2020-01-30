@@ -2,9 +2,6 @@ import {FilterType} from '../components/event-filter';
 import {SortType} from '../components/event-sorter';
 import {formatDuration} from '../components/templates/date';
 import {isSameDay} from '../utils/common';
-import moment from 'moment';
-
-const calcDuration = (start, end) => moment(end).diff(start);
 
 const getUniqueDays = (days) => {
   const uniqueDays = [];
@@ -30,7 +27,7 @@ export default class EventsModel {
 
     switch (filterType) {
       case FilterType.FUTURE:
-        return this._events.filter(({startDate}) => Date.parse(startDate) > now)
+        return this._events.filter(({startDate}) => Date.parse(startDate) > now);
       case FilterType.PAST:
         return this._events.filter(({startDate}) => Date.parse(startDate) < now);
     }
@@ -104,7 +101,6 @@ export default class EventsModel {
     }
     this._events[index] = Object.assign({}, eventItem);
     this._callHandlers(this._dataChangeHandlers);
-
     return true;
   }
 

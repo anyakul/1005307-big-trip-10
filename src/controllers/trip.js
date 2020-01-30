@@ -4,7 +4,7 @@ import NoEventsComponent from '../components/no-events';
 import TripDaysListComponent from '../components/trip-days-list';
 import TripDayComponent from '../components/trip-day';
 import {calcDuration} from '../components/templates/date';
-import EventsController from './events';
+import EventsController, {EmptyEvent} from './events';
 import SorterController from './sort';
 import {Mode} from '../components/events';
 import {isSameDay} from '../utils/common';
@@ -14,8 +14,8 @@ const HIDE_CLASS = `trip-events--hidden`;
 class TripController {
 
   constructor(container, eventsModel, destinationsModel, offersModel, api) {
-    
     this._addEventButtonComponent = null;
+    this._creatingEvent = null;
     this._container = container;
     this._eventsModel = eventsModel;
     this._destinationsModel = destinationsModel;
@@ -102,18 +102,17 @@ class TripController {
         sortedEvents = this._events.slice().sort((a, b) => calcDuration(b.startDate, b.endDate) - calcDuration(a.startDate, a.endDate));
         this._sortEvents(sortedEvents, sortType);
         break;
-     case SortType.PRICE:  
+     case SortType.PRICE:
        sortedEvents = this._events.slice().sort((a, b) => a.price - b.price);
        this._sortEvents(sortedEvents, sortType);
        break;
      case SortType.EVENT:
        this._sortEvents(sortedEvents, sortType);
      }
-  }  
+  }
 
   _removeEvents(addEventButtonComponent) {
     remove(this._tripDayComponent);
-    
     this._eventsControllers.forEach((eventController) => eventController.destroy());
     this._eventsControllers = [];
   }
@@ -134,7 +133,7 @@ class TripController {
 
   _sortEvents(sortedEvents, sortType) {
     this._thipDays.forEach((day) => remove(day));
-    
+
     if (sortType === SortType.EVENT) {
       this._updateEvents()
     }
@@ -143,9 +142,8 @@ class TripController {
     }
   }
 
-  _onViewChange() {    
+  _onViewChange() {
     this._eventsControllers.forEach((it) => it.setDefaultView());
-    
   }
     /*if (newEvent === null) {
       this._api.deletePoint(oldEvent.id).then(() => {
@@ -175,25 +173,31 @@ class TripController {
             this._updateEvents(newEvent);
             
         //  }
-        });*/
-       /* if (newEvent && oldEvent) {
+        });
+      if (newEvent && oldEvent) {
         this._api.updatePoint(oldEvent.id, newEvent).then((point) => {
           this._eventsModel.updateEvent(point.id, point);
         });
-      }*/
-
+      }
+*/
   _onDataChange(eventsController, oldEvent, newEvent) {
-    if (newEvent && oldEvent) {
+    if (oldEvent === EmptyEvent) {
+      this._creatingEvent = null;
+      if (newEvent === null) {
+        eventsController.destroy();
+        this._updateEvents();
+      }
+ /*   if (newEvent && oldEvent) {
       this._api.updatePoint(oldEvent.id, newEvent).then((point) => {
         this._eventsModel.updateEvent(point.id, point);
       });
+    }*/
     }
   }
 
   _onFilterChange() {
     this._events = this._eventsModel.getEvents();
     this._updateEvents();
-    
   }
 }
 
