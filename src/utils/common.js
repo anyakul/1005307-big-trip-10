@@ -5,25 +5,3 @@ const isSameDay = (firstDate, secondDate) => {
 };
 
 export {isSameDay};
-/*
-export const calculateDurationFromMs = (mseconds) => {
-
-  const diffDuration = moment.duration(mseconds);
-
-  let duration = ``;
-
-  if (diffDuration.days() !== 0) {
-    duration += `${diffDuration.days()}D `;
-  }
-
-  if (diffDuration.hours() !== 0) {
-    duration += `${diffDuration.hours()}H `;
-  }
-
-  if (diffDuration.minutes() !== 0) {
-    duration += `${diffDuration.minutes()}M`;
-  }
-
-  return duration;
-};
-*/

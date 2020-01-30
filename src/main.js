@@ -54,10 +54,12 @@ Promise.all([api.getPoints(), api.getDestinations(), api.getOffers()]).then(([po
       tripController.show();
       statsController.hide();
       filterController.show();
+      addEventButtonComponent.show();
     } else {
       statsController.show();
       tripController.hide();
       filterController.hide();
+      addEventButtonComponent.hide();
     }
   });
   tripInfoController.render();
