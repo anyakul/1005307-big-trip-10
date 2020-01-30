@@ -145,53 +145,51 @@ class TripController {
   _onViewChange() {
     this._eventsControllers.forEach((it) => it.setDefaultView());
   }
-    /*if (newEvent === null) {
-      this._api.deletePoint(oldEvent.id).then(() => {
-        this._removePoint(pointController, oldEvent.id);
-        return;
-      });
-    }
-    if (oldEvent === null) {
-      this._api.createPoints(newEvent).then((point) => {
-        this._eventsModel.addEvent(point);
-        this._onViewChange();
-        return;
-      });
-    }*/
-//    if (newEvent && oldEvent) {
-      /*this._api.updatePoint(oldEvent.id, newEvent).then((point) => {
-        
-      });
-    }*/
-// this._api.updatePoint(oldEvent.id, newEvent)
-       /*   .then((eventsModel) => {
-          this._eventsModel.updateEvent(oldEvent.id, newEvent);
-        //  if (isSuccess) {
-            this._eventsModel.updateEvent(oldEvent.id, newEvent);
-            eventsController.render(oldEvent.id, newEvent, this._destinationsModel, this._offersModel, Mode.VIEW);
-            //renderEvents(newEvent);
-            this._updateEvents(newEvent);
-            
-        //  }
-        });
-      if (newEvent && oldEvent) {
-        this._api.updatePoint(oldEvent.id, newEvent).then((point) => {
-          this._eventsModel.updateEvent(point.id, point);
-        });
-      }
-*/
+
   _onDataChange(eventsController, oldEvent, newEvent) {
     if (oldEvent === EmptyEvent) {
       this._creatingEvent = null;
       if (newEvent === null) {
         eventsController.destroy();
         this._updateEvents();
+      } else {
+        this._api.createPoints(newEvent)
+          .then((eventModel) => {
+            this._eventsModel.addEvent(eventModel);
+            eventsController.render(eventModel, Mode.DEFAULT);
+
+            const destroyedEvent = this._eventsControllers.pop();
+            destroyedEvent.destroy();
+
+            this._eventsControllers = [].concat(eventsController, this._eventsControllers);
+          })
+          .catch(() => {
+            eventsController.shake();
+          });
       }
- /*   if (newEvent && oldEvent) {
-      this._api.updatePoint(oldEvent.id, newEvent).then((point) => {
-        this._eventsModel.updateEvent(point.id, point);
-      });
-    }*/
+    }
+    else if (newEvent === null) {
+      this._api.deletePoint(oldEvent.id)
+        .then(() => {
+          this._eventModel.removeEvent(oldEvent.id);
+          this._updateEvents();
+        })
+        .catch(() => {
+          eventsController.shake();
+        });
+    } else if (newEvent) {
+      this._api.updatePoint(oldEvent.id, newEvent)
+        .then((eventModel) => {
+          const isSuccess = this._eventsModel.updateEvent(oldEvent.id, eventModel);
+
+          if (isSuccess) {
+            eventsController.render(eventModel, this._destinationsModel, this._offersModel, Mode.VIEW);
+            this._updateEvents();
+          }
+        })
+        .catch(() => {
+          eventsController.shake();
+        });
     }
   }
 

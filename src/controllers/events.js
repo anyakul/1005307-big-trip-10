@@ -10,6 +10,8 @@ const Mode = {
   ADD: `add`,
 };
 
+const SHAKE_ANIMATION_TIMEOUT = 600;
+
 const getDefaultEvent = (newEventId) => {
   return ({
     id: newEventId,
@@ -63,7 +65,6 @@ class EventsController {
     this._container = container;
     this._onDataChange = onDataChange;
     this._onViewChange = onViewChange;
-    
     this._mode = Mode.VIEW;
     
     this._eventItem = null;
@@ -114,37 +115,30 @@ class EventsController {
     this._eventComponent.setOnRollupButtonClick(() => this._showForm());
   }
 
-  _setListeners() {
+  _setEscListener() {
     document.addEventListener(`keydown`, this._onEscKeyDown);   
-  }
-
-  _setEventListener(evt) {
-   // evt.preventDefault();
-    this._closeForm();
   }
 
   _setAddCardListeners() {
     this._mode = Mode.ADD;
-    document.addEventListener(`keydown`, this._onEscKeyDown);
+    this._setEscListener()
     this._eventEditorComponent.setOnCancel((evt) => {
-    this._setEventListener(evt);
+      this._onDataChange(this, EmptyEvent, null);
+      this._addEventButtonComponent.setDisabled(false);
     });
 
     this._eventEditorComponent.setOnSubmit((evt) => {
-       evt.preventDefault();
-      this._setEventListener(evt);
+      evt.preventDefault();
+      const data = this._eventEditorComponent.getFormData();
+      const formData = parseFormData(data);
+      this._onDataChange(this, EmptyEvent, null);
+      this._addEventButtonComponent.setDisabled(false);
     });
   }
 
-  _closeForm() {
-    this._addEventButtonComponent.setDisabled(false);
-    remove(this._eventEditorComponent);
-    // console.log('evt1=', this._addEventComponent );
-  }
-
   _setEditCardListeners() {
-    document.addEventListener(`keydown`, this._onEscKeyDown);
- //   this._setListeners();
+    this._mode = Mode.EDIT;
+    this._setEscListener();
     this._eventEditorComponent.setOnSubmit((evt) => {
       evt.preventDefault();
       const data = this._eventEditorComponent.getFormData();
@@ -176,6 +170,21 @@ class EventsController {
     replace(this._eventEditorComponent, this._eventComponent);
     this._mode = Mode.EDIT;
     this._setEditCardListeners();
+  }
+
+  shake() {
+    this._eventEditorComponent.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+    this._eventComponent.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+
+    setTimeout(() => {
+      this._eventEditorComponent.getElement().style.animation = ``;
+      this._eventComponent.getElement().style.animation = ``;
+
+      this._eventEditorComponent.setData({
+        saveButtonText: `Save`,
+        deleteButtonText: `Delete`,
+      });
+    }, SHAKE_ANIMATION_TIMEOUT);
   }
 
   _onEscKeyDown(evt) {
