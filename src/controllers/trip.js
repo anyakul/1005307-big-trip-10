@@ -3,13 +3,18 @@ import {SortType} from '../components/event-sorter';
 import NoEventsComponent from '../components/no-events';
 import TripDaysListComponent from '../components/trip-days-list';
 import TripDayComponent from '../components/trip-day';
-import {calcDuration} from '../components/templates/date';
+import {formatDuration} from '../components/templates/date';
 import EventsController, {EmptyEvent} from './events';
 import SorterController from './sort';
 import {Mode} from '../components/events';
 import {isSameDay} from '../utils/common';
+import moment, {duration} from 'moment';
 
 const HIDE_CLASS = `trip-events--hidden`;
+
+const getDatesDiff = (a, b) => {
+  return moment(b) - moment(a);
+};
 
 class TripController {
 
@@ -99,7 +104,7 @@ class TripController {
     this._sortType = sortType;
     switch (sortType) {
       case SortType.TIME:
-        sortedEvents = this._events.slice().sort((a, b) => calcDuration(b.startDate, b.endDate) - calcDuration(a.startDate, a.endDate));
+        sortedEvents = this._events.slice().sort((a, b) => getDatesDiff(b.endDate, b.startDate) - getDatesDiff(a.endDate, a.startDate));
         this._sortEvents(sortedEvents, sortType);
         break;
      case SortType.PRICE:
@@ -153,7 +158,7 @@ class TripController {
         eventsController.destroy();
         this._updateEvents();
       } else {
-        this._api.createPoints(newEvent)
+        this._api.createPoint(newEvent)
           .then((eventModel) => {
             this._eventsModel.addEvent(eventModel);
             eventsController.render(eventModel, Mode.DEFAULT);

@@ -43,7 +43,7 @@ class API {
               .then(Offer.parseOffers);
   }
 
-  createPoints(events) {
+  createPoint(events) {
     return this._load({
       url: `points`,
       method: Method.POST,

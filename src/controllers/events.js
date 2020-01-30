@@ -131,7 +131,7 @@ class EventsController {
       evt.preventDefault();
       const data = this._eventEditorComponent.getFormData();
       const formData = parseFormData(data);
-      this._onDataChange(this, EmptyEvent, null);
+      this._onDataChange(this, EmptyEvent, formData);
       this._addEventButtonComponent.setDisabled(false);
     });
   }
