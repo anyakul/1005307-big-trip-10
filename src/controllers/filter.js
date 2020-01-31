@@ -37,7 +37,7 @@ class FilterController {
   _onDataChange() {
     this.render();
   }
-  
+
   show() {
     this._filterComponent.show();
   }

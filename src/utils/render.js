@@ -20,7 +20,6 @@ export const render = (container, element, place = RenderPosition.BEFOREEND) => 
       break;
     default:
       throw new Error(`Unknown render position`);
-      break;
   }
 };
 

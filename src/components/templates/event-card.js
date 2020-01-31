@@ -2,7 +2,9 @@ import {makeTemplateGenerator} from './generator';
 import {
   formatDuration,
   formatTime,
-  formatFullDate,
+  formatDateTime,
+  getDuration,
+  getDatesDiff
 } from './date';
 
 import {
@@ -33,12 +35,16 @@ const generateExtraServicesMarkup = ({title, price}) => {
 const createExtraServicesMarkup = makeTemplateGenerator(generateExtraServicesMarkup);
 
 const createCardTemplate = ({type, startDate, endDate, price, destination}) => {
+ // duration(mseconds) = (endDate - startDate);
+  const timeInterval = formatDuration(endDate - startDate);
+
   const dateFromInCard = formatTime(startDate);
   const dateToInCard = formatTime(endDate);
-  const fullDateFrom = formatFullDate(startDate);
-  const fullDateTo = formatFullDate(endDate);
+  const fullDateFrom = formatDateTime(startDate);
+  const fullDateTo = formatDateTime(endDate);
   const preposition = Preposition[getEventType(type)];
-  const timeInterval = formatDuration(startDate, endDate);
+
+  
 
   return (
     `<div class="event__type">

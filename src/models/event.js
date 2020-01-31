@@ -6,10 +6,10 @@ const parseDateFromISOString = (date) => {
 
 class Event {
   constructor(data) {
-    this.id = data[`id`];
+    this.id = +data[`id`];
     this.type = data[`type`];
-    this.startDate = parseDateFromISOString(data[`date_from`]);
-    this.endDate = parseDateFromISOString(data[`date_to`]);
+    this.startDate = new Date(data[`date_from`]);
+    this.endDate = new Date(data[`date_to`]);
     this.destination = data[`destination`];
     this.price = data[`base_price`];
     this.offers = data[`offers`];

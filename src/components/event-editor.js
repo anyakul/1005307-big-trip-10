@@ -2,7 +2,7 @@ import AbstractSmartComponent from './abstract-smart';
 import {createEventEditorTemplate} from './templates/event-editor';
 import {Mode} from './events';
 import flatpickr from 'flatpickr';
-import {formatFullDate, formatDuration} from './templates/date';
+import {formatDateTime, formatDuration} from './templates/date';
 
 const DefaultData = {
   deleteButtonText: `Delete`,
@@ -39,7 +39,8 @@ class EventEditorComponent extends AbstractSmartComponent {
     if (this._mode === Mode.ADD) {
       this.getElement().addEventListener(`submit`, this._submitHandler); console.log('handler=',this._submitHandler);
     } else {
-      this.getElement().querySelector(`form`).addEventListener(`submit`, this._submitHandler);
+      this.getElement().addEventListener(`submit`, handler);
+      this._submitHandler = handler;
     }
   }
 
@@ -118,12 +119,12 @@ class EventEditorComponent extends AbstractSmartComponent {
     });
 
     element.querySelector(`input[name=event-start-time]`).addEventListener(`change`, (evt) => {
-      this._events.startDate = formatFullDate(evt.target.value);
+      this._events.startDate = formatDateTime(evt.target.value);
       this._setValidation();
     });
 
     element.querySelector(`input[name=event-end-time]`).addEventListener(`change`, (evt) => {
-      this._events.endDate = formatFullDate(evt.target.value);
+      this._events.endDate = formatDateTime(evt.target.value);
       this._setValidation();
     });
 
@@ -162,14 +163,14 @@ class EventEditorComponent extends AbstractSmartComponent {
       enableTime: true,
       allowInput: true,
       defaultDate: this._events.startDate,
-      formatDate: formatFullDate
+      formatDate: formatDateTime
     });
 
     this._flatpickr.END = flatpickr(endDateInput, {
       enableTime: true,
       allowInput: true,
       defaultDate: this._events.endDate,
-      formatDate: formatFullDate
+      formatDate: formatDateTime
     });
   }
 }

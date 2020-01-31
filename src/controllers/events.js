@@ -2,7 +2,7 @@ import {render, replace, remove, RenderPosition} from '../utils/render';
 import {isEscKey} from '../utils/key-board';
 import EventCardComponent from '../components/event-card';
 import EventEditorComponent from '../components/event-editor';
-import EventsModel from '../models/events';
+import Event from '../models/event';
 
 const Mode = {
   VIEW: `view`,
@@ -12,42 +12,38 @@ const Mode = {
 
 const SHAKE_ANIMATION_TIMEOUT = 600;
 
-const getDefaultEvent = (newEventId) => {
-  return ({
-    id: newEventId,
-    type: `sightseeing`,
-    startDate: new Date(),
-    endDate: new Date(),
-    destination: {
-      name: ``,
-      description: ``,
-      offers: []
-    },
-    price: 0,
-    offers: [],
-    isFavorite: false
-  });
-};
+const getDefaultEvent = (id) => ({
+  id,
+  type: `sightseeing`,
+  startDate: new Date(),
+  endDate: new Date(),
+  destination: {
+    name: ``,
+    description: ``,
+    offers: []
+  },
+  price: 0,
+  offers: [],
+  isFavorite: false
+});
 
-const EmptyEvent = (newEventId) => {
-  return ({
-    id: ``,
-    type: ``,
-    startDate: null,
-    endDate: null,
-    destination: {
-      name: ``,
-      description: ``,
-      offers: ``,
-    },
-    price: ``,
-    offers: [],
-    isFavorite: false
-  });
-};
+const EmptyEvent = (id) => ({
+  id,
+  type: ``,
+  startDate: new Date(),
+  endDate: new Date(),
+  destination: {
+    name: ``,
+    description: ``,
+    offers: ``,
+  },
+  price: ``,
+  offers: [],
+  isFavorite: false
+});
 
 const parseFormData = (formData) => {
-  return new EventsModel({
+  return new Event({
     'id': formData.id,
     'type': formData.type,
     'date_from': formData.startDate,
@@ -60,19 +56,19 @@ const parseFormData = (formData) => {
 };
 
 class EventsController {
-
   constructor(container, onDataChange, onViewChange) {
     this._container = container;
     this._onDataChange = onDataChange;
     this._onViewChange = onViewChange;
+
     this._mode = Mode.VIEW;
-    
+
     this._eventItem = null;
-    this._addEventComponent = null;        
+    this._addEventComponent = null;
     this._eventComponent = null;
     this._eventEditorComponent = null;
-    
-    this._onEscKeyDown = this._onEscKeyDown.bind(this);    
+
+    this._onEscKeyDown = this._onEscKeyDown.bind(this);
   }
 
   render(id, eventItem, destinations, availableOffers, mode, addEventButtonComponent) { //console.log('render',/*id,eventItem,*/destinations,mode,addEventButtonComponent);
@@ -80,8 +76,8 @@ class EventsController {
     if (mode === Mode.ADD) {
       const eventIt = getDefaultEvent();                                //    console.log('render', eventIt );
       this._eventEditorComponent = new EventEditorComponent(eventIt, destinations, availableOffers, Mode.ADD);
-      
-      render(this._container, this._eventEditorComponent.getElement(), RenderPosition.AFTERBEGIN); 
+
+      render(this._container, this._eventEditorComponent.getElement(), RenderPosition.AFTERBEGIN);
       this._setAddCardListeners();                       // console.log('this._addEventComponent', this._addEventComponent );
     } else {
       this._eventItem = eventItem;                              //   console.log('render2', this._container );
@@ -90,7 +86,7 @@ class EventsController {
 
       this._eventComponent = new EventCardComponent(this._eventItem);
       this._eventEditorComponent = new EventEditorComponent(this._eventItem, destinations, availableOffers, Mode.EDIT);
-                                                    // console.log('render3', this._eventComponent );
+                                              // console.log('render3', this._eventComponent );
       this._setCardListeners();
 
      if (oldEventComponent && oldEditEventComponent) {
@@ -129,10 +125,13 @@ class EventsController {
 
     this._eventEditorComponent.setOnSubmit((evt) => {
       evt.preventDefault();
+
+      this._addEventButtonComponent.setDisabled(false);
+
       const data = this._eventEditorComponent.getFormData();
       const formData = parseFormData(data);
-      this._onDataChange(this, EmptyEvent, formData);
-      this._addEventButtonComponent.setDisabled(false);
+
+      this._onDataChange(this, this._eventItem, formData);
     });
   }
 
@@ -141,17 +140,19 @@ class EventsController {
     this._setEscListener();
     this._eventEditorComponent.setOnSubmit((evt) => {
       evt.preventDefault();
+
       const data = this._eventEditorComponent.getFormData();
       const formData = parseFormData(data);
-      this._onDataChange(this, this._eventItem, data);
+
+      this._onDataChange(this, this._eventItem, formData);
+
       this._showCard();
-      console.log(formData);
     });
-    this._eventEditorComponent.setOnRollupButtonClick(() => { // console.log('this._eventEditorComponent=',this._eventEditorComponent);
-       this._eventEditorComponent.reset();                    // console.log('this._eventEditorComponent=',this._eventEditorComponent)
-     this._showCard();
+
+    this._eventEditorComponent.setOnRollupButtonClick(() => { 
+      this._eventEditorComponent.reset();   
+      this._showCard();
     });
-    
   }
 
   destroy() {

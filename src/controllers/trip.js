@@ -3,18 +3,12 @@ import {SortType} from '../components/event-sorter';
 import NoEventsComponent from '../components/no-events';
 import TripDaysListComponent from '../components/trip-days-list';
 import TripDayComponent from '../components/trip-day';
-import {formatDuration} from '../components/templates/date';
+import {isSameDay} from '../components/templates/date';
 import EventsController, {EmptyEvent} from './events';
 import SorterController from './sort';
 import {Mode} from '../components/events';
-import {isSameDay} from '../utils/common';
-import moment, {duration} from 'moment';
 
 const HIDE_CLASS = `trip-events--hidden`;
-
-const getDatesDiff = (a, b) => {
-  return moment(b) - moment(a);
-};
 
 class TripController {
 
@@ -85,7 +79,7 @@ class TripController {
     render(this._tripDaysListElement, this._tripDayComponent.getElement());
     const tripEventsList = this._tripDayComponent.getElement().querySelector(`.trip-events__list`);
     this._eventsControllers = this._renderEvents(events, tripEventsList);
-    
+
     return this._eventsControllers;
   }
 
@@ -104,7 +98,7 @@ class TripController {
     this._sortType = sortType;
     switch (sortType) {
       case SortType.TIME:
-        sortedEvents = this._events.slice().sort((a, b) => getDatesDiff(b.endDate, b.startDate) - getDatesDiff(a.endDate, a.startDate));
+        sortedEvents = this._events.slice().sort((a, b) => (b.endDate - b.startDate) - (a.endDate - a.startDate));
         this._sortEvents(sortedEvents, sortType);
         break;
      case SortType.PRICE:
@@ -116,7 +110,7 @@ class TripController {
      }
   }
 
-  _removeEvents(addEventButtonComponent) {
+  _removeEvents() {
     remove(this._tripDayComponent);
     this._eventsControllers.forEach((eventController) => eventController.destroy());
     this._eventsControllers = [];
@@ -134,15 +128,15 @@ class TripController {
     this._thipDays.forEach((day) => remove(day));
     this._removeEvents();
     this._renderSortEventsByDefault(this._tripDaysListElement, this._events);
+    this._eventsModel.updateEvent();
   }
 
   _sortEvents(sortedEvents, sortType) {
     this._thipDays.forEach((day) => remove(day));
 
     if (sortType === SortType.EVENT) {
-      this._updateEvents()
-    }
-    else {
+      this._updateEvents();
+    } else {
       this._renderSortEvents(sortedEvents);
     }
   }
@@ -151,7 +145,7 @@ class TripController {
     this._eventsControllers.forEach((it) => it.setDefaultView());
   }
 
-  _onDataChange(eventsController, oldEvent, newEvent) {
+  _onDataChange(eventsController, oldEvent, newEvent) {  console.log('trip','oldEvent=',oldEvent,' newEvent=', newEvent);
     if (oldEvent === EmptyEvent) {
       this._creatingEvent = null;
       if (newEvent === null) {
@@ -172,8 +166,7 @@ class TripController {
             eventsController.shake();
           });
       }
-    }
-    else if (newEvent === null) {
+    } else if (newEvent === null) {
       this._api.deletePoint(oldEvent.id)
         .then(() => {
           this._eventModel.removeEvent(oldEvent.id);
@@ -182,25 +175,28 @@ class TripController {
         .catch(() => {
           eventsController.shake();
         });
-    } else if (newEvent) {
-      this._api.updatePoint(oldEvent.id, newEvent)
+    } else if (newEvent) { console.log('OK','oldEvent.id',oldEvent.id,'newEvent',
+    newEvent/*,this._eventsModel.updateEvent(oldEvent.id, newEvent)*/);
+         
+    this._api.updatePoint(oldEvent.id, newEvent)
         .then((eventModel) => {
-          const isSuccess = this._eventsModel.updateEvent(oldEvent.id, eventModel);
+          const isSuccess = this._eventsModel.updateEvent(oldEvent.id, newEvent);
 
           if (isSuccess) {
-            eventsController.render(eventModel, this._destinationsModel, this._offersModel, Mode.VIEW);
+            eventsController.render(oldEvent.id, eventModel, this._destinationsModel, this._offersModel, Mode.VIEW);
             this._updateEvents();
           }
         })
         .catch(() => {
           eventsController.shake();
-        });
-    }
+        }); 
+    } 
   }
 
   _onFilterChange() {
     this._events = this._eventsModel.getEvents();
     this._updateEvents();
+    this._eventsModel.updateEvent()
   }
 }
 

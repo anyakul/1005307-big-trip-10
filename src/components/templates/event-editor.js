@@ -8,7 +8,7 @@ import {TRANSFER_EVENTS,
   CancelButtonName
 }
   from '../events';
-import {formatFullDate} from './date';
+import {formatDateTime} from './date';
 
 
 const createTripTypeImageTemplate = (type) => (
@@ -166,8 +166,8 @@ const createFormHeaderTemplate = (event, destinations, mode) => {
   const eventIcon = createTripTypeImageTemplate(type);
   const eventDestination = destination.name;
 
-  const eventStartDate = formatFullDate(startDate);
-  const eventsEndDate = formatFullDate(endDate);
+  const eventStartDate = formatDateTime(startDate);
+  const eventsEndDate = formatDateTime(endDate);
 
   const eventTypeListSection = createEventTypeListSection(event);
   const destinationListSection = createDestinationListSection(id, destinations.getAll());

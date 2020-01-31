@@ -1,7 +1,7 @@
 import {FilterType} from '../components/event-filter';
 import {SortType} from '../components/event-sorter';
-import {formatDuration} from '../components/templates/date';
-import {isSameDay} from '../utils/common';
+import {formatDuration, isSameDay} from '../components/templates/date';
+import {getEventsByFilter} from '../utils/filter';
 
 const getUniqueDays = (days) => {
   const uniqueDays = [];
@@ -36,7 +36,7 @@ export default class EventsModel {
   }
 
   getEvents() {
-    return this.getEventsByFilter(this._activeFilterType);
+    return getEventsByFilter(this._events, this._activeFilterType);
   }
 
   getEventsAll() {
@@ -57,7 +57,7 @@ export default class EventsModel {
     this._events = events;
   }
 
-  calcTotalAmount() {
+  calcTotalPrice() {
     let sum = 0;
     for (const eventItem of this._events) {
       sum += eventItem.price;
@@ -66,19 +66,24 @@ export default class EventsModel {
     return sum;
   }
 
-  addEvent(point) {
-    this._events = [].concat(point, this._points);
+  addEvent(eventItem) {
+    this._events = [...this._events, eventItem];
     this._callHandlers(this._dataChangeHandlers);
   }
 
   removeEvent(id) {
     const index = this._getEventById(id);
     if (index === -1) {
-      throw Error(`no point with id ${id} in points array`);
+      throw Error(`no events with id ${id} in events array`);
     }
 
-    this._events = [].concat(this._events.slice(0, index), this._events.slice(index + 1));
+    this._events = [
+      ...this._events.slice(0, index),
+      ...this._events.slice(index + 1),
+    ];
+
     this._callHandlers(this._dataChangeHandlers);
+
     return true;
   }
 
@@ -94,13 +99,19 @@ export default class EventsModel {
   }
 
   updateEvent(id, eventItem) {
-    const index = this._events.findIndex((it) => it.id === id);
-
+    const index = this._getEventById(id);
     if (index === -1) {
       return false;
     }
-    this._events[index] = Object.assign({}, eventItem);
+
+    this._events = [
+      ...this._events.slice(0, index),
+      eventItem,
+      ...this._events.slice(index + 1),
+    ];
+
     this._callHandlers(this._dataChangeHandlers);
+
     return true;
   }
 

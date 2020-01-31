@@ -1,256 +1,77 @@
 import AbstractComponent from './abstract';
 import {createStatsTemplates} from './templates/stats';
-import {TYPES} from '../data/types';
-import Chart from "chart.js";
-import ChartDataLabels from "chartjs-plugin-datalabels";
-import moment, {duration} from 'moment';
 
-const getSumByType = (type, events) => events
-  .reduce((acc, item) => item.type === type
-    ? acc + item.price
-    : acc, 0);
+import {makeChart, makeChartData} from '../utils/chart';
+import {getChartData} from '../utils/chart-data';
+import {getStats} from '../utils/stats';
+import {formatDuration} from './templates/date';
 
-const getDurationByType = (type, events) => events
-  .reduce((acc, item) => item.type === type
-    ? acc + duration(moment(item.endDate).diff(item.startDate))
-    : acc, 0);
-
-const padding = {
-  padding: {
-    left: 150,
-    right: 0,
-    top: 0,
-    bottom: 0
-  }
+const StatsType = {
+  MONEY: `money`,
+  TRANSPORT: `transport`,
+  SPEND: `spend`,
 };
 
-const scalesConf = {
-  xAxes: [{
-    display: false,
-    ticks: {
-      beginAtZero: true,
-      fontSize: 20,
-    },
-    gridLines: {
-      display: false
-    },
-  }],
-  yAxes: [{
-    ticks: {
-      beginAtZero: true,
-      fontSize: 20
-    },
-    gridLines: {
-      display: false
-    },
-  }]
-};
+const statsTypes = Object.values(StatsType)
+  .map((name) => ({name}));
 
-const legendConf = {
-  display: false
-};
-
-const getDatasetConf = (values, lab) => {
-  return [
-    {
-      label: lab,
-      backgroundColor: `#ffffff`,
-      fontColor: `#000000`,
-      fontSize: 16,
-      data: values,
-      barThickness: 40,
-    }
-  ];
-};
-
-const emojis = new Map().set(`ship`, String.fromCodePoint())
-    .set(`flight`, String.fromCodePoint(0x2708))
-    .set(`bus`, String.fromCodePoint(0x1F68C))
-    .set(`train`, String.fromCodePoint(0x1F686))
-    .set(`ship`, String.fromCodePoint(0x1F6F3))
-    .set(`restaurant`, String.fromCodePoint(0x1F374))
-    .set(`check-in`, String.fromCodePoint(0x1F3E8))
-    .set(`sightseeing`, String.fromCodePoint(0x1F3DB))
-    .set(`transport`, String.fromCodePoint(0x1F698))
-    .set(`drive`, String.fromCodePoint(0x1F697))
-    .set(`taxi`, String.fromCodePoint(0x1F695));
-
-const getUniqueTypes = (events, types) => {
-  events.map((point) => {
-    if (!types.includes(point.type)) {
-      types.push(point.type);
-    }
-  });
-};
-
-const renderMoneyChart = (element, events) => {
-  const types = [];
-  getUniqueTypes(events, types);
-
-  const chartData = types.map((label) => {
-    return {
-      name: label,
-      total: getSumByType(label, events)
-    };
-  }).sort((a, b) => b.total - a.total);
-
-  const labels = chartData.map((item) => `${emojis.get(item.name)} ${item.name}`);
-  const values = chartData.map((item) => item.total);
-  return new Chart(element, {
-    plugins: [ChartDataLabels],
-    type: `horizontalBar`,
-    label: `MONEY`,
-    fontSize: 16,
-    data: {
-      labels,
-      datasets: getDatasetConf(values, `Money spent`)
-    },
-    options: {
-      layout: padding,
-      title: {
-        display: true,
-        text: `MONEY`,
-        position: `left`,
-        fontSize: 20
-      },
-      plugins: {
-        datalabels: {
-          formatter(value) {
-            return `$ ${value}`;
-          }
-        }
-      },
-      scales: scalesConf,
-      legend: legendConf,
-    }
-  });
-};
-
-const renderTransportChart = (element, points) => {
-  const transportTypes = TYPES.filter((item) => item.type === `transfer`).map((item) => item.name);
-  const dataTransport = [];
-  points.map((point) => {
-    if (transportTypes.includes(point.type)) {
-      if (dataTransport[point.type]) {
-        dataTransport[point.type]++;
-      } else {
-        dataTransport[point.type] = 1;
-      }
-    }
-  });
-
-  const labels = Object.keys(dataTransport).sort((a, b) => {
-    return dataTransport[b] - dataTransport[a];
-  }).map((key) => `${emojis.get(key)} ${key}`);
-  const values = Object.values(dataTransport).sort((a, b) => {
-    return b - a;
-  });
-
-  return new Chart(element, {
-    plugins: [ChartDataLabels],
-    type: `horizontalBar`,
-    label: `TRANSPORT`,
-    fontSize: 16,
-    data: {
-      labels,
-      datasets: getDatasetConf(values, `Count`)
-    },
-    options: {
-      layout: padding,
-      title: {
-        display: true,
-        text: `TRANSPORT`,
-        position: `left`,
-        fontSize: 20
-      },
-      plugins: {
-        datalabels: {
-          formatter(value) {
-            return `${value}x`;
-          }
-        }
-      },
-      scales: scalesConf,
-      legend: legendConf,
-    }
-  });
-};
-
-const formatDuration = (value) => {
-  const diffDays = Math.ceil(value / (1000 * 3600 * 24));
-  const hours = Math.floor(value / 3600) % 24;
-  const minutes = Math.floor(value / 60) % 60;
-  return `${diffDays}d ${hours}h ${minutes}m`;
-};
-
-const renderTimeChart = (element, events) => {
-  const types = [];
-  getUniqueTypes(events, types);
-
-  const chartData = types.map((label) => {
-    return {
-      name: label,
-      duration: getDurationByType(label, events)
-    };
-  }).sort((a, b) => b.duration - a.duration);
-
-  const labels = chartData.map((item) => `${emojis.get(item.name)} ${item.name}`);
-  const values = chartData.map((item) => item.duration);
-
-  return new Chart(element, {
-    plugins: [ChartDataLabels],
-    type: `horizontalBar`,
-    label: `TIME`,
-    fontSize: 16,
-    data: {
-      labels,
-      datasets: getDatasetConf(values, `Time spent`)
-    },
-    options: {
-      layout: padding,
-      title: {
-        display: true,
-        text: `TIME`,
-        position: `left`,
-        fontSize: 20
-      },
-      plugins: {
-        datalabels: {
-          formatter(value) {
-            return formatDuration(value);
-          }
-        }
-      },
-      scales: scalesConf,
-      legend: legendConf,
-    }
-  });
-};
+const formatMoney = (value) => `\u{20AC} ${value}`;
 
 class StatsComponent extends AbstractComponent {
-  constructor(statsTypes, model) {
+  constructor(eventsModel) {
     super();
-    this._statsTypes = statsTypes;
+
+    this._eventsModel = eventsModel;
+
     this._moneyChart = null;
     this._transportChart = null;
     this._timeChart = null;
-    this._events = model.getEventsAll();
-    this._renderCharts();
   }
 
   getTemplate() {
-    return createStatsTemplates(this._statsTypes);
+    return createStatsTemplates(statsTypes);
   }
 
-  _renderCharts() {
+  render() {
     const element = this.getElement();
+
     const moneyBlock = element.querySelector(`.statistics__chart--money`);
-    const transportBlock = element.querySelector(`.statistics__chart--transport`);
     const timeBlock = element.querySelector(`.statistics__chart--spend`);
-    this._moneyChart = renderMoneyChart(moneyBlock, this._events);
-    this._transportChart = renderTransportChart(transportBlock, this._events);
-    this._timeChart = renderTimeChart(timeBlock, this._events);
+    const transportBlock = element.querySelector(`.statistics__chart--transport`);
+
+    const stats = getStats(this._eventsModel.getEventsAll());
+
+    const moneyData = getChartData(stats, StatsType.MONEY);
+    const transportData = getChartData(stats, StatsType.TRANSPORT);
+    const timeData = getChartData(stats, StatsType.TIME);
+
+    // Money
+    this._moneyChart = makeChart(moneyBlock, {
+      title: `Money`,
+      formatter: formatMoney,
+    });
+
+    this._moneyChart.data = makeChartData(moneyData);
+    this._moneyChart.update();
+
+    // Transport
+    this._transportChart = makeChart(transportBlock, {
+      title: `Transport`,
+    });
+
+    this._transportChart.data = makeChartData(transportData);
+    this._transportChart.update();
+
+    // Time-Spend
+    this._timeChart = makeChart(timeBlock, {
+      title: `Time-Spend`,
+      formatter: formatDuration,
+    });
+
+    this._timeChart.data = makeChartData(timeData);
+    this._timeChart.update();
   }
 }
 
 export default StatsComponent;
+export {StatsType};

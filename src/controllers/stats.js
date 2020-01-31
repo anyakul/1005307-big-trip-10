@@ -1,25 +1,17 @@
 import StatsComponent from '../components/stats';
 import {render, RenderPosition} from '../utils/render';
 
-const StatsType = {
-  MONEY: `money`,
-  TRANSPORT: `transport`,
-  SPEND: `spend`,
-};
-
 class StatsController {
   constructor(container, eventsModel) {
     this._container = container;
-    this._statsComponent = null;
     this._eventsModel = eventsModel;
+
+    this._statsComponent = null;
   }
 
   render() {
-    const stats = Object.values(StatsType).map((statsType) => ({
-      name: statsType,
-    }));
-
-    this._statsComponent = new StatsComponent(stats, this._eventsModel);
+    this._statsComponent = new StatsComponent(this._eventsModel);
+    this._statsComponent.render();
 
     render(this._container, this._statsComponent.getElement(), RenderPosition.AFTERBEGIN);
   }

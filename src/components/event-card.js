@@ -1,7 +1,6 @@
 import AbstractComponent from './abstract';
 import {createEventCardTemplate} from './templates/event-card';
 
-
 class EventCardComponent extends AbstractComponent {
   constructor(events) {
     super();
