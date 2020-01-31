@@ -1,42 +1,48 @@
 import moment, {duration} from 'moment';
 
-const calcDuration = (start, end) => duration(moment(end).diff(start))._data;
-const formatTimeValue = ([format, value]) => `${String(value).padStart(2, `0`)}${format}`;
-const formatDurationTime = (durations) => Object.entries(durations).map(formatTimeValue).join(` `);
+const formatTimeValue = ([format, value]) => 
+  `${String(value).padStart(2, `0`)}${format}`;
 
-const formatDuration = (start, end) => {
-  const {days: D, hours: H, minutes: M} = calcDuration(start, end);
+const formatDurationTime = (duration) => 
+  Object.entries(duration)
+    .map(formatTimeValue)
+    .join(` `);
+
+const getDuration = (ms) => {
+  const {days: D, hours: H, minutes: M} = duration(ms)._data;
 
   if (D > 0) {
-    return formatDurationTime({D, H, M});
+    return {D, H, M};
   }
   if (H > 0) {
-    return formatDurationTime({H, M});
+    return {H, M};
   }
 
-  return formatDurationTime({M});
+  return {M};
 };
 
-const formatTime = (date) => {
-  return moment(date).format(`HH:mm`);
+const getDatesDiff = (a, b) => {
+  return moment(a) - moment(b);
 };
 
-const formatFullDate = (date) => {
-  return moment(date).format(`DD/MM/YY HH:mm`);
+const isSameDay = (firstDate, secondDate) => {
+  return moment(firstDate).isSame(secondDate, `day`) && moment(firstDate).isSame(secondDate, `month`) && moment(firstDate).isSame(secondDate, `year`);
 };
 
-const formatDate = (date) => {
-  return moment(date).format(`DD:MM:YY`);
-};
+const formatDuration = (ms) => formatDurationTime(getDuration(ms));
+const formatTime = (date) => moment(date).format(`HH:mm`);
+const formatDate = (date) => moment(date).format(`DD:MM:YY`);
+const formatDateTime = (date) => moment(date).format(`DD/MM/YY HH:mm`);
 
-const formatMonthDay = (date) => {
-  return moment(date).format(`MMM DD`);
-};
+const formatMonthDay = (date) => moment(date).format(`MMM DD`);
 
 export {
+  formatDate,
+  formatDateTime,
   formatDuration,
   formatTime,
-  formatFullDate,
-  formatDate,
-  formatMonthDay
+  formatMonthDay,
+  getDatesDiff,
+  isSameDay,
+  getDuration,
 };

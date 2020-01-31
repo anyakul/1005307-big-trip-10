@@ -11,6 +11,11 @@ class TripInfoMainComponent extends AbstractComponent {
   getTemplate() {
     return createTripInfoMainTemplate(this._events);
   }
+
+  update(events) {
+    this._events = events;
+    return createTripInfoMainTemplate(events);
+  }
 }
 
 export default TripInfoMainComponent;

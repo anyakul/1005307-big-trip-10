@@ -5,12 +5,14 @@ class FilterController {
   constructor(container, eventsModel) {
     this._container = container;
     this._eventsModel = eventsModel;
-
     this._activeFilterType = FilterType.EVERYTHING;
     this._filterComponent = null;
+    this._tripFilters = this._container.querySelector(`.trip-filters`);
+
     this._onDataChange = this._onDataChange.bind(this);
-    this._eventsModel.addDataChangeHandler(this._onDataChange);
     this._onFilterChange = this._onFilterChange.bind(this);
+
+    this._eventsModel.addOnDataChange(this._onDataChange);
   }
 
   render() {
@@ -20,12 +22,11 @@ class FilterController {
       name: filterType,
       isChecked: filterType === this._activeFilterType,
     }));
-
     this._filterComponent = new EventFilterComponent(filters);
 
     render(container, this._filterComponent.getElement());
 
-    this._filterComponent.setChangeHandler(this._onFilterChange);
+    this._filterComponent.setOnChange(this._onFilterChange);
   }
 
   _onFilterChange(filterType) {
@@ -35,6 +36,14 @@ class FilterController {
 
   _onDataChange() {
     this.render();
+  }
+
+  show() {
+    this._filterComponent.show();
+  }
+
+  hide() {
+    this._filterComponent.hide();
   }
 }
 

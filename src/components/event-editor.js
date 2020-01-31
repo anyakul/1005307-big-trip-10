@@ -2,7 +2,12 @@ import AbstractSmartComponent from './abstract-smart';
 import {createEventEditorTemplate} from './templates/event-editor';
 import {Mode} from './events';
 import flatpickr from 'flatpickr';
-import {formatFullDate, formatDuration} from './templates/date';
+import {formatDateTime, formatDuration} from './templates/date';
+
+const DefaultData = {
+  deleteButtonText: `Delete`,
+  saveButtonText: `Save`,
+};
 
 class EventEditorComponent extends AbstractSmartComponent {
   constructor(events, destinations, offers, mode) {
@@ -15,39 +20,41 @@ class EventEditorComponent extends AbstractSmartComponent {
 
     this._mode = mode;
     this._details = mode === Mode.EDIT;
-
+    this._externalData = DefaultData;
     this._submitHandler = null;
     this._deleteHandler = null;
     this._flatpickr = null;
 
     this._applyFlatpickr();
     this._subscribeOnEvents();
+    this._eventForReset = Object.assign({}, event);
   }
 
   getTemplate() {
     return createEventEditorTemplate(this._events, this._destinations, this._availableOffers, this._mode, this._details);
   }
 
-  setSubmitHandler(handler) {
+  setOnSubmit(handler) {
     this._submitHandler = handler;
     if (this._mode === Mode.ADD) {
-      this.getElement().addEventListener(`submit`, this._submitHandler);
+      this.getElement().addEventListener(`submit`, this._submitHandler); console.log('handler=',this._submitHandler);
     } else {
-      this.getElement().querySelector(`form`).addEventListener(`submit`, this._submitHandler);
+      this.getElement().addEventListener(`submit`, handler);
+      this._submitHandler = handler;
     }
   }
 
-  setCancelHandler(handler) {
+  setData(data) {
+    this._externalData = Object.assign({}, DefaultData, data);
+    this.rerender();
+  }
+
+  setOnCancel(handler) {
     this.getElement().addEventListener(`reset`, handler);
     this._cancelHandler = handler;
   }
 
-  setSubmitHandler(handler) {
-    this.getElement().addEventListener(`submit`, handler);
-    this._submitHandler = handler;
-  }
-
-  setRollupButtonClickHandler(handler) {
+  setOnRollupButtonClick(handler) {
     this.getElement().querySelector(`.event__rollup-btn`)
       .addEventListener(`click`, handler);
     this._rollUpButtonClickHandler = handler;
@@ -55,9 +62,8 @@ class EventEditorComponent extends AbstractSmartComponent {
 
   recoveryListeners() {
     if (this._mode !== Mode.ADD) {
-      this.setRollupButtonClickHandler(this._rollupButtonClickHandler);
+      this.setOnRollupButtonClick(this._rollupButtonClickHandler);
     }
-    this.setSubmitHandler(this._submitHandler);
     this._subscribeOnEvents(this._mode);
     this._setValidation();
   }
@@ -68,7 +74,6 @@ class EventEditorComponent extends AbstractSmartComponent {
   }
 
   reset() {
-    this._events = Object.assign({}, this._eventForReset);
     this.rerender();
   }
 
@@ -114,18 +119,34 @@ class EventEditorComponent extends AbstractSmartComponent {
     });
 
     element.querySelector(`input[name=event-start-time]`).addEventListener(`change`, (evt) => {
-      this._events.startDate = formatFullDate(evt.target.value);
+      this._events.startDate = formatDateTime(evt.target.value);
       this._setValidation();
     });
 
     element.querySelector(`input[name=event-end-time]`).addEventListener(`change`, (evt) => {
-      this._events.endDate = formatFullDate(evt.target.value);
+      this._events.endDate = formatDateTime(evt.target.value);
       this._setValidation();
     });
 
     element.querySelector(`.event__input--price`).addEventListener(`change`, (evt) => {
       this._events.price = +evt.target.value;
     });
+  }
+
+  getFormData() {
+    const form = this._mode === Mode.ADD ? this.getElement() : this.getElement().querySelector(`form`);
+    const formData = new FormData(form);
+
+    return {
+      id: this._events.id,
+      type: this._events.type,
+      startDate: formData.get(`event-start-time`),
+      endDate: formData.get(`event-end-time`),
+      destination: Object.assign({}, this._destinations.getDestinationByName(formData.get(`event-destination`))),
+      price: formData.get(`event-price`),
+      offers: this._events.offers,
+      isFavorite: this._events.isFavorite
+    };
   }
 
   _applyFlatpickr() {
@@ -142,14 +163,14 @@ class EventEditorComponent extends AbstractSmartComponent {
       enableTime: true,
       allowInput: true,
       defaultDate: this._events.startDate,
-      formatDate: formatFullDate
+      formatDate: formatDateTime
     });
 
     this._flatpickr.END = flatpickr(endDateInput, {
       enableTime: true,
       allowInput: true,
       defaultDate: this._events.endDate,
-      formatDate: formatFullDate
+      formatDate: formatDateTime
     });
   }
 }

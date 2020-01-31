@@ -1,4 +1,4 @@
-import AbstractComponent from './abstract';
+import AbstractSmartComponent from './abstract-smart';
 import {createMenuTemplate} from './templates/site-menu';
 
 const MenuTab = {
@@ -14,34 +14,48 @@ const MenuTabName = {
 const createMenuTabs = (activeTab) => Object.entries(MenuTabName)
   .map(([tab, name]) => ({tab, name, isActive: tab === activeTab}));
 
-class SiteMenuComponent extends AbstractComponent {
+class SiteMenuComponent extends AbstractSmartComponent {
   constructor(activeTab = MenuTab.TABLE) {
     super();
 
     this._activeTab = activeTab;
-    this._tabs = createMenuTabs(this._activeTab);
+    this._onTabChange = null;
+
+    this._onClick = this._onClick.bind(this);
   }
 
   getTemplate() {
-    return createMenuTemplate(this._tabs);
+    return createMenuTemplate(createMenuTabs(this._activeTab));
   }
 
-  setTabChangeHandler(handler) {
-    this.getElement().addEventListener(`click`, (evt) => {
-      evt.preventDefault();
+  recoveryListeners() {
+    this._subscribeOnEvents();
+  }
 
-      if (evt.target.tagName !== `A`) {
-        return;
-      }
+  setOnTabChange(handler) {
+    this._onTabChange = handler;
+    this._subscribeOnEvents();
+  }
 
-      const menuTab = evt.target.dataset.menuTab;
-      if (this._activeTab === menuTab) {
-        return;
-      }
+  _subscribeOnEvents() {
+    this.getElement().addEventListener(`click`, this._onClick);
+  }
 
-      this._activeTab = menuTab;
-      handler(this._activeTab);
-    });
+  _onClick(evt) {
+    evt.preventDefault();
+
+    if (evt.target.tagName !== `A`) {
+      return;
+    }
+
+    const menuTab = evt.target.dataset.menuTab;
+    if (this._activeTab === menuTab) {
+      return;
+    }
+
+    this._activeTab = menuTab;
+    this.rerender();
+    this._onTabChange(menuTab);
   }
 }
 

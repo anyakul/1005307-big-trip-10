@@ -1,7 +1,6 @@
 import AbstractComponent from './abstract';
 import {createEventCardTemplate} from './templates/event-card';
 
-
 class EventCardComponent extends AbstractComponent {
   constructor(events) {
     super();
@@ -12,7 +11,7 @@ class EventCardComponent extends AbstractComponent {
     return createEventCardTemplate(this._events);
   }
 
-  setRollupButtonClickHandler(handler) {
+  setOnRollupButtonClick(handler) {
     this.getElement().querySelector(`.event__rollup-btn`)
       .addEventListener(`click`, handler);
   }

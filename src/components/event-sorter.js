@@ -11,14 +11,14 @@ class EventSorterComponent extends AbstractComponent {
   constructor(sorters) {
     super();
     this._sorters = sorters;
-    this._active = SortType.PRICE;
+    this._active = SortType.EVENT;
   }
 
   getTemplate() {
     return createEventSorterTemplate(this._sorters);
   }
 
-  setSortTypeChangeHandler(handler) {
+  setOnSortTypeChange(handler) {
     this.getElement().addEventListener(`click`, (evt) => {
       const {sortType} = evt.target.dataset;
 

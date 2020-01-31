@@ -15,11 +15,11 @@ const getDates = (events) => {
       &nbsp;&mdash;&nbsp;
       ${formatMonthDay(events[events.length - 1].endDate)}`
     );
-  } else if (events.length === 1) {
-    return (`${formatMonthDay(events[0].startDate)}`);
-  } else {
-    return ` `;
   }
+  if (events.length === 1) {
+    return (`${formatMonthDay(events[0].startDate)}`);
+  }
+  return ` `;
 };
 
 const getRoute = (events) => {
@@ -29,13 +29,14 @@ const getRoute = (events) => {
   const finalPoint = events[events.length - 1];
   if (events.length > EventsLength.MORE) {
     return `${startPoint.destination.name} &mdash; ... &mdash; ${finalPoint.destination.name}`;
-  } else if (events.length === EventsLength.MORE) {
-    return `${startPoint.destination.name} &mdash; ${events[1].destination.name} &mdash; ${finalPoint.destination.name}`;
-  } else if (events.length === EventsLength.PAIR) {
-    return `${startPoint.destination.name} &mdash; ${finalPoint.destination.name}`;
-  } else {
-    return `${startPoint.destination.name} &mdash; ${startPoint.destination.name}`;
   }
+  if (events.length === EventsLength.MORE) {
+    return `${startPoint.destination.name} &mdash; ${events[1].destination.name} &mdash; ${finalPoint.destination.name}`;
+  }
+  if (events.length === EventsLength.PAIR) {
+    return `${startPoint.destination.name} &mdash; ${finalPoint.destination.name}`;
+  }
+  return `${startPoint.destination.name} &mdash; ${startPoint.destination.name}`;
 };
 
 const createTripInfoMainTemplate = (events) => {

@@ -1,5 +1,6 @@
-// Абстрактный компонент
 import {createElement} from '../utils/render';
+
+const HIDE_CLASS = `visually-hidden`;
 
 class AbstractComponent {
   constructor() {
@@ -24,6 +25,14 @@ class AbstractComponent {
 
   removeElement() {
     this._element = null;
+  }
+
+  show() {
+    this.getElement().classList.remove(HIDE_CLASS);
+  }
+
+  hide() {
+    this.getElement().classList.add(HIDE_CLASS);
   }
 }
 

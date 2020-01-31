@@ -1,10 +1,10 @@
 import {FilterType} from '../components/event-filter';
 import {SortType} from '../components/event-sorter';
-import {formatDuration} from '../components/templates/date';
-import {isSameDay} from '../utils/common';
+import {formatDuration, isSameDay} from '../components/templates/date';
+import {getEventsByFilter} from '../utils/filter';
 
 const getUniqueDays = (days) => {
-  let uniqueDays = [];
+  const uniqueDays = [];
   days.forEach((day, i) => {
     if (i === 0 || uniqueDays.every((it) => !isSameDay(it, day))) {
       uniqueDays.push(day);
@@ -13,45 +13,34 @@ const getUniqueDays = (days) => {
   return uniqueDays;
 };
 
-const getSortedPoints = (points, sortType) => {
-  switch (sortType) {
-    case SortType.TIME:
-      points.slice().sort((a, b) => formatDuration(b.dateTo, b.dateFrom) - formatDuration(a.dateTo, a.dateFrom));
-      break;
-    case SortType.PRICE:
-      points.slice().sort((a, b) => b.basePrice - a.basePrice);
-      break;
-  }
-  return points;
-};
-
-const createFormatDuration = (point) => {
-  formatDuration(point.dateFrom, Date.now());
-};
-
-export default class Events {
+export default class EventsModel {
   constructor() {
     this._events = [];
-    this._pointsDates = [];
     this._filterChangeHandlers = [];
     this._sorterChangeHandlers = [];
     this._dataChangeHandlers = [];
-    this._activeFilterType = FilterType.EVERYTHING;
     this._activeSortType = SortType.EVENT;
   }
 
   getEventsByFilter(filterType) {
+    const now = Date.now();
+
     switch (filterType) {
       case FilterType.FUTURE:
-        return this._events.filter((point) => createFormatDuration(point) > 0);
+        return this._events.filter(({startDate}) => Date.parse(startDate) > now);
       case FilterType.PAST:
-        return this._events.filter((point) => createFormatDuration(point) < 0);
+        return this._events.filter(({startDate}) => Date.parse(startDate) < now);
     }
+
     return this._events;
   }
 
   getEvents() {
-    return getSortedPoints(this.getEventsByFilter(this._activeFilterType), this._activeSortType);
+    return getEventsByFilter(this._events, this._activeFilterType);
+  }
+
+  getEventsAll() {
+    return this._events;
   }
 
   getPointsDates(points) {
@@ -64,14 +53,11 @@ export default class Events {
       this._eventDates = [];
       return;
     }
-    this._events = events
-      .map((event) => Object.assign({}, event, {startDate: event.startDate}, {endDate: event.endDate}))
-      .sort((a, b) => formatDuration(a.startDate, b.startDate) > 0);
 
-    this._eventsDates = this._getPointsDates(this._events);
+    this._events = events;
   }
 
-  calcTotalAmount() {
+  calcTotalPrice() {
     let sum = 0;
     for (const eventItem of this._events) {
       sum += eventItem.price;
@@ -80,19 +66,24 @@ export default class Events {
     return sum;
   }
 
-  addEvent(point) {
-    this._events = [].concat(point, this._points);
+  addEvent(eventItem) {
+    this._events = [...this._events, eventItem];
     this._callHandlers(this._dataChangeHandlers);
   }
 
   removeEvent(id) {
     const index = this._getEventById(id);
     if (index === -1) {
-      throw Error(`no point with id ${id} in points array`);
+      throw Error(`no events with id ${id} in events array`);
     }
 
-    this._events = [].concat(this._events.slice(0, index), this._events.slice(index + 1));
+    this._events = [
+      ...this._events.slice(0, index),
+      ...this._events.slice(index + 1),
+    ];
+
     this._callHandlers(this._dataChangeHandlers);
+
     return true;
   }
 
@@ -108,30 +99,39 @@ export default class Events {
   }
 
   updateEvent(id, eventItem) {
-    const index = this._events.findIndex((it) => it.id === id);
-
+    const index = this._getEventById(id);
     if (index === -1) {
       return false;
     }
 
-    this._events = [].concat(this._events.slice(0, index), eventItem, this._events.slice(index + 1));
+    this._events = [
+      ...this._events.slice(0, index),
+      eventItem,
+      ...this._events.slice(index + 1),
+    ];
+
+    this._callHandlers(this._dataChangeHandlers);
 
     return true;
+  }
+
+  _callHandlers(handlers) {
+    handlers.forEach((handler) => handler());
   }
 
   _getEventById(id) {
     return this._events.findIndex((eventItem) => eventItem.id === id);
   }
 
-  addDataChangeHandler(handler) {
+  addOnDataChange(handler) {
     this._dataChangeHandlers.push(handler);
   }
 
-  setFilterChangeHandler(handler) {
+  setOnFilterChange(handler) {
     this._filterChangeHandlers.push(handler);
   }
 
-  setSorterChangeHandler(handler) {
+  setOnSorterChange(handler) {
     this._sorterChangeHandlers.push(handler);
   }
 
