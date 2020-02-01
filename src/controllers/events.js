@@ -3,6 +3,7 @@ import {isEscKey} from '../utils/key-board';
 import EventCardComponent from '../components/event-card';
 import EventEditorComponent from '../components/event-editor';
 import Event from '../models/event';
+import moment from 'moment';
 
 const Mode = {
   VIEW: `view`,
@@ -46,10 +47,12 @@ const parseFormData = (formData) => {
   return new Event({
     'id': formData.id,
     'type': formData.type,
-    'date_from': formData.startDate,
-    'date_to': formData.endDate,
+    'date_from': new Date(
+          moment(formData.startDate, `DD/MM/YY HH:mm`).valueOf()),
+    'date_to': new Date(
+          moment(formData.endDate, `DD/MM/YYYY HH:mm`).valueOf()),
     'destination': formData.destination,
-    'base_price': formData.price,
+    'base_price':  Number(formData.price),
     'offers': formData.offers,
     'is_favorite': formData.isFavorite
   });
@@ -71,16 +74,17 @@ class EventsController {
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
   }
 
-  render(id, eventItem, destinations, availableOffers, mode, addEventButtonComponent) { //console.log('render',/*id,eventItem,*/destinations,mode,addEventButtonComponent);
+  render(id, eventItem, destinations, availableOffers, mode, addEventButtonComponent) {  
     this._addEventButtonComponent = addEventButtonComponent;
     if (mode === Mode.ADD) {
-      const eventIt = getDefaultEvent();                                //    console.log('render', eventIt );
+      const eventIt = getDefaultEvent();                                
       this._eventEditorComponent = new EventEditorComponent(eventIt, destinations, availableOffers, Mode.ADD);
-
       render(this._container, this._eventEditorComponent.getElement(), RenderPosition.AFTERBEGIN);
-      this._setAddCardListeners();                       // console.log('this._addEventComponent', this._addEventComponent );
+      this._setAddCardListeners();
+//      this._addEventComponent.applyFlatpickr();
+      return;      
     } else {
-      this._eventItem = eventItem;                              //   console.log('render2', this._container );
+      this._eventItem = eventItem;                               
       const oldEventComponent = this._eventComponent;  
       const oldEditEventComponent = this._eventEditorComponent;
 
@@ -88,6 +92,7 @@ class EventsController {
       this._eventEditorComponent = new EventEditorComponent(this._eventItem, destinations, availableOffers, Mode.EDIT);
                                               // console.log('render3', this._eventComponent );
       this._setCardListeners();
+      this._eventEditorComponent.applyFlatpickr();
 
      if (oldEventComponent && oldEditEventComponent) {
         replace(this._eventComponent, oldEventComponent);
@@ -141,10 +146,16 @@ class EventsController {
     this._eventEditorComponent.setOnSubmit((evt) => {
       evt.preventDefault();
 
-      const data = this._eventEditorComponent.getFormData();
-      const formData = parseFormData(data);
-
-      this._onDataChange(this, this._eventItem, formData);
+      const   data = this._eventEditorComponent.getFormData(); 
+      const   formData = parseFormData(data);   
+                                              
+      console.log('formData',formData,data,this._eventComponent);
+      
+      this._eventEditorComponent.setData({
+        saveButtonText: 'Saving...',
+      });
+  //    formData.price = Number(formData.price);
+      this._onDataChange(this, this._eventItem,  formData);
 
       this._showCard();
     });
@@ -156,6 +167,11 @@ class EventsController {
   }
 
   destroy() {
+    if(this._mode===Mode.ADD) {
+  //    this._addEventComponent.removeFlatpickr()
+ //     remove(this._addEventComponent);
+ //      return;
+    }
     remove(this._eventEditorComponent);
     if (this._eventComponent) {
       remove(this._eventComponent);
@@ -173,6 +189,7 @@ class EventsController {
     replace(this._eventEditorComponent, this._eventComponent);
     this._mode = Mode.EDIT;
     this._setEditCardListeners();
+    this._eventEditorComponent.applyFlatpickr();
   }
 
   shake() {

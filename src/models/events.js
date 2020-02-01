@@ -35,7 +35,7 @@ export default class EventsModel {
     return this._events;
   }
 
-  getEvents() {
+  getEvents() {                                         //    console.log('getEventsByFilter=',getEventsByFilter(this._events, this._activeFilterType));
     return getEventsByFilter(this._events, this._activeFilterType);
   }
 

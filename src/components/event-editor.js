@@ -2,12 +2,28 @@ import AbstractSmartComponent from './abstract-smart';
 import {createEventEditorTemplate} from './templates/event-editor';
 import {Mode} from './events';
 import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.min.css';
 import {formatDateTime, formatDuration} from './templates/date';
 
 const DefaultData = {
   deleteButtonText: `Delete`,
   saveButtonText: `Save`,
 };
+
+const defaultConfig = {
+  [`altFormat`]: `d/m/y H:m`,
+  //[`altFormat`]: `y-m-dTH:m:s`,
+  ['altInput']: true,
+  [`dateFormat`]: `Z`,
+  [`enableTime`]: true,
+  [`time_24hr`]: true,
+};
+
+const createFlatpickr = (element, config = {}) =>
+  flatpickr(element, Object.assign({}, defaultConfig, config));
+
+const removeFlatpickr = (element) =>
+  element._flatpickr && element._flatpickr.destroy();
 
 class EventEditorComponent extends AbstractSmartComponent {
   constructor(events, destinations, offers, mode) {
@@ -24,10 +40,30 @@ class EventEditorComponent extends AbstractSmartComponent {
     this._submitHandler = null;
     this._deleteHandler = null;
     this._flatpickr = null;
-
-    this._applyFlatpickr();
-    this._subscribeOnEvents();
+    this._element = this.getElement();
+    this._startDateInput = this._element.querySelector(`input[name=event-start-time]`);
+    this._endDateInput = this._element.querySelector(`input[name=event-end-time]`);
+//    this._applyFlatpickr();
     this._eventForReset = Object.assign({}, event);
+    this._element = this.getElement();
+
+    this._startDateInput = this._element.querySelector(`input[name=event-start-time]`);
+    this._endDateInput = this._element.querySelector(`input[name=event-end-time]`);
+
+    this._flatpickrStartDate = createFlatpickr(this._startDateInput, {
+      defaultDate: new Date(this._events.startDate),           
+      onClose: () => {
+        this._flatpickrStartDate.set(`minDate`, this._startDateInput.value);
+      }
+    });
+
+    this._flatpickrEndDate = createFlatpickr(this._endDateInput, {
+      defaultDate: new Date(this._events.endDate),
+      onClose: () => {
+        this._flatpickrEndDate.set(`maxDate`, this._endDateInput.value);
+      }
+    });
+    this._subscribeOnEvents();
   }
 
   getTemplate() {
@@ -65,26 +101,16 @@ class EventEditorComponent extends AbstractSmartComponent {
       this.setOnRollupButtonClick(this._rollupButtonClickHandler);
     }
     this._subscribeOnEvents(this._mode);
-    this._setValidation();
+    this._flatpickrStartDate;
   }
 
   rerender() {
     super.rerender();
-    this._applyFlatpickr();
+    this.applyFlatpickr();
   }
 
   reset() {
     this.rerender();
-  }
-
-  _setValidation() {
-    const startDateInput = this._element.querySelector(`input[name=event-start-time]`);
-
-    if (formatDuration(this._events.startDate, this._events.endDate) > 0) {
-      startDateInput.setCustomValidity(`The start time should be earlier than the end time`);
-    } else {
-      startDateInput.setCustomValidity(``);
-    }
   }
 
   _subscribeOnEvents() {
@@ -120,12 +146,12 @@ class EventEditorComponent extends AbstractSmartComponent {
 
     element.querySelector(`input[name=event-start-time]`).addEventListener(`change`, (evt) => {
       this._events.startDate = formatDateTime(evt.target.value);
-      this._setValidation();
+      this._flatpickrStartDate;
     });
 
     element.querySelector(`input[name=event-end-time]`).addEventListener(`change`, (evt) => {
       this._events.endDate = formatDateTime(evt.target.value);
-      this._setValidation();
+      this._flatpickrEndDate;
     });
 
     element.querySelector(`.event__input--price`).addEventListener(`change`, (evt) => {
@@ -133,6 +159,15 @@ class EventEditorComponent extends AbstractSmartComponent {
     });
   }
 
+  /*removeElement() {
+    if (this._flatpickr) {
+      this._flatpickr.destroy();
+      this._flatpickr = null;
+    }
+
+    super.removeElement();
+  }
+*/
   getFormData() {
     const form = this._mode === Mode.ADD ? this.getElement() : this.getElement().querySelector(`form`);
     const formData = new FormData(form);
@@ -143,13 +178,13 @@ class EventEditorComponent extends AbstractSmartComponent {
       startDate: formData.get(`event-start-time`),
       endDate: formData.get(`event-end-time`),
       destination: Object.assign({}, this._destinations.getDestinationByName(formData.get(`event-destination`))),
-      price: formData.get(`event-price`),
+      price: +formData.get(`event-price`),
       offers: this._events.offers,
       isFavorite: this._events.isFavorite
     };
   }
 
-  _applyFlatpickr() {
+  applyFlatpickr() {
     if (this._flatpickr) {
       Object.values(this._flatpickr).forEach((it) => it.destroy());
       this._flatpickr = null;
