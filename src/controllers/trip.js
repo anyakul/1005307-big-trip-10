@@ -29,7 +29,6 @@ class TripController {
     this._onFilterChange = this._onFilterChange.bind(this);
     eventsModel.setOnFilterChange(this._onFilterChange);
     eventsModel.setOnSorterChange(this._onSortTypeChange);
-    eventsModel.addOnDataChange(this._onDataChange);
   }
 
   render() {
@@ -182,7 +181,7 @@ class TripController {
           const isSuccess = this._eventsModel.updateEvent(oldEvent.id, newEvent);
 
           if (isSuccess) {
-            eventsController.render(oldEvent.id, eventModel, this._destinationsModel, this._offersModel, Mode.VIEW);
+            eventsController.render(oldEvent.id, eventModel, this._destinationsModel, this._offersModel, Mode.DEFAULT);
             this._updateEvents();
           }
         })

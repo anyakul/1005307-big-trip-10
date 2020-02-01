@@ -159,15 +159,15 @@ class EventEditorComponent extends AbstractSmartComponent {
     });
   }
 
-  /*removeElement() {
-    if (this._flatpickr) {
+  removeElement() {
+ /*   if (this._flatpickr) {
       this._flatpickr.destroy();
       this._flatpickr = null;
-    }
+    }*/
 
     super.removeElement();
   }
-*/
+
   getFormData() {
     const form = this._mode === Mode.ADD ? this.getElement() : this.getElement().querySelector(`form`);
     const formData = new FormData(form);

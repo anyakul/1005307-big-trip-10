@@ -74,7 +74,8 @@ class EventsController {
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
   }
 
-  render(id, eventItem, destinations, availableOffers, mode, addEventButtonComponent) {  
+  render(id, eventItem, destinations, availableOffers, mode, addEventButtonComponent) {
+    this._id = id;
     this._addEventButtonComponent = addEventButtonComponent;
     if (mode === Mode.ADD) {
       const eventIt = getDefaultEvent();                                
@@ -105,8 +106,8 @@ class EventsController {
 
   setDefaultView() {
     if (this._mode === Mode.EDIT) {                                       //     console.log('this._addEventComponent=',this._addEventComponent);
-      if (this._addEventComponent) {
-        remove(this._addEventComponent);
+      if (this._eventEditorComponent) {
+        remove(this._eventEditorComponent);
       }
       this._showCard();
     }
@@ -126,6 +127,7 @@ class EventsController {
     this._eventEditorComponent.setOnCancel((evt) => {
       this._onDataChange(this, EmptyEvent, null);
       this._addEventButtonComponent.setDisabled(false);
+      this.destroy();
     });
 
     this._eventEditorComponent.setOnSubmit((evt) => {
@@ -136,7 +138,7 @@ class EventsController {
       const data = this._eventEditorComponent.getFormData();
       const formData = parseFormData(data);
 
-      this._onDataChange(this, this._eventItem, formData);
+      this._onDataChange(this, EmptyEvent(this._id), formData);
     });
   }
 
@@ -146,17 +148,15 @@ class EventsController {
     this._eventEditorComponent.setOnSubmit((evt) => {
       evt.preventDefault();
 
-      const   data = this._eventEditorComponent.getFormData(); 
-      const   formData = parseFormData(data);   
+      const data = this._eventEditorComponent.getFormData(); 
+      const formData = parseFormData(data);   
                                               
       console.log('formData',formData,data,this._eventComponent);
       
       this._eventEditorComponent.setData({
         saveButtonText: 'Saving...',
       });
-  //    formData.price = Number(formData.price);
-      this._onDataChange(this, this._eventItem,  formData);
-
+      this._onDataChange(this, this._eventItem, formData);
       this._showCard();
     });
 
@@ -167,10 +167,9 @@ class EventsController {
   }
 
   destroy() {
-    if(this._mode===Mode.ADD) {
-  //    this._addEventComponent.removeFlatpickr()
- //     remove(this._addEventComponent);
- //      return;
+    if (this._mode===Mode.ADD) {
+      remove(this._eventEditorComponent);
+      return;
     }
     remove(this._eventEditorComponent);
     if (this._eventComponent) {
