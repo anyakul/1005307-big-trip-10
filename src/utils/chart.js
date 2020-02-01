@@ -19,7 +19,7 @@ const makeOptions = ({title, formatter}) => ({
   options: {
     layout: {
       padding: {
-        left: 150,
+        left: 90,
         right: 0,
         top: 0,
         bottom: 0,
@@ -42,9 +42,8 @@ const makeOptions = ({title, formatter}) => ({
       datalabels: {
         formatter,
         clip: true,
-        offset: 1,
-        anchor: `end`,
-        align: `left`,
+        anchor: `start`,
+        align: `right`,
         font: {
           size: 16,
         },

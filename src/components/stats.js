@@ -18,10 +18,8 @@ const statsTypes = Object.values(StatsType)
 const formatMoney = (value) => `\u{20AC} ${value}`;
 
 class StatsComponent extends AbstractComponent {
-  constructor(eventsModel) {
+  constructor() {
     super();
-
-    this._eventsModel = eventsModel;
 
     this._moneyChart = null;
     this._transportChart = null;
@@ -39,34 +37,33 @@ class StatsComponent extends AbstractComponent {
     const timeBlock = element.querySelector(`.statistics__chart--spend`);
     const transportBlock = element.querySelector(`.statistics__chart--transport`);
 
-    const stats = getStats(this._eventsModel.getEventsAll());
-
-    const moneyData = getChartData(stats, StatsType.MONEY);
-    const transportData = getChartData(stats, StatsType.TRANSPORT);
-    const timeData = getChartData(stats, StatsType.TIME);
-
-    // Money
     this._moneyChart = makeChart(moneyBlock, {
       title: `Money`,
       formatter: formatMoney,
     });
 
-    this._moneyChart.data = makeChartData(moneyData);
-    this._moneyChart.update();
-
-    // Transport
     this._transportChart = makeChart(transportBlock, {
       title: `Transport`,
     });
 
-    this._transportChart.data = makeChartData(transportData);
-    this._transportChart.update();
-
-    // Time-Spend
     this._timeChart = makeChart(timeBlock, {
       title: `Time-Spend`,
       formatter: formatDuration,
     });
+  }
+
+  update(events) {
+    const stats = getStats(events);
+
+    const moneyData = getChartData(stats, StatsType.MONEY);
+    const transportData = getChartData(stats, StatsType.TRANSPORT);
+    const timeData = getChartData(stats, StatsType.TIME);
+
+    this._moneyChart.data = makeChartData(moneyData);
+    this._moneyChart.update();
+
+    this._transportChart.data = makeChartData(transportData);
+    this._transportChart.update();
 
     this._timeChart.data = makeChartData(timeData);
     this._timeChart.update();
