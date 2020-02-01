@@ -156,8 +156,9 @@ class EventsController {
       this._eventEditorComponent.setData({
         saveButtonText: 'Saving...',
       });
-      this._onDataChange(this, this._eventItem, formData);
       this._showCard();
+      this._onDataChange(this, this._eventItem, formData);
+      
     });
 
     this._eventEditorComponent.setOnRollupButtonClick(() => { 

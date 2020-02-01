@@ -39,9 +39,12 @@ class TripController {
       render(this._tripEvents, this._noEventComponent.getElement());
     } else {
       this._tripDaysListElement = new TripDaysListComponent().getElement();
-      this._sorterController = new SorterController(this._container, this._eventsModel);
-      this._sorterController.render();
-      this._sorterController.setOnSorterType(this._onSortTypeChange);
+      
+      if (!this._sorterController) {
+        this._sorterController = new SorterController(this._container, this._eventsModel);
+        this._sorterController.render();
+        this._sorterController.setOnSorterType(this._onSortTypeChange);
+      }
       this._renderSortEventsByDefault(this._tripDaysListElement, this._events);
     }
   }
@@ -126,7 +129,7 @@ class TripController {
   _updateEvents() {
     this._thipDays.forEach((day) => remove(day));
     this._removeEvents();
-    this._renderSortEventsByDefault(this._tripDaysListElement, this._events);
+    this.render();
     this._eventsModel.updateEvent();
   }
 
@@ -174,21 +177,26 @@ class TripController {
         .catch(() => {
           eventsController.shake();
         });
-    } else if (newEvent) {  
+    } else if (newEvent) {
          
     this._api.updatePoint(oldEvent.id, newEvent)
-        .then((eventModel) => {
-          const isSuccess = this._eventsModel.updateEvent(oldEvent.id, newEvent);
+        .then(() => {
+      //    const isSuccess = this._eventModel.updateEvent(oldData.id, newEvent);
 
-          if (isSuccess) {
-            eventsController.render(oldEvent.id, eventModel, this._destinationsModel, this._offersModel, Mode.DEFAULT);
-            this._updateEvents();
-          }
+       //   if (isSuccess) {
+            this._updateEvents()
+       //   }
+      //    if (isSuccess) {
+         //   eventsController.render(oldEvent.id, newEvent, this._destinationsModel, this._offersModel, Mode.DEFAULT);
+          //  this._updateEvents();   
+      //    console.log('this._tripDaysListElement',this._tripDaysListElement, this._events);
+      //    this._renderSortEventsByDefault(this._tripDaysListElement, this._events);
+          
         })
         .catch(() => {
           eventsController.shake();
         }); 
-    } 
+    }
   }
 
   _onFilterChange() {
