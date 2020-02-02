@@ -4,12 +4,7 @@ class Offers {
   }
 
   setOffers(offers) {
-    this._offers = offers.map((it) => {
-      return {
-        type: it.type,
-        offers: it.offers
-      };
-    });
+    this._offers = offers.map(({type, offers}) => ({type, offers}));
   }
 
   getOffersByType(type) {

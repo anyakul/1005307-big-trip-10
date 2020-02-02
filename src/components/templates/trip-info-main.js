@@ -1,5 +1,5 @@
 // Маршрут поездки
-import {formatMonthDay} from './date';
+import {getDate} from '../trip-info-main';
 
 const EventsLength = {
   MORE: 3,
@@ -9,15 +9,18 @@ const EventsLength = {
 };
 
 const getDates = (events) => {
+  const firstDate = getDate(events[1].startDate);
+  const lastDate = getDate(events[events.length - 1].endDate);
+  const onlyDate = getDate(events[0].startDate);
   if (events.length > 0) {
     return (
-      `${formatMonthDay(events[1].startDate)}
+      `${firstDate.monthDay}
       &nbsp;&mdash;&nbsp;
-      ${formatMonthDay(events[events.length - 1].endDate)}`
+      ${lastDate.monthDay}`
     );
   }
   if (events.length === 1) {
-    return (`${formatMonthDay(events[0].startDate)}`);
+    return (`${onlyDate.monthDay}`);
   }
   return ` `;
 };

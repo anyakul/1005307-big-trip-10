@@ -5,7 +5,7 @@ class StatsController {
   constructor(container, eventsModel) {
     this._container = container;
     this._eventsModel = eventsModel;
-    this._statsComponent = null;
+    this._statsComponent = new StatsComponent();
 
     this._shouldChartUpdate = true;
 
@@ -15,7 +15,6 @@ class StatsController {
   }
 
   render() {
-    this._statsComponent = new StatsComponent();
     this._statsComponent.render();
     this._statsComponent.hide();
 

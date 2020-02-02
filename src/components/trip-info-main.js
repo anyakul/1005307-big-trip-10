@@ -1,10 +1,17 @@
-// Маршрут поездки
 import AbstractComponent from './abstract';
 import {createTripInfoMainTemplate} from './templates/trip-info-main';
+import {formatMonthDay} from '../utils/date';
+
+const getDate = (events) => {
+  return {
+    monthDay: formatMonthDay(events),
+  }
+}
 
 class TripInfoMainComponent extends AbstractComponent {
   constructor(events) {
     super();
+
     this._events = events;
   }
 
@@ -19,3 +26,4 @@ class TripInfoMainComponent extends AbstractComponent {
 }
 
 export default TripInfoMainComponent;
+export {getDate};

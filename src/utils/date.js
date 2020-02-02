@@ -18,7 +18,7 @@ const getDuration = (ms) => {
     return {H, M};
   }
 
-  return {M};
+  return M > 0 ? {M} : ``;
 };
 
 const getDatesDiff = (a, b) => {

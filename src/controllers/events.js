@@ -83,7 +83,7 @@ class EventsController {
       render(this._container, this._eventEditorComponent.getElement(), RenderPosition.AFTERBEGIN);
       this._setAddCardListeners();
 //      this._addEventComponent.applyFlatpickr();
-      return;      
+    return;      
     } else {
       this._eventItem = eventItem;                               
       const oldEventComponent = this._eventComponent;  
@@ -145,24 +145,23 @@ class EventsController {
   _setEditCardListeners() {
     this._mode = Mode.EDIT;
     this._setEscListener();
+    
     this._eventEditorComponent.setOnSubmit((evt) => {
       evt.preventDefault();
-
-      const data = this._eventEditorComponent.getFormData(); 
-      const formData = parseFormData(data);   
-                                              
-      console.log('formData',formData,data,this._eventComponent);
-      
-      this._eventEditorComponent.setData({
+       this._eventEditorComponent.setData({
         saveButtonText: 'Saving...',
-      });
+      }); 
+      const data = this._eventEditorComponent.getFormData(); 
+      const formData = parseFormData(data);
+      console.log('formData',formData,data/*,this._eventComponent*/);
+
+      
       this._showCard();
       this._onDataChange(this, this._eventItem, formData);
-      
     });
-
+    
     this._eventEditorComponent.setOnRollupButtonClick(() => { 
-      this._eventEditorComponent.reset();   
+  //    this._eventEditorComponent.reset();   
       this._showCard();
     });
   }
@@ -182,14 +181,17 @@ class EventsController {
   _showCard() {
     replace(this._eventComponent, this._eventEditorComponent);
     this._mode = Mode.VIEW;
+    
   }
 
   _showForm() {
-    this._onViewChange();
+ //   this._onViewChange();
     replace(this._eventEditorComponent, this._eventComponent);
     this._mode = Mode.EDIT;
     this._setEditCardListeners();
+    this._eventEditorComponent
     this._eventEditorComponent.applyFlatpickr();
+    
   }
 
   shake() {

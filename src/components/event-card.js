@@ -1,6 +1,25 @@
 import AbstractComponent from './abstract';
 import {createEventCardTemplate} from './templates/event-card';
 
+import {
+  formatDuration,
+  formatTime,
+  formatDateTime,
+  getDuration,
+  getDatesDiff
+} from '../utils/date';
+
+
+const showDateInCard = (start, end) => {
+  return {
+    dateFromInCard: formatTime(start),
+    dateToInCard: formatTime(end),
+    fullDateFrom: formatDateTime(start),
+    fullDateTo: formatDateTime(end),
+    timeInterval: formatDuration(end - start),
+  }
+}
+
 class EventCardComponent extends AbstractComponent {
   constructor(events) {
     super();
@@ -18,3 +37,4 @@ class EventCardComponent extends AbstractComponent {
 }
 
 export default EventCardComponent;
+export {showDateInCard};

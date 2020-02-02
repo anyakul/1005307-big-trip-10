@@ -1,6 +1,6 @@
 import {FilterType} from '../components/event-filter';
 import {SortType} from '../components/event-sorter';
-import {formatDuration, isSameDay} from '../components/templates/date';
+import {formatDuration, isSameDay} from '../utils/date';
 import {getEventsByFilter} from '../utils/filter';
 
 const getUniqueDays = (days) => {
@@ -99,7 +99,7 @@ export default class EventsModel {
   }
 
   updateEvent(id, eventItem) {
-    const index = this._getEventById(id);
+    const index = this._getEventById(id);  //console.log('index', this._getEventById(id));
     if (index === -1) {
       return false;
     }
@@ -119,7 +119,7 @@ export default class EventsModel {
     handlers.forEach((handler) => handler());
   }
 
-  _getEventById(id) {
+  _getEventById(id) { // console.log('this._events', this._events);
     return this._events.findIndex((eventItem) => eventItem.id === id);
   }
 

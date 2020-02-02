@@ -3,7 +3,7 @@ import {SortType} from '../components/event-sorter';
 import NoEventsComponent from '../components/no-events';
 import TripDaysListComponent from '../components/trip-days-list';
 import TripDayComponent from '../components/trip-day';
-import {isSameDay} from '../components/templates/date';
+import {isSameDay} from '../utils/date';
 import EventsController, {EmptyEvent} from './events';
 import SorterController from './sort';
 import {Mode} from '../components/events';
@@ -129,7 +129,7 @@ class TripController {
   _updateEvents() {
     this._thipDays.forEach((day) => remove(day));
     this._removeEvents();
-    this.render();
+    this._renderSortEventsByDefault(this._tripDaysListElement, this._events);
     this._eventsModel.updateEvent();
   }
 
@@ -147,7 +147,7 @@ class TripController {
     this._eventsControllers.forEach((it) => it.setDefaultView());
   }
 
-  _onDataChange(eventsController, oldEvent, newEvent) {  console.log('trip','oldEvent=',oldEvent,' newEvent=', newEvent);
+  _onDataChange(eventsController, oldEvent, newEvent) { // console.log('trip','oldEvent=',oldEvent,' newEvent=', newEvent);
     if (oldEvent === EmptyEvent) {
       this._creatingEvent = null;
       if (newEvent === null) {
@@ -181,11 +181,10 @@ class TripController {
          
     this._api.updatePoint(oldEvent.id, newEvent)
         .then(() => {
-      //    const isSuccess = this._eventModel.updateEvent(oldData.id, newEvent);
-
-       //   if (isSuccess) {
-            this._updateEvents()
-       //   }
+        this._thipDays.forEach((day) => remove(day));
+        this._removeEvents();
+ //       this.render();
+        this._updateEvents()
       //    if (isSuccess) {
          //   eventsController.render(oldEvent.id, newEvent, this._destinationsModel, this._offersModel, Mode.DEFAULT);
           //  this._updateEvents();   

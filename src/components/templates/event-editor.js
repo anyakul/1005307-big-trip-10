@@ -8,7 +8,7 @@ import {TRANSFER_EVENTS,
   CancelButtonName
 }
   from '../events';
-import {formatDateTime} from './date';
+import {getDates} from '../event-editor';
 
 
 const createTripTypeImageTemplate = (type) => (
@@ -33,6 +33,7 @@ const createEventTypeItem = (eventType, isChecked, id) => {
         name="event-type"
         value="${eventType}"
         ${isCheckedValue}
+        required
       >
       <label
         class="event__type-label event__type-label--${eventType}"
@@ -165,9 +166,8 @@ const createFormHeaderTemplate = (event, destinations, mode) => {
   const preposition = Preposition[getEventType(type)];
   const eventIcon = createTripTypeImageTemplate(type);
   const eventDestination = destination.name;
-
-  const eventStartDate = formatDateTime(startDate);
-  const eventsEndDate = formatDateTime(endDate);
+  
+  const dates = getDates(startDate, endDate);
 
   const eventTypeListSection = createEventTypeListSection(event);
   const destinationListSection = createDestinationListSection(id, destinations.getAll());
@@ -194,12 +194,12 @@ const createFormHeaderTemplate = (event, destinations, mode) => {
     <div class="event__field-group  event__field-group--time">
       <label class="visually-hidden" for="event-start-time-${id}">From
       </label>
-      <input class="event__input  event__input--time" id="event-start-time-${id}" type="text" name="event-start-time" value="${eventStartDate}">
+      <input class="event__input  event__input--time" id="event-start-time-${id}" type="text" name="event-start-time" value="${dates.eventStartDate}">
       &mdash;
       <label class="visually-hidden" for="event-end-time-${id}">
         To
       </label>
-      <input class="event__input  event__input--time" id="event-end-time-${id}" type="text" name="event-end-time" value="${eventsEndDate}" required>
+      <input class="event__input  event__input--time" id="event-end-time-${id}" type="text" name="event-end-time" value="${dates.eventStartDate}" required>
     </div>
     <div class="event__field-group  event__field-group--price">
       <label class="event__label" for="event-price-${id}">

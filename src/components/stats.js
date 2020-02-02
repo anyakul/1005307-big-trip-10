@@ -4,7 +4,7 @@ import {createStatsTemplates} from './templates/stats';
 import {makeChart, makeChartData} from '../utils/chart';
 import {getChartData} from '../utils/chart-data';
 import {getStats} from '../utils/stats';
-import {formatDuration} from './templates/date';
+import {formatDuration} from '../utils/date';
 
 const StatsType = {
   MONEY: `money`,
@@ -12,10 +12,14 @@ const StatsType = {
   SPEND: `spend`,
 };
 
+const Sign = {
+  EURO: `\u{20AC}`,
+};
+
 const statsTypes = Object.values(StatsType)
   .map((name) => ({name}));
 
-const formatMoney = (value) => `\u{20AC} ${value}`;
+const formatMoney = (value) => `${Sign.EURO} ${value}`;
 
 class StatsComponent extends AbstractComponent {
   constructor() {

@@ -1,11 +1,5 @@
 import {makeTemplateGenerator} from './generator';
-import {
-  formatDuration,
-  formatTime,
-  formatDateTime,
-  getDuration,
-  getDatesDiff
-} from './date';
+import {showDateInCard} from '../event-card';
 
 import {
   getEventType,
@@ -35,16 +29,11 @@ const generateExtraServicesMarkup = ({title, price}) => {
 const createExtraServicesMarkup = makeTemplateGenerator(generateExtraServicesMarkup);
 
 const createCardTemplate = ({type, startDate, endDate, price, destination}) => {
- // duration(mseconds) = (endDate - startDate);
-  const timeInterval = formatDuration(endDate - startDate);
-
-  const dateFromInCard = formatTime(startDate);
-  const dateToInCard = formatTime(endDate);
-  const fullDateFrom = formatDateTime(startDate);
-  const fullDateTo = formatDateTime(endDate);
-  const preposition = Preposition[getEventType(type)];
+  const dates = showDateInCard(startDate, endDate);
+  
 
   
+  const preposition = Preposition[getEventType(type)];
 
   return (
     `<div class="event__type">
@@ -65,20 +54,20 @@ const createCardTemplate = ({type, startDate, endDate, price, destination}) => {
       <p class="event__time">
         <time
           class="event__start-time"
-          datetime="${fullDateFrom}"
+          datetime="${dates.fullDateFrom}"
           >
-          ${dateFromInCard}
+          ${dates.dateFromInCard}
         </time>
         &mdash;
         <time
           class="event__end-time"
-          datetime="${fullDateTo}"
+          datetime="${dates.fullDateTo}"
           >
-          ${dateToInCard}
+          ${dates.dateToInCard}
         </time>
       </p>
       <p class="event__duration">
-        ${timeInterval}
+        ${dates.timeInterval}
       </p>
     </div>
     <p class="event__price">
