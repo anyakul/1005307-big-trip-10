@@ -21,10 +21,6 @@ const getDuration = (ms) => {
   return M > 0 ? {M} : ``;
 };
 
-const getDatesDiff = (a, b) => {
-  return moment(a) - moment(b);
-};
-
 const isSameDay = (firstDate, secondDate) => {
   return moment(firstDate).isSame(secondDate, `day`) && moment(firstDate).isSame(secondDate, `month`) && moment(firstDate).isSame(secondDate, `year`);
 };
@@ -42,7 +38,6 @@ export {
   formatDuration,
   formatTime,
   formatMonthDay,
-  getDatesDiff,
   isSameDay,
   getDuration,
 };

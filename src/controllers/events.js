@@ -105,7 +105,7 @@ class EventsController {
   }
 
   setDefaultView() {
-    if (this._mode === Mode.EDIT) {                                       //     console.log('this._addEventComponent=',this._addEventComponent);
+    if (this._mode === Mode.ADD) {                                       //     console.log('this._addEventComponent=',this._addEventComponent);
       if (this._eventEditorComponent) {
         remove(this._eventEditorComponent);
       }
@@ -155,14 +155,19 @@ class EventsController {
       const formData = parseFormData(data);
       console.log('formData',formData,data/*,this._eventComponent*/);
 
-      
       this._showCard();
       this._onDataChange(this, this._eventItem, formData);
     });
-    
+
     this._eventEditorComponent.setOnRollupButtonClick(() => { 
-  //    this._eventEditorComponent.reset();   
+      this._eventEditorComponent.reset();   
       this._showCard();
+    });
+    
+    this._eventEditorComponent.setOnDelete((evt) => {
+      evt.preventDefault();
+
+      this._onDataChange(this, this._eventItem, null);
     });
   }
 
@@ -181,17 +186,14 @@ class EventsController {
   _showCard() {
     replace(this._eventComponent, this._eventEditorComponent);
     this._mode = Mode.VIEW;
-    
   }
 
   _showForm() {
- //   this._onViewChange();
+    this._onViewChange();
     replace(this._eventEditorComponent, this._eventComponent);
     this._mode = Mode.EDIT;
     this._setEditCardListeners();
-    this._eventEditorComponent
     this._eventEditorComponent.applyFlatpickr();
-    
   }
 
   shake() {

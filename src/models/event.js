@@ -1,9 +1,3 @@
-import moment from 'moment';
-
-const parseDateFromISOString = (date) => {
-  return moment(date).format();
-};
-
 class Event {
   constructor(data) {
     this.id = +data[`id`];

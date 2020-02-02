@@ -130,7 +130,7 @@ class TripController {
     this._thipDays.forEach((day) => remove(day));
     this._removeEvents();
     this._renderSortEventsByDefault(this._tripDaysListElement, this._events);
-    this._eventsModel.updateEvent();
+    
   }
 
   _sortEvents(sortedEvents, sortType) {
@@ -156,11 +156,12 @@ class TripController {
       } else {
         this._api.createPoint(newEvent)
           .then((eventModel) => {
-            this._eventsModel.addEvent(eventModel);
-            eventsController.render(eventModel, Mode.DEFAULT);
-
-            const destroyedEvent = this._eventsControllers.pop();
-            destroyedEvent.destroy();
+            this._eventsModel.addEvent(newEvent);
+       //     this._eventsModel.updateEvent();
+          //  eventsController.render(eventModel, Mode.VIEW);
+           this._updateEvents();
+           const destroyedEvent = this._eventsControllers.pop();
+           destroyedEvent.destroy();
 
             this._eventsControllers = [].concat(eventsController, this._eventsControllers);
           })
@@ -171,6 +172,7 @@ class TripController {
     } else if (newEvent === null) {
       this._api.deletePoint(oldEvent.id)
         .then(() => {
+          
           this._eventModel.removeEvent(oldEvent.id);
           this._updateEvents();
         })
@@ -179,18 +181,19 @@ class TripController {
         });
     } else if (newEvent) {
          
-    this._api.updatePoint(oldEvent.id, newEvent)
+      this._api.updatePoint(oldEvent.id, newEvent)
+        
         .then(() => {
-        this._thipDays.forEach((day) => remove(day));
-        this._removeEvents();
- //       this.render();
-        this._updateEvents()
+          this._eventsModel.updateEvent();
+          this._thipDays.forEach((day) => remove(day));
+          this._removeEvents();
+          this.render();
+          this._updateEvents();
       //    if (isSuccess) {
          //   eventsController.render(oldEvent.id, newEvent, this._destinationsModel, this._offersModel, Mode.DEFAULT);
           //  this._updateEvents();   
       //    console.log('this._tripDaysListElement',this._tripDaysListElement, this._events);
       //    this._renderSortEventsByDefault(this._tripDaysListElement, this._events);
-          
         })
         .catch(() => {
           eventsController.shake();

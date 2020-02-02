@@ -42,9 +42,7 @@ class EventEditorComponent extends AbstractSmartComponent {
 
     this._mode = mode;
     this._details = mode === Mode.EDIT;
-    this._externalData = DefaultData;
-    this._submitHandler = null;
-    this._deleteHandler = null;
+    this._externalData = DefaultData;    
     this._flatpickr = null;
     this._element = this.getElement();                                     //  console.log('this._element',this._element);
     this._startDateInput = this._element.querySelector(`input[name=event-start-time]`);
@@ -86,11 +84,20 @@ class EventEditorComponent extends AbstractSmartComponent {
     }
    /* this.getElement().querySelector(`.event__save-btn`)
     .addEventListener(`click`, handler);*/
-    if (this._mode === Mode.ADD) {
-      this.getElement().addEventListener(`submit`, this._submitHandler);// console.log('handler=',this._submitHandler);
-    } else { 
-        this.getElement().addEventListener(`submit`, handler);      
+ //   if (this._mode === Mode.ADD) {
+   //   this.getElement().addEventListener(`submit`, this._submitHandler);// console.log('handler=',this._submitHandler);
+  //  } else { 
+        this.getElement().addEventListener(`submit`, this._submitHandler);      
+  //  }
+  }
+  
+  setOnDelete(handler) {
+    if (!this._deleteHandler) {
+      this._deleteHandler = handler;
     }
+        this.getElement().addEventListener(`reset`, this._deleteHandler);
+        
+  //  }
   }
 
   setData(data) {
@@ -102,23 +109,23 @@ class EventEditorComponent extends AbstractSmartComponent {
     this.getElement().addEventListener(`reset`, handler);
     this._cancelHandler = handler;
   }
-   /*setArrowBtnCloseHandler(handler) {
-    if (!this._resetHandler) {
-      this._resetHandler = handler;
-    }*/
+
   setOnRollupButtonClick(handler) {
-    if (!this._resetHandler) {
-    this._resetHandler = handler;
-    }
-    this.getElement().querySelector(`.event__rollup-btn`)
-      .addEventListener(`click`, handler);   
+   // if (!this._resetHandler) {
+   // this._resetHandler = handler;
+  //  }
+    if (this._mode !== Mode.ADD) {
+      this.getElement().querySelector(`.event__rollup-btn`)
+        .addEventListener(`click`, handler);   
+      }
   }
 
   recoveryListeners() {
    /* if (this._mode !== Mode.ADD) {*/
     this.setOnRollupButtonClick(this._resetHandler); console.log('YES3');
     this.setOnSubmit(this._submitHandler);
-    this._subscribeOnEvents(this._mode);
+    this.setOnDelete(this._deleteHandler)
+    this._subscribeOnEvents();
     this._flatpickrStartDate;
      
   }
@@ -164,25 +171,16 @@ class EventEditorComponent extends AbstractSmartComponent {
       this.rerender();
     });
 
+   // if ((this._offers.find((offer) => offer.type === this._events.type).offers).length > 0) {
+      element.querySelectorAll(`.event__offer-checkbox`).forEach((checkbox) => checkbox.addEventListener(`click`, () => {
+        if (checkbox.hasAttribute(`checked`)) {
+          checkbox.removeAttribute(`checked`);
+        } else {
+          checkbox.setAttribute(`checked`, ``);
+        }
+      }));
+  //  }
 
-     element.querySelector(`.event__input--destination`).addEventListener(`change`, (evt) => {
-      const enteredDestination = evt.target.value.trim();
-      //const isValidDestination = this._destinations.hasOwnProperty(enteredDestination);
-      const isValidDestination = this._destinations.getAll().findIndex((it) => it.name === inputValue) === -1;
-      if (isValidDestination) {
-        const currentDestination = this._destinations[enteredDestination];
-        this._event.destination = Object.assign({}, this._event.destination,
-            {name: enteredDestination},
-            {description: currentDestination.description},
-            {pictures: currentDestination.pictures});
-        this._details = true;
-      } else {
-        this._event.destination.name = ``;
-        this._details = false;
-      }
-      this.rerender();
-    });
- 
     element.querySelector(`input[name=event-start-time]`).addEventListener(`change`, (evt) => {
       this._events.startDate = formatDateTime(evt.target.value);
       this._flatpickrStartDate;

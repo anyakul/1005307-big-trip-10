@@ -30,12 +30,6 @@ class FilterController {
     this._activeFilterType = filterType;
   }
 
-  destroy() {
-    if (this._filterComponent) {
-      remove(this._filterComponent);
-    }
-  }
-
   show() {
     this._filterComponent.show();
   }
