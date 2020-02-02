@@ -172,7 +172,6 @@ class TripController {
     } else if (newEvent === null) {
       this._api.deletePoint(oldEvent.id)
         .then(() => {
-          
           this._eventModel.removeEvent(oldEvent.id);
           this._updateEvents();
         })
@@ -180,15 +179,13 @@ class TripController {
           eventsController.shake();
         });
     } else if (newEvent) {
-         
       this._api.updatePoint(oldEvent.id, newEvent)
-        
         .then(() => {
           this._eventsModel.updateEvent();
           this._thipDays.forEach((day) => remove(day));
-          this._removeEvents();
+        //  this._removeEvents();
           this.render();
-          this._updateEvents();
+          this._sortEvents();
       //    if (isSuccess) {
          //   eventsController.render(oldEvent.id, newEvent, this._destinationsModel, this._offersModel, Mode.DEFAULT);
           //  this._updateEvents();   
@@ -204,7 +201,7 @@ class TripController {
   _onFilterChange() {
     this._events = this._eventsModel.getEvents();
     this._updateEvents();
-    this._eventsModel.updateEvent()
+    this.render();
   }
 }
 

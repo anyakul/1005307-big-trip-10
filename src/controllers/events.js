@@ -79,8 +79,8 @@ class EventsController {
     this._addEventButtonComponent = addEventButtonComponent;
     if (mode === Mode.ADD) {
       const eventIt = getDefaultEvent();                                
-      this._eventEditorComponent = new EventEditorComponent(eventIt, destinations, availableOffers, Mode.ADD);
-      render(this._container, this._eventEditorComponent.getElement(), RenderPosition.AFTERBEGIN);
+      this._addEventComponent = new EventEditorComponent(eventIt, destinations, availableOffers, Mode.ADD);
+      render(this._container, this._addEventComponent.getElement(), RenderPosition.AFTERBEGIN);
       this._setAddCardListeners();
 //      this._addEventComponent.applyFlatpickr();
     return;      
@@ -105,10 +105,11 @@ class EventsController {
   }
 
   setDefaultView() {
-    if (this._mode === Mode.ADD) {                                       //     console.log('this._addEventComponent=',this._addEventComponent);
-      if (this._eventEditorComponent) {
-        remove(this._eventEditorComponent);
-      }
+    if (this._mode === Mode.ADD) {
+      remove(this._addEventComponent);
+      this._addEventButtonComponent.setDisabled(false);
+    }
+  if (this._mode === Mode.EDIT) {
       this._showCard();
     }
   }
@@ -124,13 +125,13 @@ class EventsController {
   _setAddCardListeners() {
     this._mode = Mode.ADD;
     this._setEscListener()
-    this._eventEditorComponent.setOnCancel((evt) => {
+    this._addEventComponent.setOnCancel((evt) => {
       this._onDataChange(this, EmptyEvent, null);
       this._addEventButtonComponent.setDisabled(false);
       this.destroy();
     });
 
-    this._eventEditorComponent.setOnSubmit((evt) => {
+    this._addEventComponent.setOnSubmit((evt) => {
       evt.preventDefault();
 
       this._addEventButtonComponent.setDisabled(false);
@@ -173,7 +174,8 @@ class EventsController {
 
   destroy() {
     if (this._mode===Mode.ADD) {
-      remove(this._eventEditorComponent);
+      remove(this._addEventComponent);
+      
       return;
     }
     remove(this._eventEditorComponent);

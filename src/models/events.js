@@ -22,19 +22,6 @@ export default class EventsModel {
     this._activeSortType = SortType.EVENT;
   }
 
-  getEventsByFilter(filterType) {
-    const now = Date.now();
-
-    switch (filterType) {
-      case FilterType.FUTURE:
-        return this._events.filter(({startDate}) => Date.parse(startDate) > now);
-      case FilterType.PAST:
-        return this._events.filter(({startDate}) => Date.parse(startDate) < now);
-    }
-
-    return this._events;
-  }
-
   getEvents() {                                         //    console.log('getEventsByFilter=',getEventsByFilter(this._events, this._activeFilterType));
     return getEventsByFilter(this._events, this._activeFilterType);
   }
