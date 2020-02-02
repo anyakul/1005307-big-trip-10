@@ -1,16 +1,16 @@
 class Destination {
-  constructor(data) {
-    this.name = data[`name`];
-    this.description = data[`description`];
-    this.pictures = data[`pictures`];
+  constructor(destination) {
+    this.name = destination[`name`];
+    this.description = destination[`description`];
+    this.pictures = destination[`pictures`];
   }
 
-  static parseDestination(data) {
-    return new Destination(data);
+  static parseDestination(destination) {
+    return new Destination(destination);
   }
 
-  static parseDestinations(data) {
-    return data.map(Destination.parseDestination);
+  static parseDestinations(destination) {
+    return destination.map(Destination.parseDestination);
   }
 }
 

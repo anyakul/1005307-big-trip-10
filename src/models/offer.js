@@ -1,15 +1,15 @@
 class Offer {
-  constructor(data) {
-    this.type = data[`type`];
-    this.offers = data[`offers`];
+  constructor(offer) {
+    this.type = offer[`type`];
+    this.offers = offer[`offers`];
   }
 
-  static parseOffer(data) {
-    return new Offer(data);
+  static parseOffer(offer) {
+    return new Offer(offer);
   }
 
-  static parseOffers(data) {
-    return data.map(Offer.parseOffer);
+  static parseOffers(offer) {
+    return offer.map(Offer.parseOffer);
   }
 }
 
