@@ -175,9 +175,6 @@ class TripController {
           this._eventModel.removeEvent(oldEvent.id);
           this._updateEvents();
         })
-        .catch(() => {
-          eventsController.shake();
-        });
     } else if (newEvent) {
       this._api.updatePoint(oldEvent.id, newEvent)
         .then(() => {
