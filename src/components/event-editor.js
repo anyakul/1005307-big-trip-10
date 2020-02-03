@@ -3,7 +3,7 @@ import {createEventEditorTemplate} from './templates/event-editor';
 import {Mode} from './events';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
-import {formatDateTime, formatDuration} from '../utils/date';
+import {formatDateTime} from '../utils/date';
 
 const DefaultData = {
   deleteButtonText: `Delete`,
@@ -12,7 +12,7 @@ const DefaultData = {
 
 const defaultConfig = {
   [`altFormat`]: `d/m/y H:m`,
-  ['altInput']: true,
+  [`altInput`]: true,
   [`dateFormat`]: `Z`,
   [`enableTime`]: true,
   [`time_24hr`]: true,
@@ -102,7 +102,7 @@ class EventEditorComponent extends AbstractSmartComponent {
 
   setData(data) {
     this._externalData = Object.assign({}, DefaultData, data);
-    this.rerender();
+  //  this.rerender();
   }
 
   setOnCancel(handler) {
@@ -140,9 +140,9 @@ class EventEditorComponent extends AbstractSmartComponent {
   }
 
   _subscribeOnEvents() {
-    const element = this.getElement(); console.log('subscribeelement',element);
+    const element = this.getElement();
 
-    if (this._mode === Mode.EDIT) {  console.log('element',element, );console.log('this._events',this._events);
+    if (this._mode === Mode.EDIT) {
       element.querySelector(`.event__favorite-checkbox`).addEventListener(`change`, () => {
         this._events = Object.assign({}, this._events, {isFavorite: !this._events.isFavorite});
         this.rerender();
@@ -154,7 +154,6 @@ class EventEditorComponent extends AbstractSmartComponent {
       this._events = Object.assign({}, this._events,
           {type: evt.target.value},
           {offers: []});
-       console.log('YES2',this._events);
       this.rerender();
     });
 
@@ -170,16 +169,23 @@ class EventEditorComponent extends AbstractSmartComponent {
       }
       this.rerender();
     });
-
-   // if ((this._offers.find((offer) => offer.type === this._events.type).offers).length > 0) {
+    
+ 
+    
+    
+   if (this._availableOffers.length > 0) {  
       element.querySelectorAll(`.event__offer-checkbox`).forEach((checkbox) => checkbox.addEventListener(`click`, () => {
         if (checkbox.hasAttribute(`checked`)) {
-          checkbox.removeAttribute(`checked`);
+          checkbox.removeAttribute(`checked`); //console.log('checkbox1',checkbox, this.getFormData(),offers);
+          
         } else {
-          checkbox.setAttribute(`checked`, ``);
-        }
-      }));
-  //  }
+          checkbox.setAttribute(`checked`, ``); console.log('checkbox2',checkbox,this.getFormData().offers );
+        }    
+      }  
+      ));
+     }
+
+  
 
     element.querySelector(`input[name=event-start-time]`).addEventListener(`change`, (evt) => {
       this._events.startDate = formatDateTime(evt.target.value);
@@ -206,8 +212,11 @@ class EventEditorComponent extends AbstractSmartComponent {
   }
 
   getFormData() {
-    const form = this._mode === Mode.ADD ? this.getElement() : this.getElement().querySelector(`form`);
+    const form =  this._mode === Mode.ADD ? this.getElement() : this.getElement().querySelector(`form`);
     const formData = new FormData(form);
+    const checkedOffersLabels = [
+      ...document.querySelectorAll(`.event__offer-checkbox[checked=""]+label[for^="event-offer"]`)
+    ]; console.log('checkedOffersLabels',checkedOffersLabels);
 
     return {
       id: this._events.id,
@@ -216,7 +225,10 @@ class EventEditorComponent extends AbstractSmartComponent {
       endDate: formData.get(`event-end-time`),
       destination: Object.assign({}, this._destinations.getDestinationByName(formData.get(`event-destination`))),
       price: +formData.get(`event-price`),
-      offers: this._events.offers,
+      offers: checkedOffersLabels.map((offer) => ({
+        title: offer.querySelector(`.event__offer-title`).textContent,
+        price: Number(offer.querySelector(`.event__offer-price`).textContent)
+      })),
       isFavorite: this._events.isFavorite
     };
   }

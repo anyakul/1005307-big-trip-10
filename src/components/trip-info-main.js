@@ -5,8 +5,8 @@ import {formatMonthDay} from '../utils/date';
 const getDate = (events) => {
   return {
     monthDay: formatMonthDay(events),
-  }
-}
+  };
+};
 
 class TripInfoMainComponent extends AbstractComponent {
   constructor(events) {

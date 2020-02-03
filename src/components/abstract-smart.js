@@ -6,11 +6,11 @@ class AbstractSmartComponent extends AbstractComponent {
   }
 
   rerender() {
-    const oldElement = this.getElement();   console.log('rerender1oldElement',oldElement);
+    const oldElement = this.getElement();
 
-    this.removeElement();                     console.log('rerender2oldElement',this.getElement());
+    this.removeElement();
 
-    oldElement.replaceWith(this.getElement());   console.log('rerender3oldElement',oldElement);
+    oldElement.replaceWith(this.getElement());
 
     this.recoveryListeners();
   }

@@ -54,17 +54,14 @@ class API {
       .then(Event.parseEvent);
   }
 
-  updatePoint(id, data) { 
-const toLOG = (response) => console.log(response) && response;  //  console.log('id',id,'data',data);
+  updatePoint(id, data) {
     return this._load({
-      
       url: `points/${id}`,
       method: Method.PUT,
       body: JSON.stringify(data.toRAW()),
       headers: new Headers({'Content-Type': `application/json`})
     })
       .then(toJSON)
-      .then(toLOG)
       .then(Event.parseEvent);
   }
 

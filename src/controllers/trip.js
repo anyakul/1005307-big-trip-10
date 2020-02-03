@@ -181,11 +181,11 @@ class TripController {
           this._eventsModel.updateEvent();
           this._thipDays.forEach((day) => remove(day));
         //  this._removeEvents();
-          this.render();
-          this._sortEvents();
+     //     this.render();
+       //   this._sortEvents();
       //    if (isSuccess) {
          //   eventsController.render(oldEvent.id, newEvent, this._destinationsModel, this._offersModel, Mode.DEFAULT);
-          //  this._updateEvents();   
+            this._updateEvents();   
       //    console.log('this._tripDaysListElement',this._tripDaysListElement, this._events);
       //    this._renderSortEventsByDefault(this._tripDaysListElement, this._events);
         })

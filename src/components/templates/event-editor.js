@@ -166,7 +166,6 @@ const createFormHeaderTemplate = (event, destinations, mode) => {
   const preposition = Preposition[getEventType(type)];
   const eventIcon = createTripTypeImageTemplate(type);
   const eventDestination = destination.name;
-  
   const dates = getDates(startDate, endDate);
 
   const eventTypeListSection = createEventTypeListSection(event);

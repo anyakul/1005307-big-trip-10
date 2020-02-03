@@ -30,9 +30,6 @@ const createExtraServicesMarkup = makeTemplateGenerator(generateExtraServicesMar
 
 const createCardTemplate = ({type, startDate, endDate, price, destination}) => {
   const dates = showDateInCard(startDate, endDate);
-  
-
-  
   const preposition = Preposition[getEventType(type)];
 
   return (

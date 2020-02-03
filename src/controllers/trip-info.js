@@ -30,7 +30,7 @@ class TripInfoController {
   _onDataChange() {
     const price = calcTotalPrice(this._eventsModel.getEvents());
     this._tripInfoCostComponent.update(price);
-    this._tripInfoMainComponent.update(this._eventsModel.getEvents())
+    this._tripInfoMainComponent.update(this._eventsModel.getEvents());
   }
 }
 

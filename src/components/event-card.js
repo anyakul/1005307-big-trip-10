@@ -5,8 +5,6 @@ import {
   formatDuration,
   formatTime,
   formatDateTime,
-  getDuration,
-  getDatesDiff
 } from '../utils/date';
 
 
@@ -17,8 +15,8 @@ const showDateInCard = (start, end) => {
     fullDateFrom: formatDateTime(start),
     fullDateTo: formatDateTime(end),
     timeInterval: formatDuration(end - start),
-  }
-}
+  };
+};
 
 class EventCardComponent extends AbstractComponent {
   constructor(events) {
