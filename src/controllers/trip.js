@@ -43,9 +43,8 @@ class TripController {
       if (!this._sorterController) {
         this._sorterController = new SorterController(this._container, this._eventsModel);
         this._sorterController.render();
-        this._sorterController.setOnSorterType(this._onSortTypeChange);
-      }
-      this._renderSortEventsByDefault(this._tripDaysListElement, this._events);
+        this._sorterController.setOnSorterType(this._onSortTypeChange);      }
+        this._renderSortEventsByDefault(this._tripDaysListElement, this._events);
     }
   }
 
@@ -128,8 +127,9 @@ class TripController {
 
   _updateEvents() {
     this._thipDays.forEach((day) => remove(day));
-    this._removeEvents();
-    this._renderSortEventsByDefault(this._tripDaysListElement, this._events);
+    this._removeEvents();    
+ //   this._renderSortEventsByDefault(this._tripDaysListElement, this._events);
+    this.render();
   }
 
   _sortEvents(sortedEvents, sortType) {
@@ -159,6 +159,7 @@ class TripController {
             this._updateEvents();
             const destroyedEvent = this._eventsControllers.pop();
             destroyedEvent.destroy();
+            console.log(destroyedEvent);
 
             this._eventsControllers = [].concat(eventsController, this._eventsControllers);
           });
@@ -175,7 +176,8 @@ class TripController {
     } else if (newEvent) {
       this._api.updatePoint(oldEvent.id, newEvent)
         .then(() => {
-          this._eventsModel.updateEvent();
+          
+          this._eventsModel.updateEvent(oldEvent.id, newEvent);
           this._thipDays.forEach((day) => remove(day));
           this._updateEvents();
         });

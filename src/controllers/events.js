@@ -3,12 +3,25 @@ import {isEscKey} from '../utils/key-board';
 import EventCardComponent from '../components/event-card';
 import EventEditorComponent from '../components/event-editor';
 import Event from '../models/event';
+import Events from '../models/events';
 import moment from 'moment';
 
 const Mode = {
   VIEW: `view`,
   EDIT: `edit`,
   ADD: `add`,
+};
+
+const ButtonText = {
+  SAVE: `Save`,
+  DELETE: `Delete`,
+  SAVING: `Saving...`,
+  DELETING: `Deleting...`
+};
+
+const defaultText = {
+  deleteButton: ButtonText.DELETE,
+  saveButton: ButtonText.SAVE
 };
 
 // const SHAKE_ANIMATION_TIMEOUT = 600;
@@ -82,8 +95,7 @@ class EventsController {
       const eventIt = getDefaultEvent();
       this._eventEditorComponent = new EventEditorComponent(eventIt, destinations, availableOffers, Mode.ADD);
       render(this._container, this._eventEditorComponent.getElement(), RenderPosition.AFTERBEGIN);
-      this._setAddCardListeners();
-      return;
+      this._setAddCardListeners();  
     } else {
       this._eventItem = eventItem;
       const oldEventComponent = this._eventComponent;
@@ -105,7 +117,7 @@ class EventsController {
   setDefaultView() {
     if (this._mode === Mode.ADD) {
       remove(this._eventEditorComponent);
-      this._eventEditorComponent.setDisabled(false);
+      this._addEventButtonComponent.setDisabled(false);
     }
     if (this._mode === Mode.EDIT) {
       this._showCard();
@@ -131,13 +143,15 @@ class EventsController {
 
     this._eventEditorComponent.setOnSubmit((evt) => {
       evt.preventDefault();
+      const formData = this._eventEditorComponent.getFormData();
+      const data = parseFormData(formData);
 
-      this._addEventButtonComponent.setDisabled(false);
+      this._eventEditorComponent.setText({
+        saveButton: ButtonText.SAVING
+      });
 
-      const data = this._eventEditorComponent.getFormData();
-      const formData = parseFormData(data);
-      this._onDataChange(this, emptyEvent(this._id), formData);
-      this.destroy();
+      this._onDataChange(this, emptyEvent, data);
+   //   this._eventEditorComponent.blockForm();
     });
   }
 

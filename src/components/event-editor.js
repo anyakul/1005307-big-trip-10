@@ -10,6 +10,18 @@ const DefaultData = {
   saveButtonText: `Save`,
 };
 
+export const ButtonText = {
+  SAVE: `Save`,
+  DELETE: `Delete`,
+  SAVING: `Saving...`,
+  DELETING: `Deleting...`
+};
+
+export const defaultText = {
+  deleteButton: ButtonText.DELETE,
+  saveButton: ButtonText.SAVE
+};
+
 const getDates = (start, end) => {
   return {
     eventStartDate: formatDateTime(start),
@@ -31,13 +43,13 @@ class EventEditorComponent extends AbstractSmartComponent {
     this._externalData = DefaultData;
     this._flatpickr = null;
     this._element = this.getElement();
-    this._startDateInput = this._element.querySelector(`input[name=event-start-time]`);
-    this._endDateInput = this._element.querySelector(`input[name=event-end-time]`);
+  //  this._startDateInput = this._element.querySelector(`input[name=event-start-time]`);
+   // this._endDateInput = this._element.querySelector(`input[name=event-end-time]`);
     this._eventForReset = Object.assign({}, event);
     this._element = this.getElement();
 
-    this._startDateInput = this._element.querySelector(`input[name=event-start-time]`);
-    this._endDateInput = this._element.querySelector(`input[name=event-end-time]`);
+   // this._startDateInput = this._element.querySelector(`input[name=event-start-time]`);
+   // this._endDateInput = this._element.querySelector(`input[name=event-end-time]`);
     this._resetHandler = null;
     this._submitHandler = null;
     this._deleteHandler = null;
@@ -53,6 +65,11 @@ class EventEditorComponent extends AbstractSmartComponent {
 
   getTemplate() {
     return createEventEditorTemplate(this._events, this._destinations, this._availableOffers, this._mode, this._details);
+  }
+  
+  setText(text) {
+    this._buttonText = Object.assign({}, defaultText, text);
+    this.rerender();
   }
 
   setOnSubmit(handler) {
@@ -91,6 +108,7 @@ class EventEditorComponent extends AbstractSmartComponent {
   recoveryListeners() {
     this.setOnRollupButtonClick(this._resetHandler);
     this.setOnSubmit(this._submitHandler);
+    this.setOnCancel(this._cancelHandler);
     this.setOnDelete(this._deleteHandler);
     this._subscribeOnEvents();
   }
@@ -231,6 +249,17 @@ class EventEditorComponent extends AbstractSmartComponent {
         }
         this._setTimeValidation();
       }
+    });
+  }
+
+  blockForm() {
+    const form = this.getElement();
+
+    form.querySelectorAll(`input`).forEach((input) => {
+      input.disabled = true;
+    });
+    form.querySelectorAll(`button`).forEach((button) => {
+      button.disabled = true;
     });
   }
 }
