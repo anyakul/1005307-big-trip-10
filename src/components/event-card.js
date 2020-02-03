@@ -1,31 +1,15 @@
 import AbstractComponent from './abstract';
 import {createEventCardTemplate} from './templates/event-card';
 
-import {
-  formatDuration,
-  formatTime,
-  formatDateTime,
-} from '../utils/date';
-
-
-const showDateInCard = (start, end) => {
-  return {
-    dateFromInCard: formatTime(start),
-    dateToInCard: formatTime(end),
-    fullDateFrom: formatDateTime(start),
-    fullDateTo: formatDateTime(end),
-    timeInterval: formatDuration(end - start),
-  };
-};
-
 class EventCardComponent extends AbstractComponent {
-  constructor(events) {
+  constructor(eventItem) {
     super();
-    this._events = events;
+
+    this._eventItem = eventItem;
   }
 
   getTemplate() {
-    return createEventCardTemplate(this._events);
+    return createEventCardTemplate(this._eventItem);
   }
 
   setOnRollupButtonClick(handler) {
@@ -35,4 +19,3 @@ class EventCardComponent extends AbstractComponent {
 }
 
 export default EventCardComponent;
-export {showDateInCard};

@@ -1,5 +1,5 @@
-import {SortType} from '../components/event-sorter';
 import {formatDuration, isSameDay} from '../utils/date';
+import {FilterType} from '../components/event-filter';
 import {getEventsByFilter} from '../utils/filter';
 
 const getUniqueDays = (days) => {
@@ -9,16 +9,23 @@ const getUniqueDays = (days) => {
       uniqueDays.push(day);
     }
   });
+
   return uniqueDays;
 };
 
 export default class EventsModel {
   constructor() {
     this._events = [];
+
     this._filterChangeHandlers = [];
     this._sorterChangeHandlers = [];
     this._dataChangeHandlers = [];
-    this._activeSortType = SortType.EVENT;
+
+    this._activeFilterType = FilterType.EVERYTHING;
+  }
+
+  isEmpty() {
+    return this._events.length === 0;
   }
 
   getEvents() {
@@ -43,15 +50,6 @@ export default class EventsModel {
     this._events = events;
   }
 
-  calcTotalPrice() {
-    let sum = 0;
-    for (const eventItem of this._events) {
-      sum += eventItem.price;
-      sum += eventItem.offers.reduce((accumulator, currentValue) => accumulator + currentValue.price, 0);
-    }
-    return sum;
-  }
-
   addEvent(eventItem) {
     this._events = [...this._events, eventItem];
     this._callHandlers(this._dataChangeHandlers);
@@ -73,17 +71,6 @@ export default class EventsModel {
     return true;
   }
 
-  setSorter(sortType) {
-    if (Object.values(SortType).some((it) => it === sortType)) {
-      this._activeSortType = sortType;
-    }
-  }
-
-  setFilter(filterType) {
-    this._activeFilterType = filterType;
-    this._filterChangeHandlers.forEach((handler) => handler());
-  }
-
   updateEvent(id, eventItem) {
     const index = this._getEventById(id);
     if (index === -1) {
@@ -101,24 +88,25 @@ export default class EventsModel {
     return true;
   }
 
-  _callHandlers(handlers) {
-    handlers.forEach((handler) => handler());
-  }
-
-  _getEventById(id) {
-    return this._events.findIndex((eventItem) => eventItem.id === id);
+  setFilter(filterType) {
+    this._activeFilterType = filterType;
+    this._filterChangeHandlers.forEach((handler) => handler());
   }
 
   addOnDataChange(handler) {
     this._dataChangeHandlers.push(handler);
   }
 
-  setOnFilterChange(handler) {
+  addOnFilterChange(handler) {
     this._filterChangeHandlers.push(handler);
   }
 
-  setOnSorterChange(handler) {
-    this._sorterChangeHandlers.push(handler);
+  _callHandlers(handlers) {
+    handlers.forEach((handler) => handler());
+  }
+
+  _getEventById(id) {
+    return this._events.findIndex((eventItem) => eventItem.id === id);
   }
 
   _getPointsDates(points) {

@@ -8,24 +8,31 @@ const SortType = {
 };
 
 class EventSorterComponent extends AbstractComponent {
-  constructor(sorters) {
+  constructor(sortType = SortType.EVENT) {
     super();
-    this._sorters = sorters;
-    this._active = SortType.EVENT;
+
+    this._currentSortType = sortType;
   }
 
   getTemplate() {
-    return createEventSorterTemplate(this._sorters);
+    const sorters = Object.values(SortType).map((name) => ({
+      name,
+      isChecked: name === this._currentSortType,
+    }));
+
+    return createEventSorterTemplate(sorters);
   }
 
   setOnSortTypeChange(handler) {
-    this.getElement().addEventListener(`click`, (evt) => {
-      const {sortType} = evt.target.dataset;
+    this.getElement().addEventListener(`change`, (evt) => {
+      const sortType = evt.target.value;
 
-      if (sortType && sortType !== this._active) {
-        this._active = sortType;
-        handler(this._active);
+      if (this._currentSortType === sortType) {
+        return;
       }
+
+      this._currentSortType = sortType;
+      handler(sortType);
     });
   }
 }

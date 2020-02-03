@@ -1,6 +1,6 @@
 const makeTemplateGenerator = (generator) => {
-  const reduceValues = (template, value) => {
-    template += generator(value);
+  const reduceValues = (template, value, index) => {
+    template += generator(value, index);
     return template;
   };
 

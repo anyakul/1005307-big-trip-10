@@ -1,268 +1,231 @@
 import AbstractSmartComponent from './abstract-smart';
-import {createEventEditorTemplate} from './templates/event-editor';
-import {Mode} from './events';
-import flatpickr from 'flatpickr';
-import 'flatpickr/dist/flatpickr.min.css';
-import {formatDateTime, getDatesDiff} from '../utils/date';
+import {createEventEditorEditTemplate} from './templates/event-editor-edit';
+import {createEventEditorNewTemplate} from './templates/event-editor-new';
+import {createFlatpickr} from '../utils/flatpickr';
 
-const DefaultData = {
-  deleteButtonText: `Delete`,
-  saveButtonText: `Save`,
+const Mode = {
+  NEW: `new`,
+  EDIT: `edit`,
+  VIEW: `view`,
 };
 
-export const ButtonText = {
-  SAVE: `Save`,
-  DELETE: `Delete`,
-  SAVING: `Saving...`,
-  DELETING: `Deleting...`
+const ActionType = {
+  ADDED_TO_FAVORITE: `ADDED_TO_FAVORITE`,
+  CANCEL: `CANCEL`,
+  SUBMIT: `SUBMIT`,
+  DELETE: `DELETE`,
 };
 
-export const defaultText = {
-  deleteButton: ButtonText.DELETE,
-  saveButton: ButtonText.SAVE
-};
-
-const getDates = (start, end) => {
-  return {
-    eventStartDate: formatDateTime(start),
-    eventsEndDate: formatDateTime(end),
-  };
-};
+const normalizeOffers = ({title, price}) =>
+  ({title, price, isChecked: true});
 
 class EventEditorComponent extends AbstractSmartComponent {
-  constructor(events, destinations, offers, mode) {
+  constructor(eventItem, destinationsModel, offersModel, mode = Mode.EDIT) {
     super();
-    this._events = events;
-    this._destinations = destinations;
-    this._offers = offers;
-    this._availableOffers = this._offers.getOffersByType(this._events.type);
-    this._eventForReset = Object.assign({}, event);
 
+    this._event = eventItem;
+    this._destinationsModel = destinationsModel;
+    this._offersModel = offersModel;
     this._mode = mode;
-    this._details = mode === Mode.EDIT;
-    this._externalData = DefaultData;
-    this._flatpickr = null;
-    this._element = this.getElement();
-  //  this._startDateInput = this._element.querySelector(`input[name=event-start-time]`);
-   // this._endDateInput = this._element.querySelector(`input[name=event-end-time]`);
-    this._eventForReset = Object.assign({}, event);
-    this._element = this.getElement();
 
-   // this._startDateInput = this._element.querySelector(`input[name=event-start-time]`);
-   // this._endDateInput = this._element.querySelector(`input[name=event-end-time]`);
-    this._resetHandler = null;
-    this._submitHandler = null;
-    this._deleteHandler = null;
-    this._favoriteHandler = null;
-    this._flatpickr = {
-      START: null,
-      END: null
-    };
+    this._onSubmit = null;
+    this._onDelete = null;
+    this._onCancel = null;
+    this._onFavoriteChange = null;
+    this._onRollupButtonClick = null;
+
+    this._flatpickrStartDate = null;
+    this._flatpickrEndDate = null;
+
     this._applyFlatpickr();
-    this._subscribeOnEvents();
-    this._removeFlatpickr = this._removeFlatpickr.bind(this);
   }
 
   getTemplate() {
-    return createEventEditorTemplate(this._events, this._destinations, this._availableOffers, this._mode, this._details);
-  }
-  
-  setText(text) {
-    this._buttonText = Object.assign({}, defaultText, text);
-    this.rerender();
+    const {type, destination} = this._event;
+
+    const template = this._mode === Mode.NEW
+      ? createEventEditorNewTemplate
+      : createEventEditorEditTemplate;
+
+    return template(
+      this._event,
+      this._getOffers(),
+      this._destinationsModel.getDestinationByName(destination.name),
+      this._destinationsModel.getAll(),
+    );
   }
 
-  setOnSubmit(handler) {
-    if (!this._submitHandler) {
-      this._submitHandler = handler;
-    }
-    this.getElement().querySelector(`.event__save-btn`)
-    .addEventListener(`click`, handler);
-    this.getElement().addEventListener(`submit`, this._submitHandler);
-  }
-
-  setOnDelete(handler) {
-    if (!this._deleteHandler) {
-      this._deleteHandler = handler;
-    }
-    this.getElement().addEventListener(`reset`, this._deleteHandler);
-  }
-
-  setData(data) {
-    this._externalData = Object.assign({}, DefaultData, data);
-  //  this.rerender();
-  }
-
-  setOnCancel(handler) {
-    this.getElement().addEventListener(`reset`, handler);
-    this._cancelHandler = handler;
-  }
-
-  setOnRollupButtonClick(handler) {
-    if (this._mode !== Mode.ADD) {
-      this.getElement().querySelector(`.event__rollup-btn`)
-        .addEventListener(`click`, handler);
-    }
-  }
-
-  recoveryListeners() {
-    this.setOnRollupButtonClick(this._resetHandler);
-    this.setOnSubmit(this._submitHandler);
-    this.setOnCancel(this._cancelHandler);
-    this.setOnDelete(this._deleteHandler);
+  _recoveryListeners() {
     this._subscribeOnEvents();
+
+    this.setOnSubmit(this._onSubmit);
+    this.setOnCancel(this._onCancel);
+    this.setOnFavoriteChange(this._onFavoriteChange);
+    this.setOnRollupButtonClick(this._onRollupButtonClick);
   }
 
   rerender() {
     super.rerender();
+
     this._applyFlatpickr();
   }
 
-  reset() {
-    this.rerender();
+  setOnSubmit(handler) {
+    this._onSubmit = handler;
+
+    if (this._mode === Mode.NEW) {
+      this.getElement().addEventListener(`submit`, handler);
+    } else {
+      this.getElement().querySelector(`form`).addEventListener(`submit`, handler);
+    }
+  }
+  
+  setOnDelete(handler) {
+    this._onDelete = handler;
+
+    if (this._mode === Mode.EDIT) {
+      this.getElement().addEventListener(`reset`, handler);
+    }
+  }
+
+  setOnCancel(handler) {
+    this._onCancel = handler;
+
+    if (this._mode === Mode.NEW) {
+      this.getElement().addEventListener(`reset`, handler);
+    }
+  }
+
+  setOnFavoriteChange(handler) {
+    this._onFavoriteChange = handler;
+
+    if (this._mode === Mode.EDIT) {
+      this.getElement().querySelector(`.event__favorite-checkbox`)
+        .addEventListener(`change`, this._onFavoriteChange);
+    }
+  }
+
+  setOnRollupButtonClick(handler) {
+    this._onRollupButtonClick = handler;
+
+    if (this._mode === Mode.EDIT) {
+      this.getElement().querySelector(`.event__rollup-btn`)
+        .addEventListener(`click`, this._onRollupButtonClick);
+    }
+  }
+
+  removeElement() {
+    this._removeFlatpickr();
+
+    super.removeElement();
+  }
+
+  getData() {
+    const form = this._mode === Mode.NEW
+      ? this.getElement()
+      : this.getElement().querySelector(`form`);
+
+    const checkedOffers = this.getElement()
+      .querySelectorAll(`.event__offer-checkbox:checked`);
+
+    const formData = new FormData(form);
+
+    const destination = this._destinationsModel
+      .getDestinationByName(formData.get(`event-destination`))
+
+    const offers = Array.from(checkedOffers)
+      .map(({name, value}) => ({title: name, price: +value}));
+
+    return {
+      id: this._event.id,
+      type: formData.get(`event-type`),
+      base_price: +formData.get(`event-price`),
+      date_from: formData.get(`event-start-time`),
+      date_to: formData.get(`event-end-time`),
+      is_favorite: formData.has(`event-favorite`),
+      destination,
+      offers,
+    }
+  }
+  
+  _getOffers() {
+    const {type, offers} = this._event;
+
+    const availableOffers = this._offersModel.getOffersByType(type);
+    const checkedOffers = offers.map(normalizeOffers);
+
+    availableOffers.forEach((offer) => {
+      const found = checkedOffers.some((it) => it.title === offer.title);
+      if (!found) {
+        checkedOffers.push(offer);
+      }
+    });
+
+    return checkedOffers;
   }
 
   _subscribeOnEvents() {
     const element = this.getElement();
 
-    if (this._mode === Mode.EDIT) {
-      element.querySelector(`.event__favorite-checkbox`).addEventListener(`change`, () => {
-        this._events = Object.assign({}, this._events, {isFavorite: !this._events.isFavorite});
+    element.querySelector(`.event__type-list`).
+      addEventListener(`change`, (evt) => {
+        this._event = Object.assign({}, this._event, {
+          type: evt.target.value,
+          offers: [],
+        });
+
+        this._mode = Mode.EDIT;
         this.rerender();
       });
-    }
 
-    element.querySelector(`.event__type-list`).addEventListener(`change`, (evt) => {
-      this._availableOffers = this._offers.getOffersByType(evt.target.value);
-      this._events = Object.assign({}, this._events,
-          {type: evt.target.value},
-          {offers: []});
-      this.rerender();
-    });
+    element.querySelector(`.event__input--destination`)
+      .addEventListener(`change`, (evt) => {
+        this._event.destination = Object.assign({}, this._event.destination, {
+          name: evt.target.value.trim(),
+        });
 
-    element.querySelector(`.event__input--destination`).addEventListener(`change`, (evt) => {
-      const inputValue = evt.target.value.trim();
-      const isValidDestination = this._destinations.getAll().findIndex((it) => it.name === inputValue) === -1;
-      if (isValidDestination) {
-        this._events.destination.name = ``;
-        this._details = false;
-      } else {
-        this._events.destination = Object.assign({}, this._events.destination, {name: evt.target.value.trim()});
-        this._details = true;
-      }
-      this.rerender();
-    });
-
-    if (this._availableOffers.length > 0) {
-      element.querySelectorAll(`.event__offer-checkbox`).forEach((checkbox) => checkbox.addEventListener(`click`, () => {
-        if (checkbox.hasAttribute(`checked`)) {
-          checkbox.removeAttribute(`checked`);
-        } else {
-          checkbox.setAttribute(`checked`, ``);
-        }
-      }
-      ));
-    }
-
-    element.querySelector(`input[name=event-start-time]`).addEventListener(`change`, (evt) => {
-      this._events.startDate = formatDateTime(evt.target.value);
-    });
-
-    element.querySelector(`input[name=event-end-time]`).addEventListener(`change`, (evt) => {
-      this._events.endDate = formatDateTime(evt.target.value);
-    });
-
-    element.querySelector(`.event__input--price`).addEventListener(`change`, (evt) => {
-      this._events.price = +evt.target.value;
-    });
-  }
-
-  removeElement() {
-    super.removeElement();
-  }
-
-  getFormData() {
-    const form = this._mode === Mode.ADD ? this.getElement() : this.getElement().querySelector(`form`);
-    const formData = new FormData(form);
-    const checkedOffersLabels = [
-      ...document.querySelectorAll(`.event__offer-checkbox[checked=""]+label[for^="event-offer"]`)
-    ];
-
-    return {
-      id: this._events.id,
-      type: formData.get(`event-type`),
-      startDate: formData.get(`event-start-time`),
-      endDate: formData.get(`event-end-time`),
-      destination: Object.assign({}, this._destinations.getDestinationByName(formData.get(`event-destination`))),
-      price: +formData.get(`event-price`),
-      offers: checkedOffersLabels.map((offer) => ({
-        title: offer.querySelector(`.event__offer-title`).textContent,
-        price: Number(offer.querySelector(`.event__offer-price`).textContent)
-      })),
-      isFavorite: this._events.isFavorite
-    };
-  }
-
-  _removeFlatpickr() {
-    if (this._flatpickr.START && this._flatpickr.END) {
-      this._flatpickr.START.destroy();
-      this._flatpickr.END.destroy();
-      this._flatpickr.START = null;
-      this._flatpickr.END = null;
-    }
+        this.rerender();
+      });
   }
 
   _applyFlatpickr() {
-    this._removeFlatpickr();
+    const {startDate, endDate} = this._event;
 
-    const [startDateInput, endDateInput] = Array.from(this.getElement().querySelectorAll(`.event__input--time`));
-    this._flatpickr.START = this._createFlatpickrInput(startDateInput, this._events.startDate);
-    this._flatpickr.END = this._createFlatpickrInput(endDateInput, this._events.endDate);
+    const element = this.getElement();
+
+    const startDateInput = element.querySelector(`input[name=event-start-time]`);
+    const endDateInput = element.querySelector(`input[name=event-end-time]`);
+
+    this._flatpickrStartDate = createFlatpickr(startDateInput, {
+      defaultDate: startDate.toISOString(),
+      onClose: ([startDate]) => {
+        this._flatpickrEndDate.set(`minDate`, startDate);
+      },
+    });
+
+    this._flatpickrEndDate = createFlatpickr(endDateInput, {
+      defaultDate: endDate.toISOString(),
+      onClose: ([date]) => {
+        this._flatpickrStartDate.set(`maxDate`, date);
+      },
+    });
+
+    this._flatpickrEndDate.set(`minDate`, startDate)
+    this._flatpickrStartDate.set(`maxDate`, endDate);
   }
 
-  _setTimeValidation() {
-    const startDateInput = this.getElement().querySelector(`input[name=event-start-time]`);
-    if (getDatesDiff(this._events.startDate, this._events.endDate) > 0) {
-      startDateInput.setCustomValidity(`The start time should be earlier than the end time`);
-      this.getElement().querySelector(`.event__save-btn`).disabled = true;
-    } else {
-      startDateInput.setCustomValidity(``);
-      this.getElement().querySelector(`.event__save-btn`).disabled = false;
+  _removeFlatpickr() {
+    if (this._flatpickrStartDate !== null) {
+      this._flatpickrStartDate.destroy();
+      this._flatpickrStartDate = null;
     }
-  }
 
-  _createFlatpickrInput(node, date) {
-    return flatpickr(node, {
-      allowInput: true,
-      enableTime: true,
-      defaultDate: new Date(date),
-      dateFormat: `d/m/Y H:i`,
-      onValueUpdate: (pickerDate) => {
-        if (node.name === `event-start-time`) {
-          this._events = Object.assign({}, this._events,
-              {startDate: pickerDate[0]}
-          );
-        } else {
-          this._events = Object.assign({}, this._events,
-              {endDate: pickerDate[0]}
-          );
-        }
-        this._setTimeValidation();
-      }
-    });
-  }
-
-  blockForm() {
-    const form = this.getElement();
-
-    form.querySelectorAll(`input`).forEach((input) => {
-      input.disabled = true;
-    });
-    form.querySelectorAll(`button`).forEach((button) => {
-      button.disabled = true;
-    });
+    if (this._flatpickrEndDate !== null) {
+      this._flatpickrEndDate.destroy();
+      this._flatpickrEndDate = null;
+    }
   }
 }
 
 export default EventEditorComponent;
-export {getDates};
+export {Mode, ActionType}
