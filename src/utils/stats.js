@@ -20,7 +20,7 @@ const reduceStats = (stats, {type, price, startDate, endDate}) => {
 
   return stats;
 };
-  
+
 const getStats = (events) => events
   .reduce(reduceStats, createEmptyStats(EVENT_TYPES));
 

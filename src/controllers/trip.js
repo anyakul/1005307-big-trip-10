@@ -4,7 +4,7 @@ import NoEventsComponent from '../components/no-events';
 import TripDaysListComponent from '../components/trip-days-list';
 import TripDayComponent from '../components/trip-day';
 import {isSameDay} from '../utils/date';
-import EventsController, {EmptyEvent} from './events';
+import EventsController, {emptyEvent} from './events';
 import SorterController from './sort';
 import {Mode} from '../components/events';
 
@@ -39,7 +39,7 @@ class TripController {
       render(this._tripEvents, this._noEventComponent.getElement());
     } else {
       this._tripDaysListElement = new TripDaysListComponent().getElement();
-      
+
       if (!this._sorterController) {
         this._sorterController = new SorterController(this._container, this._eventsModel);
         this._sorterController.render();
@@ -103,13 +103,13 @@ class TripController {
         sortedEvents = this._events.slice().sort((a, b) => (b.endDate - b.startDate) - (a.endDate - a.startDate));
         this._sortEvents(sortedEvents, sortType);
         break;
-     case SortType.PRICE:
-       sortedEvents = this._events.slice().sort((a, b) => a.price - b.price);
-       this._sortEvents(sortedEvents, sortType);
-       break;
-     case SortType.EVENT:
-       this._sortEvents(sortedEvents, sortType);
-     }
+      case SortType.PRICE:
+        sortedEvents = this._events.slice().sort((a, b) => a.price - b.price);
+        this._sortEvents(sortedEvents, sortType);
+        break;
+      case SortType.EVENT:
+        this._sortEvents(sortedEvents, sortType);
+    }
   }
 
   _removeEvents() {
@@ -130,7 +130,6 @@ class TripController {
     this._thipDays.forEach((day) => remove(day));
     this._removeEvents();
     this._renderSortEventsByDefault(this._tripDaysListElement, this._events);
-    
   }
 
   _sortEvents(sortedEvents, sortType) {
@@ -148,50 +147,41 @@ class TripController {
   }
 
   _onDataChange(eventsController, oldEvent, newEvent) { // console.log('trip','oldEvent=',oldEvent,' newEvent=', newEvent);
-    if (oldEvent === EmptyEvent) {
+    if (oldEvent === emptyEvent) {
       this._creatingEvent = null;
       if (newEvent === null) {
         eventsController.destroy();
         this._updateEvents();
       } else {
         this._api.createPoint(newEvent)
-          .then((eventModel) => {
+          .then(() => {
             this._eventsModel.addEvent(newEvent);
-       //     this._eventsModel.updateEvent();
-          //  eventsController.render(eventModel, Mode.VIEW);
-           this._updateEvents();
-           const destroyedEvent = this._eventsControllers.pop();
-           destroyedEvent.destroy();
+            this._updateEvents();
+            const destroyedEvent = this._eventsControllers.pop();
+            destroyedEvent.destroy();
 
             this._eventsControllers = [].concat(eventsController, this._eventsControllers);
-          })
-          .catch(() => {
-            eventsController.shake();
           });
+        /* .catch(() => {
+          eventsController.shake();
+        });*/
       }
     } else if (newEvent === null) {
       this._api.deletePoint(oldEvent.id)
         .then(() => {
           this._eventModel.removeEvent(oldEvent.id);
           this._updateEvents();
-        })
+        });
     } else if (newEvent) {
       this._api.updatePoint(oldEvent.id, newEvent)
         .then(() => {
           this._eventsModel.updateEvent();
           this._thipDays.forEach((day) => remove(day));
-        //  this._removeEvents();
-     //     this.render();
-       //   this._sortEvents();
-      //    if (isSuccess) {
-         //   eventsController.render(oldEvent.id, newEvent, this._destinationsModel, this._offersModel, Mode.DEFAULT);
-            this._updateEvents();   
-      //    console.log('this._tripDaysListElement',this._tripDaysListElement, this._events);
-      //    this._renderSortEventsByDefault(this._tripDaysListElement, this._events);
-        })
-        .catch(() => {
+          this._updateEvents();
+        });
+      /*   .catch(() => {
           eventsController.shake();
-        }); 
+        }); */
     }
   }
 

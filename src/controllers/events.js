@@ -11,7 +11,7 @@ const Mode = {
   ADD: `add`,
 };
 
-const SHAKE_ANIMATION_TIMEOUT = 600;
+// const SHAKE_ANIMATION_TIMEOUT = 600;
 
 const getDefaultEvent = (id) => ({
   id,
@@ -28,7 +28,7 @@ const getDefaultEvent = (id) => ({
   isFavorite: false
 });
 
-const EmptyEvent = (id) => ({
+const emptyEvent = (id) => ({
   id,
   type: ``,
   startDate: new Date(),
@@ -44,9 +44,6 @@ const EmptyEvent = (id) => ({
 });
 
 const parseFormData = (formData) => {
-  const checkedOffersLabels = [
-    ...document.querySelectorAll(`.event__offer-checkbox[checked=""]+label[for^="event-offer"]`)
-  ];
 
   return new Event({
     'id': formData.id,
@@ -57,10 +54,7 @@ const parseFormData = (formData) => {
         moment(formData.endDate, `DD/MM/YYYY HH:mm`).valueOf()),
     'destination': formData.destination,
     'base_price': Number(formData.price),
-    'offers': checkedOffersLabels.map((offer) => ({
-      title: offer.querySelector(`.event__offer-title`).textContent,
-      price: Number(offer.querySelector(`.event__offer-price`).textContent)
-    })),
+    'offers': formData.offers,
     'is_favorite': formData.isFavorite
   });
 };
@@ -89,7 +83,6 @@ class EventsController {
       this._eventEditorComponent = new EventEditorComponent(eventIt, destinations, availableOffers, Mode.ADD);
       render(this._container, this._eventEditorComponent.getElement(), RenderPosition.AFTERBEGIN);
       this._setAddCardListeners();
-//      this._addEventComponent.applyFlatpickr();
       return;
     } else {
       this._eventItem = eventItem;
@@ -99,7 +92,6 @@ class EventsController {
       this._eventComponent = new EventCardComponent(this._eventItem);
       this._eventEditorComponent = new EventEditorComponent(this._eventItem, destinations, availableOffers, Mode.EDIT);
       this._setCardListeners();
-      this._eventEditorComponent.applyFlatpickr();
 
       if (oldEventComponent && oldEditEventComponent) {
         replace(this._eventComponent, oldEventComponent);
@@ -132,7 +124,7 @@ class EventsController {
     this._mode = Mode.ADD;
     this._setEscListener();
     this._eventEditorComponent.setOnCancel(() => {
-      this._onDataChange(this, EmptyEvent, null);
+      this._onDataChange(this, emptyEvent, null);
       this._addEventButtonComponent.setDisabled(false);
       this.destroy();
     });
@@ -144,8 +136,8 @@ class EventsController {
 
       const data = this._eventEditorComponent.getFormData();
       const formData = parseFormData(data);
-
-      this._onDataChange(this, EmptyEvent(this._id), formData);
+      this._onDataChange(this, emptyEvent(this._id), formData);
+      this.destroy();
     });
   }
 
@@ -178,7 +170,7 @@ class EventsController {
   }
 
   destroy() {
-    if (this._mode===Mode.ADD) {
+    if (this._mode === Mode.ADD) {
       remove(this._eventEditorComponent);
       return;
     }
@@ -199,9 +191,8 @@ class EventsController {
     replace(this._eventEditorComponent, this._eventComponent);
     this._mode = Mode.EDIT;
     this._setEditCardListeners();
-    this._eventEditorComponent.applyFlatpickr();
   }
-
+  /*
   shake() {
     this._eventEditorComponent.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
     this._eventComponent.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
@@ -215,15 +206,14 @@ class EventsController {
         deleteButtonText: `Deleting`,
       });
     }, SHAKE_ANIMATION_TIMEOUT);
-  }
+  }*/
 
   _onEscKeyDown(evt) {
     if (isEscKey(evt)) {
       if (this._mode === Mode.ADD) {
-        this._onDataChange(this, EmptyEvent, null);
+        this._onDataChange(this, emptyEvent, null);
         this._addEventButtonComponent.setDisabled(false);
-      }
-      else {
+      } else {
         this._showCard();
       }
       document.removeEventListener(`keydown`, this._onEscKeyDown);
@@ -232,4 +222,4 @@ class EventsController {
 }
 
 export default EventsController;
-export {EmptyEvent};
+export {emptyEvent};

@@ -1,24 +1,24 @@
 import {StatsType} from '../components/stats';
-import {TRANSFER_EVENTS } from '../const';
+import {TRANSFER_EVENTS} from '../const';
 import {formatTypeWithEmoji} from './emojis';
 
-const makeStatsSorter = (value) => 
+const makeStatsSorter = (value) =>
   ([, a], [_, b]) => b[value] - a[value];
 
-const makeStatsReducer = (value) => 
+const makeStatsReducer = (value) =>
   (result, [type, stats]) => {
     result.labels.push(formatTypeWithEmoji(type));
     result.values.push(stats[value]);
     return result;
   };
 
-const sortByPrice = makeStatsSorter('price');
-const sortByUsed = makeStatsSorter('used');
-const sortByTime = makeStatsSorter('time');
+const sortByPrice = makeStatsSorter(`price`);
+const sortByUsed = makeStatsSorter(`used`);
+const sortByTime = makeStatsSorter(`time`);
 
-const reduceByPrice = makeStatsReducer('price');
-const reduceByUsed = makeStatsReducer('used');
-const reduceByTime = makeStatsReducer('time');
+const reduceByPrice = makeStatsReducer(`price`);
+const reduceByUsed = makeStatsReducer(`used`);
+const reduceByTime = makeStatsReducer(`time`);
 
 const filterByTransfer = ([type]) => TRANSFER_EVENTS.includes(type);
 
@@ -39,7 +39,7 @@ const getChartData = (stats, type) => {
   const entries = Object.entries(stats);
   const data = {labels: [], values: []};
 
-  switch(type) {
+  switch (type) {
     case StatsType.MONEY:
       return getMoneyData(entries, data);
     case StatsType.TRANSPORT:

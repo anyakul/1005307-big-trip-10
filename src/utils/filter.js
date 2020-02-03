@@ -1,9 +1,9 @@
 import {FilterType} from '../components/event-filter';
 
-const getFutureEvents = (events, nowDate) => 
+const getFutureEvents = (events, nowDate) =>
   events.filter(({startDate}) => startDate > nowDate);
 
-const getPastEvents = (events, nowDate) => 
+const getPastEvents = (events, nowDate) =>
   events.filter(({startDate}) => startDate < nowDate);
 
 export const getEventsByFilter = (events, filterType) => {

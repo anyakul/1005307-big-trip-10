@@ -4,10 +4,10 @@ import {formatDate, formatMonthDay} from '../utils/date';
 
 const getDays = (day) => {
   return {
-   tripDay: formatMonthDay(day),
-   datetime: formatDate(day),
-  }
-}
+    tripDay: formatMonthDay(day),
+    datetime: formatDate(day),
+  };
+};
 
 class TripDayComponent extends AbstractComponent {
   constructor(day, events, count) {

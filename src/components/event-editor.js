@@ -3,33 +3,19 @@ import {createEventEditorTemplate} from './templates/event-editor';
 import {Mode} from './events';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
-import {formatDateTime} from '../utils/date';
+import {formatDateTime, getDatesDiff} from '../utils/date';
 
 const DefaultData = {
   deleteButtonText: `Delete`,
   saveButtonText: `Save`,
 };
 
-const defaultConfig = {
-  [`altFormat`]: `d/m/y H:m`,
-  [`altInput`]: true,
-  [`dateFormat`]: `Z`,
-  [`enableTime`]: true,
-  [`time_24hr`]: true,
-};
-
-const createFlatpickr = (element, config = {}) =>
-  flatpickr(element, Object.assign({}, defaultConfig, config));
-
-const removeFlatpickr = (element) =>
-  element._flatpickr && element._flatpickr.destroy();
-  
 const getDates = (start, end) => {
   return {
     eventStartDate: formatDateTime(start),
     eventsEndDate: formatDateTime(end),
-  }
-}
+  };
+};
 
 class EventEditorComponent extends AbstractSmartComponent {
   constructor(events, destinations, offers, mode) {
@@ -42,12 +28,11 @@ class EventEditorComponent extends AbstractSmartComponent {
 
     this._mode = mode;
     this._details = mode === Mode.EDIT;
-    this._externalData = DefaultData;    
+    this._externalData = DefaultData;
     this._flatpickr = null;
-    this._element = this.getElement();                                     //  console.log('this._element',this._element);
+    this._element = this.getElement();
     this._startDateInput = this._element.querySelector(`input[name=event-start-time]`);
     this._endDateInput = this._element.querySelector(`input[name=event-end-time]`);
- //   this._applyFlatpickr();
     this._eventForReset = Object.assign({}, event);
     this._element = this.getElement();
 
@@ -57,47 +42,33 @@ class EventEditorComponent extends AbstractSmartComponent {
     this._submitHandler = null;
     this._deleteHandler = null;
     this._favoriteHandler = null;
-
-  /*  this._flatpickrStartDate = createFlatpickr(this._startDateInput, {
-      defaultDate: new Date(this._events.startDate),           
-      onClose: () => {
-        this._flatpickrStartDate.set(`minDate`, this._startDateInput.value);
-      }
-    });
-
-    this._flatpickrEndDate = createFlatpickr(this._endDateInput, {
-      defaultDate: new Date(this._events.endDate),
-      onClose: () => {
-        this._flatpickrEndDate.set(`maxDate`, this._endDateInput.value);
-      }
-    });*/
+    this._flatpickr = {
+      START: null,
+      END: null
+    };
+    this._applyFlatpickr();
     this._subscribeOnEvents();
-  } 
+    this._removeFlatpickr = this._removeFlatpickr.bind(this);
+  }
 
   getTemplate() {
     return createEventEditorTemplate(this._events, this._destinations, this._availableOffers, this._mode, this._details);
   }
- 
+
   setOnSubmit(handler) {
     if (!this._submitHandler) {
       this._submitHandler = handler;
     }
-   /* this.getElement().querySelector(`.event__save-btn`)
-    .addEventListener(`click`, handler);*/
- //   if (this._mode === Mode.ADD) {
-   //   this.getElement().addEventListener(`submit`, this._submitHandler);// console.log('handler=',this._submitHandler);
-  //  } else { 
-        this.getElement().addEventListener(`submit`, this._submitHandler);      
-  //  }
+    this.getElement().querySelector(`.event__save-btn`)
+    .addEventListener(`click`, handler);
+    this.getElement().addEventListener(`submit`, this._submitHandler);
   }
-  
+
   setOnDelete(handler) {
     if (!this._deleteHandler) {
       this._deleteHandler = handler;
     }
-        this.getElement().addEventListener(`reset`, this._deleteHandler);
-        
-  //  }
+    this.getElement().addEventListener(`reset`, this._deleteHandler);
   }
 
   setData(data) {
@@ -111,28 +82,22 @@ class EventEditorComponent extends AbstractSmartComponent {
   }
 
   setOnRollupButtonClick(handler) {
-   // if (!this._resetHandler) {
-   // this._resetHandler = handler;
-  //  }
     if (this._mode !== Mode.ADD) {
       this.getElement().querySelector(`.event__rollup-btn`)
-        .addEventListener(`click`, handler);   
-      }
+        .addEventListener(`click`, handler);
+    }
   }
 
   recoveryListeners() {
-   /* if (this._mode !== Mode.ADD) {*/
-    this.setOnRollupButtonClick(this._resetHandler); console.log('YES3');
+    this.setOnRollupButtonClick(this._resetHandler);
     this.setOnSubmit(this._submitHandler);
-    this.setOnDelete(this._deleteHandler)
+    this.setOnDelete(this._deleteHandler);
     this._subscribeOnEvents();
-    this._flatpickrStartDate;
-     
   }
 
   rerender() {
     super.rerender();
-    this.applyFlatpickr();
+    this._applyFlatpickr();
   }
 
   reset() {
@@ -157,7 +122,7 @@ class EventEditorComponent extends AbstractSmartComponent {
       this.rerender();
     });
 
-   element.querySelector(`.event__input--destination`).addEventListener(`change`, (evt) => {
+    element.querySelector(`.event__input--destination`).addEventListener(`change`, (evt) => {
       const inputValue = evt.target.value.trim();
       const isValidDestination = this._destinations.getAll().findIndex((it) => it.name === inputValue) === -1;
       if (isValidDestination) {
@@ -169,32 +134,24 @@ class EventEditorComponent extends AbstractSmartComponent {
       }
       this.rerender();
     });
-    
- 
-    
-    
-   if (this._availableOffers.length > 0) {  
+
+    if (this._availableOffers.length > 0) {
       element.querySelectorAll(`.event__offer-checkbox`).forEach((checkbox) => checkbox.addEventListener(`click`, () => {
         if (checkbox.hasAttribute(`checked`)) {
-          checkbox.removeAttribute(`checked`); //console.log('checkbox1',checkbox, this.getFormData(),offers);
-          
+          checkbox.removeAttribute(`checked`);
         } else {
-          checkbox.setAttribute(`checked`, ``); console.log('checkbox2',checkbox,this.getFormData().offers );
-        }    
-      }  
+          checkbox.setAttribute(`checked`, ``);
+        }
+      }
       ));
-     }
-
-  
+    }
 
     element.querySelector(`input[name=event-start-time]`).addEventListener(`change`, (evt) => {
       this._events.startDate = formatDateTime(evt.target.value);
-      this._flatpickrStartDate;
     });
 
     element.querySelector(`input[name=event-end-time]`).addEventListener(`change`, (evt) => {
       this._events.endDate = formatDateTime(evt.target.value);
-      this._flatpickrEndDate;
     });
 
     element.querySelector(`.event__input--price`).addEventListener(`change`, (evt) => {
@@ -203,20 +160,15 @@ class EventEditorComponent extends AbstractSmartComponent {
   }
 
   removeElement() {
- /*   if (this._flatpickr) {
-      this._flatpickr.destroy();
-      this._flatpickr = null;
-    }*/
-
     super.removeElement();
   }
 
   getFormData() {
-    const form =  this._mode === Mode.ADD ? this.getElement() : this.getElement().querySelector(`form`);
+    const form = this._mode === Mode.ADD ? this.getElement() : this.getElement().querySelector(`form`);
     const formData = new FormData(form);
     const checkedOffersLabels = [
       ...document.querySelectorAll(`.event__offer-checkbox[checked=""]+label[for^="event-offer"]`)
-    ]; console.log('checkedOffersLabels',checkedOffersLabels);
+    ];
 
     return {
       id: this._events.id,
@@ -232,53 +184,36 @@ class EventEditorComponent extends AbstractSmartComponent {
       isFavorite: this._events.isFavorite
     };
   }
-/*_applyFlatpickr() {
+
+  _removeFlatpickr() {
+    if (this._flatpickr.START && this._flatpickr.END) {
+      this._flatpickr.START.destroy();
+      this._flatpickr.END.destroy();
+      this._flatpickr.START = null;
+      this._flatpickr.END = null;
+    }
+  }
+
+  _applyFlatpickr() {
     this._removeFlatpickr();
 
     const [startDateInput, endDateInput] = Array.from(this.getElement().querySelectorAll(`.event__input--time`));
-    this._flatpickr.START = this._createFlatpickrInput(startDateInput, this._tripCard.startDate);
-    this._flatpickr.END = this._createFlatpickrInput(endDateInput, this._tripCard.endDate);
+    this._flatpickr.START = this._createFlatpickrInput(startDateInput, this._events.startDate);
+    this._flatpickr.END = this._createFlatpickrInput(endDateInput, this._events.endDate);
   }
-*/  
-  
-  applyFlatpickr() {
-    if (this._flatpickr) {
-      Object.values(this._flatpickr).forEach((it) => it.destroy());
-      this._flatpickr = null;
-    }
 
-    const [startDateInput, endDateInput] = Array.from(this.getElement().querySelectorAll(`.event__input--time`));
-
-    this._flatpickr = Object.assign({}, {START: {}, END: {}});
-
-    this._flatpickr.START = flatpickr(startDateInput, {
-      enableTime: true,
-      allowInput: true,
-      defaultDate: this._events.startDate,
-      formatDate: formatDateTime
-    });
-
-    this._flatpickr.END = flatpickr(endDateInput, {
-      enableTime: true,
-      allowInput: true,
-      defaultDate: this._events.endDate,
-      formatDate: formatDateTime
-    });
-  }
-}
-
- export default EventEditorComponent;
-/*_setTimeValidation() {
+  _setTimeValidation() {
     const startDateInput = this.getElement().querySelector(`input[name=event-start-time]`);
-    if (getDatesDiff(this._tripCard.startDate, this._tripCard.endDate) > 0) {
+    if (getDatesDiff(this._events.startDate, this._events.endDate) > 0) {
       startDateInput.setCustomValidity(`The start time should be earlier than the end time`);
       this.getElement().querySelector(`.event__save-btn`).disabled = true;
     } else {
       startDateInput.setCustomValidity(``);
       this.getElement().querySelector(`.event__save-btn`).disabled = false;
     }
-  } 
- _createFlatpickrInput(node, date) {
+  }
+
+  _createFlatpickrInput(node, date) {
     return flatpickr(node, {
       allowInput: true,
       enableTime: true,
@@ -286,17 +221,19 @@ class EventEditorComponent extends AbstractSmartComponent {
       dateFormat: `d/m/Y H:i`,
       onValueUpdate: (pickerDate) => {
         if (node.name === `event-start-time`) {
-          this._tripCard = Object.assign({}, this._tripCard,
+          this._events = Object.assign({}, this._events,
               {startDate: pickerDate[0]}
           );
         } else {
-          this._tripCard = Object.assign({}, this._tripCard,
+          this._events = Object.assign({}, this._events,
               {endDate: pickerDate[0]}
           );
         }
         this._setTimeValidation();
       }
     });
-  }*/
-  
-   export {getDates};
+  }
+}
+
+export default EventEditorComponent;
+export {getDates};

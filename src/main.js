@@ -62,7 +62,6 @@ Promise.all([api.getPoints(), api.getDestinations(), api.getOffers()]).then(([po
       addEventButtonComponent.hide();
     }
   });
-//  console.log(eventsModel.setEvents(points));
   tripInfoController.render();
   filterController.render();
   statsController.render();

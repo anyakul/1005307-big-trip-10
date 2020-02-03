@@ -1,4 +1,3 @@
-import {FilterType} from '../components/event-filter';
 import {SortType} from '../components/event-sorter';
 import {formatDuration, isSameDay} from '../utils/date';
 import {getEventsByFilter} from '../utils/filter';
@@ -22,7 +21,7 @@ export default class EventsModel {
     this._activeSortType = SortType.EVENT;
   }
 
-  getEvents() {                                         //    console.log('getEventsByFilter=',getEventsByFilter(this._events, this._activeFilterType));
+  getEvents() {
     return getEventsByFilter(this._events, this._activeFilterType);
   }
 
@@ -86,7 +85,7 @@ export default class EventsModel {
   }
 
   updateEvent(id, eventItem) {
-    const index = this._getEventById(id);  //console.log('index', this._getEventById(id));
+    const index = this._getEventById(id);
     if (index === -1) {
       return false;
     }
@@ -106,7 +105,7 @@ export default class EventsModel {
     handlers.forEach((handler) => handler());
   }
 
-  _getEventById(id) { // console.log('this._events', this._events);
+  _getEventById(id) {
     return this._events.findIndex((eventItem) => eventItem.id === id);
   }
 

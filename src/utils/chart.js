@@ -60,8 +60,8 @@ const makeChartData = ({labels, values}) => ({
   }],
 });
 
-const makeChart = (element, options = {}) => 
-  new Chart(element, makeOptions(options))
+const makeChart = (element, options = {}) =>
+  new Chart(element, makeOptions(options));
 
 export {
   makeChartData,
