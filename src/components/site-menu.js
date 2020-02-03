@@ -54,7 +54,6 @@ class SiteMenuComponent extends AbstractSmartComponent {
     }
 
     this._activeTab = menuTab;
-    this.rerender();
     this._onTabChange(menuTab);
   }
 }
