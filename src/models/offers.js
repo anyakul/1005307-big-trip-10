@@ -1,14 +1,14 @@
 class Offers {
   constructor() {
-    this.offers = [];
+    this._offers = [];
   }
 
   setOffers(offers) {
-    this.offers = offers;
+    this._offers = offers;
   }
 
   getOffersByType(type) {
-    const {offers = []} = this.offers
+    const {offers = []} = this._offers
       .find((it) => it.type === type);
 
     return offers;
