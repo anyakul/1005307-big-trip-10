@@ -1,4 +1,3 @@
-import {formatDuration, isSameDay} from '../utils/date';
 import {FilterType} from '../components/event-filter';
 import {getEventsByFilter} from '../utils/filter';
 

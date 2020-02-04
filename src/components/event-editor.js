@@ -42,17 +42,16 @@ class EventEditorComponent extends AbstractSmartComponent {
   }
 
   getTemplate() {
-    const {type, destination} = this._event;
+    const {destination} = this._event;
 
     const template = this._mode === Mode.ADD
       ? createEventEditorAddTemplate
       : createEventEditorEditTemplate;
 
-    return template(
-      this._event,
-      this._getOffers(),
-      this._destinationsModel.getDestinationByName(destination.name),
-      this._destinationsModel.getAll(),
+    return template(this._event,
+        this._getOffers(),
+        this._destinationsModel.getDestinationByName(destination.name),
+        this._destinationsModel.getAll()
     );
   }
 
@@ -81,7 +80,7 @@ class EventEditorComponent extends AbstractSmartComponent {
       this.getElement().querySelector(`form`).addEventListener(`submit`, handler);
     }
   }
-  
+
   setOnDelete(handler) {
     this._onDelete = handler;
 
@@ -145,23 +144,23 @@ class EventEditorComponent extends AbstractSmartComponent {
     const formData = new FormData(form);
 
     const destination = this._destinationsModel
-      .getDestinationByName(formData.get(`event-destination`))
+      .getDestinationByName(formData.get(`event-destination`));
 
     const offers = Array.from(checkedOffers)
       .map(({name, value}) => ({title: name, price: +value}));
 
     return {
-      id: this._event.id,
-      type: formData.get(`event-type`),
-      base_price: +formData.get(`event-price`),
-      date_from: formData.get(`event-start-time`),
-      date_to: formData.get(`event-end-time`),
-      is_favorite: formData.has(`event-favorite`),
+      'id': this._event.id,
+      'type': formData.get(`event-type`),
+      'base_price': +formData.get(`event-price`),
+      'date_from': formData.get(`event-start-time`),
+      'date_to': formData.get(`event-end-time`),
+      'is_favorite': formData.has(`event-favorite`),
       destination,
       offers,
-    }
+    };
   }
-  
+
   _getOffers() {
     const {type, offers} = this._event;
 
@@ -223,7 +222,7 @@ class EventEditorComponent extends AbstractSmartComponent {
       },
     });
 
-    this._flatpickrEndDate.set(`minDate`, startDate)
+    this._flatpickrEndDate.set(`minDate`, startDate);
     this._flatpickrStartDate.set(`maxDate`, endDate);
   }
 
@@ -241,4 +240,4 @@ class EventEditorComponent extends AbstractSmartComponent {
 }
 
 export default EventEditorComponent;
-export {Mode, ActionType}
+export {Mode, ActionType};

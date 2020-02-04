@@ -45,7 +45,7 @@ const getEventDates = (events) => {
     .sort((a, b) => a - b);
 
   return getUniqueDays(startDates);
-}
+};
 
 class TripController {
   constructor(container, eventsModel, destinationsModel, offersModel, api) {
@@ -100,15 +100,15 @@ class TripController {
     this._addEventButtonComponent.setDisabled(true);
 
     const controller = new EventController(
-      this._tripDaysListElement,
-      this._dispatch,
+        this._tripDaysListElement,
+        this._dispatch
     );
 
     controller.render(
-      createNewEvent(nanoid()),
-      this._destinationsModel,
-      this._offersModel,
-      Mode.ADD,
+        createNewEvent(nanoid()),
+        this._destinationsModel,
+        this._offersModel,
+        Mode.ADD
     );
 
     this._eventControllers.push(controller);
@@ -116,8 +116,8 @@ class TripController {
 
   _getEvents() {
     return getEventsBySorter(
-      this._eventsModel.getEvents(),
-      this._sortType
+        this._eventsModel.getEvents(),
+        this._sortType
     );
   }
 
@@ -131,15 +131,15 @@ class TripController {
   _renderEvents(events, container) {
     return events.map((eventItem) => {
       const controller = new EventController(
-        container,
-        this._dispatch,
+          container,
+          this._dispatch
       );
 
       controller.render(
-        eventItem,
-        this._destinationsModel,
-        this._offersModel,
-        Mode.EDIT
+          eventItem,
+          this._destinationsModel,
+          this._offersModel,
+          Mode.EDIT
       );
 
       return controller;
@@ -282,7 +282,7 @@ class TripController {
         controller.destroy();
         this._onSortTypeChange(this._sortType);
       })
-      .catch((err) => {
+      .catch(() => {
         controller.shake();
       });
   }
@@ -290,7 +290,6 @@ class TripController {
   _handleDeleteAction(controller, evenItem) {
     this._api.deletePoint(evenItem)
       .then((isSuccess) => {
-        console.log('isSuccess', isSuccess);
         if (isSuccess) {
           this._eventsModel.removeEvent(evenItem);
 

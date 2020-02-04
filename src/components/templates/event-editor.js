@@ -70,7 +70,7 @@ const createPriceTemplate = ({id, price}) => (
   </div>`
 );
 
-const createScheduleTemplate = ({id, startDate, endDate}) => (
+const createScheduleTemplate = ({id, endDate}) => (
   `<div class="event__field-group event__field-group--time">
     <label class="visually-hidden" for="event-start-time-${id}">From</label>
     <input

@@ -15,7 +15,7 @@ export const getEventsBySorter = (events, sortType) => {
       return getSortedByEvent(events);
     case SortType.TIME:
       return getSortedByTime(events);
-    case SortType.PRICE:  
+    case SortType.PRICE:
       return getSortedByPrice(events);
   }
 

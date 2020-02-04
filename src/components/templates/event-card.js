@@ -11,17 +11,17 @@ const truncateOffers = (offers) =>
 
 const createTypeTemplate = ({type}) => (
   `<div class="event__type">
-    <img 
-      class="event__type-icon" 
-      width="42" 
-      height="42" 
-      src="img/icons/${type}.png" 
+    <img
+      class="event__type-icon"
+      width="42"
+      height="42"
+      src="img/icons/${type}.png"
       alt="Event type icon"
     >
   </div>`
 );
 
-const createTitleTemplate = ({ type, destination }) => (
+const createTitleTemplate = ({type, destination}) => (
   `<h3 class="event__title">${formatTypeWithPreposition(type)} ${destination.name}</h3>`
 );
 
