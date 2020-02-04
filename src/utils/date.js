@@ -25,23 +25,26 @@ const getDuration = (ms) => {
 };
 
 const isSameDay = (firstDate, secondDate) => {
-  return moment(firstDate).isSame(secondDate, `day`) && moment(firstDate).isSame(secondDate, `month`) && moment(firstDate).isSame(secondDate, `year`);
+  const date = moment(firstDate);
+
+  return date.isSame(secondDate, `day`)
+    && date.isSame(secondDate, `month`)
+    && date.isSame(secondDate, `year`);
 };
 
 const formatDuration = (ms) => formatDurationTime(getDuration(ms));
 const formatTime = (date) => moment(date).format(`HH:mm`);
 const formatDate = (date) => moment(date).format(`DD:MM:YY`);
 const formatDateTime = (date) => moment(date).format(`DD/MM/YY HH:mm`);
-
-const formatMonthDay = (date) => moment(date).format(`MMM DD`);
+const formatMonthDay = (date) => moment(date).format(`DD MMM`);
 
 export {
   formatDate,
   formatDateTime,
   formatDuration,
-  formatTime,
   formatMonthDay,
-  isSameDay,
-  getDuration,
+  formatTime,
   getDatesDiff,
+  getDuration,
+  isSameDay,
 };

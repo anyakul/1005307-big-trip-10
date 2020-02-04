@@ -1,7 +1,7 @@
 import {SortType} from '../components/event-sorter';
 
 const getSortedByEvent = ([...events]) => events
-  .sort((a, b) => b.startDate - a.startDate);
+  .sort((a, b) => a.startDate - b.startDate);
 
 const getSortedByTime = ([...events]) => events
   .sort((a, b) => (b.endDate - b.startDate) - (a.endDate - a.startDate));

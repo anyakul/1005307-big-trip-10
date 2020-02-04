@@ -1,6 +1,5 @@
 import TripInfoMainComponent from '../components/trip-info-main';
 import TripInfoCostComponent from '../components/trip-info-cost';
-import {calcTotalPrice} from '../utils/price';
 import {render} from '../utils/render';
 
 class TripInfoController {
@@ -17,20 +16,24 @@ class TripInfoController {
   }
 
   render() {
-    this._events = this._eventsModel.getEvents();
-    const price = calcTotalPrice(this._events);
+    this._tripInfoMainComponent = new TripInfoMainComponent();
+    this._tripInfoCostComponent = new TripInfoCostComponent();
 
-    this._tripInfoMainComponent = new TripInfoMainComponent(this._events);
-    this._tripInfoCostComponent = new TripInfoCostComponent(price);
+    this._update();
 
     render(this._container, this._tripInfoMainComponent.getElement());
     render(this._container, this._tripInfoCostComponent.getElement());
   }
 
+  _update() {
+    const events = this._eventsModel.getEventsAll();
+
+    this._tripInfoMainComponent.update(events);
+    this._tripInfoCostComponent.update(events);
+  }
+
   _onDataChange() {
-    const price = calcTotalPrice(this._events);
-    this._tripInfoCostComponent.update(price);
-    this._tripInfoMainComponent.update(this._events);
+    this._update();
   }
 }
 
