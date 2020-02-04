@@ -28,7 +28,7 @@ class SiteMenuComponent extends AbstractSmartComponent {
     return createMenuTemplate(createMenuTabs(this._activeTab));
   }
 
-  recoveryListeners() {
+  _recoveryListeners() {
     this._subscribeOnEvents();
   }
 
@@ -54,7 +54,7 @@ class SiteMenuComponent extends AbstractSmartComponent {
     }
 
     this._activeTab = menuTab;
-    //  this.rerender();
+    this.rerender();
     this._onTabChange(menuTab);
   }
 }

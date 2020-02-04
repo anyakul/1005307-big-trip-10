@@ -1,11 +1,10 @@
 class Offers {
   constructor() {
-    this._offers = [];
+    this._offer = [];
   }
 
   setOffers(offers) {
-    this._offers = offers
-      .map(({type, offers}) => ({type, offers, isChecked: false}));
+    this._offers = offers;
   }
 
   getOffersByType(type) {

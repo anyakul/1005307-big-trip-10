@@ -276,7 +276,7 @@ class TripController {
 
   _handleCreateAction(controller, newEvent) {
     return this._api.createPoint(newEvent)
-      .then((newEvent) => {
+      .then(() => {
         this._eventsModel.addEvent(newEvent);
 
         controller.destroy();
@@ -287,11 +287,11 @@ class TripController {
       });
   }
 
-  _handleDeleteAction(controller, evenItem) {
-    this._api.deletePoint(evenItem)
+  _handleDeleteAction(controller, eventItem) {
+    this._api.deletePoint(eventItem)
       .then((isSuccess) => {
         if (isSuccess) {
-          this._eventsModel.removeEvent(evenItem);
+          this._eventsModel.removeEvent(eventItem);
 
           controller.destroy();
           this._onSortTypeChange(this._sortType);
