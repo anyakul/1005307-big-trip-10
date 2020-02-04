@@ -2,17 +2,6 @@ import {formatDuration, isSameDay} from '../utils/date';
 import {FilterType} from '../components/event-filter';
 import {getEventsByFilter} from '../utils/filter';
 
-const getUniqueDays = (days) => {
-  const uniqueDays = [];
-  days.forEach((day, i) => {
-    if (i === 0 || uniqueDays.every((it) => !isSameDay(it, day))) {
-      uniqueDays.push(day);
-    }
-  });
-
-  return uniqueDays;
-};
-
 export default class EventsModel {
   constructor() {
     this._events = [];
@@ -34,10 +23,6 @@ export default class EventsModel {
 
   getEventsAll() {
     return this._events;
-  }
-
-  getPointsDates(points) {
-    return this._getPointsDates(points);
   }
 
   setEvents(events) {
@@ -107,10 +92,5 @@ export default class EventsModel {
 
   _getEventById(id) {
     return this._events.findIndex((eventItem) => eventItem.id === id);
-  }
-
-  _getPointsDates(points) {
-    const startDates = points.map((point) => point.startDate).sort((a, b) => formatDuration(a, b));
-    return getUniqueDays(startDates);
   }
 }

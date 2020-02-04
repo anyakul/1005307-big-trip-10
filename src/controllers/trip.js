@@ -28,6 +28,25 @@ const createNewEvent = (id) => ({
   isFavorite: false
 });
 
+const getUniqueDays = (days) => {
+  const uniqueDays = [];
+  days.forEach((day, i) => {
+    if (i === 0 || uniqueDays.every((it) => !isSameDay(it, day))) {
+      uniqueDays.push(day);
+    }
+  });
+
+  return uniqueDays;
+};
+
+const getEventDates = (events) => {
+  const startDates = events
+    .map(({startDate}) => startDate)
+    .sort((a, b) => a - b);
+
+  return getUniqueDays(startDates);
+}
+
 class TripController {
   constructor(container, eventsModel, destinationsModel, offersModel, api) {
     this._container = container;
@@ -141,7 +160,7 @@ class TripController {
   }
 
   _renderSortEventsByDefault(component, events) {
-    const eventsDates = this._eventsModel.getPointsDates(events);
+    const eventsDates = getEventDates(events);
 
     render(this._container, this._tripDaysListElement);
 
@@ -264,21 +283,6 @@ class TripController {
         this._onSortTypeChange(this._sortType);
       })
       .catch((err) => {
-        controller.shake();
-      });
-  }
-
-  _handleUpdateAction(controller, evenItem) {
-    this._api.deletePoint(evenItem)
-      .then((isSuccess) => {
-        if (isSuccess) {
-          this._eventsModel.removeEvent(evenItem);
-
-          controller.destroy();
-          this._onSortTypeChange(this._sortType);
-        }
-      })
-      .catch(() => {
         controller.shake();
       });
   }
