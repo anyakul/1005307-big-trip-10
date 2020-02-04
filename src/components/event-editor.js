@@ -210,15 +210,15 @@ class EventEditorComponent extends AbstractSmartComponent {
 
     this._flatpickrStartDate = createFlatpickr(startDateInput, {
       defaultDate: startDate.toISOString(),
-      onClose: () => {
-        this._flatpickrEndDate.set(`minDate`, startDate);
+      onClose: ([dateStart]) => {
+        this._flatpickrEndDate.set(`minDate`, dateStart);
       },
     });
 
     this._flatpickrEndDate = createFlatpickr(endDateInput, {
       defaultDate: endDate.toISOString(),
-      onClose: ([date]) => {
-        this._flatpickrStartDate.set(`maxDate`, date);
+      onClose: ([dateEnd]) => {
+        this._flatpickrStartDate.set(`maxDate`, dateEnd);
       },
     });
 
