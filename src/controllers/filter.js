@@ -8,11 +8,7 @@ class FilterController {
     this._activeFilterType = FilterType.EVERYTHING;
     this._filterComponent = null;
     this._tripFilters = this._container.querySelector(`.trip-filters`);
-
-    this._onDataChange = this._onDataChange.bind(this);
     this._onFilterChange = this._onFilterChange.bind(this);
-
-    this._eventsModel.addOnDataChange(this._onDataChange);
   }
 
   render() {
@@ -32,10 +28,6 @@ class FilterController {
   _onFilterChange(filterType) {
     this._eventsModel.setFilter(filterType);
     this._activeFilterType = filterType;
-  }
-
-  _onDataChange() {
-    this.render();
   }
 
   show() {

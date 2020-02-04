@@ -1,19 +1,13 @@
-import moment from 'moment';
-
-const parseDateFromISOString = (date) => {
-  return moment(date).format();
-};
-
 class Event {
-  constructor(data) {
-    this.id = +data[`id`];
-    this.type = data[`type`];
-    this.startDate = new Date(data[`date_from`]);
-    this.endDate = new Date(data[`date_to`]);
-    this.destination = data[`destination`];
-    this.price = data[`base_price`];
-    this.offers = data[`offers`];
-    this.isFavorite = data[`is_favorite`];
+  constructor(eventItem) {
+    this.id = +eventItem[`id`];
+    this.type = eventItem[`type`];
+    this.startDate = new Date(eventItem[`date_from`]);
+    this.endDate = new Date(eventItem[`date_to`]);
+    this.destination = eventItem[`destination`];
+    this.price = eventItem[`base_price`];
+    this.offers = eventItem[`offers`];
+    this.isFavorite = eventItem[`is_favorite`];
   }
 
   toRAW() {
@@ -29,16 +23,16 @@ class Event {
     };
   }
 
-  static parseEvent(data) {
-    return new Event(data);
+  static parseEvent(eventItem) {
+    return new Event(eventItem);
   }
 
-  static parseEvents(data) {
-    return data.map(Event.parseEvent);
+  static parseEvents(eventItem) {
+    return eventItem.map(Event.parseEvent);
   }
 
-  static clone(data) {
-    return new Event(data.toRAW());
+  static clone(eventItem) {
+    return new Event(eventItem.toRAW());
   }
 }
 

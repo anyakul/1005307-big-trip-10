@@ -1,15 +1,16 @@
+const getEmptyDestination = () => ({
+  name: ``,
+  description: ``,
+  pictures: []
+});
+
 class DestinationsModel {
   constructor() {
     this._destinations = [];
-    this._defaultDestination = {
-      name: ``,
-      description: ``,
-      pictures: []
-    };
   }
 
-  setDestinations(items) {
-    this._destinations = items.map((it) => Object.assign({}, it));
+  setDestinations(destinations) {
+    this._destinations = destinations.map((it) => Object.assign({}, it));
   }
 
   getAll() {
@@ -17,10 +18,9 @@ class DestinationsModel {
   }
 
   getDestinationByName(name) {
-    if (name === ``) {
-      return this._defaultDestination;
-    }
-    return this._destinations.find((it) => it.name === name);
+    return name === ``
+      ? getEmptyDestination()
+      : this._destinations.find((it) => it.name === name);
   }
 }
 

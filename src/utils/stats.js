@@ -14,7 +14,7 @@ const createEmptyStats = (types) => types
 const reduceStats = (stats, {type, price, startDate, endDate}) => {
   const stat = stats[type];
 
-  stat.time = endDate - startDate;
+  stat.time += endDate - startDate;
   stat.used += 1;
   stat.price += price;
 

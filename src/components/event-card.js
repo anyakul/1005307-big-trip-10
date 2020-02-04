@@ -2,13 +2,14 @@ import AbstractComponent from './abstract';
 import {createEventCardTemplate} from './templates/event-card';
 
 class EventCardComponent extends AbstractComponent {
-  constructor(events) {
+  constructor(eventItem) {
     super();
-    this._events = events;
+
+    this._eventItem = eventItem;
   }
 
   getTemplate() {
-    return createEventCardTemplate(this._events);
+    return createEventCardTemplate(this._eventItem);
   }
 
   setOnRollupButtonClick(handler) {

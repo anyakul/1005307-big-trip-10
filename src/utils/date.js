@@ -1,9 +1,12 @@
 import moment, {duration} from 'moment';
 
-const formatTimeValue = ([format, value]) => 
+const formatTimeValue = ([format, value]) =>
   `${String(value).padStart(2, `0`)}${format}`;
 
-const formatDurationTime = (duration) => 
+const getDatesDiff = (firstDate, secondDate) => {
+  return moment(firstDate) - moment(secondDate);
+};
+const formatDurationTime = (duration) =>
   Object.entries(duration)
     .map(formatTimeValue)
     .join(` `);
@@ -18,11 +21,7 @@ const getDuration = (ms) => {
     return {H, M};
   }
 
-  return {M};
-};
-
-const getDatesDiff = (a, b) => {
-  return moment(a) - moment(b);
+  return M > 0 ? {M} : ``;
 };
 
 const isSameDay = (firstDate, secondDate) => {
@@ -42,7 +41,7 @@ export {
   formatDuration,
   formatTime,
   formatMonthDay,
-  getDatesDiff,
   isSameDay,
   getDuration,
+  getDatesDiff,
 };

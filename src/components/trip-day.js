@@ -1,5 +1,13 @@
 import AbstractComponent from './abstract';
 import {createTripDayTemplate} from './templates/trip-day';
+import {formatDate, formatMonthDay} from '../utils/date';
+
+const getDays = (day) => {
+  return {
+    tripDay: formatMonthDay(day),
+    datetime: formatDate(day),
+  };
+};
 
 class TripDayComponent extends AbstractComponent {
   constructor(day, events, count) {
@@ -15,3 +23,4 @@ class TripDayComponent extends AbstractComponent {
 }
 
 export default TripDayComponent;
+export {getDays};
