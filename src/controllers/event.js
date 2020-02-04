@@ -30,16 +30,16 @@ class EventController {
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
   }
 
-  render(eventItem, destinationsModel, offersModel, mode = Mode.VIEW) {
+  render(eventItem, destinationsModel, offersModel, mode = Mode.EDIT) {
     const oldEventCardComponent = this._eventCardComponent;
     const oldEventEditorComponent = this._eventEditorComponent;
 
     this._eventCardComponent = new EventCardComponent(eventItem);
     this._eventEditorComponent = new EventEditorComponent(
-      eventItem,
-      destinationsModel,
-      offersModel,
-      mode,
+        eventItem,
+        destinationsModel,
+        offersModel,
+        mode
     );
 
     this._subscribeOnEvents(eventItem, mode);
@@ -87,7 +87,7 @@ class EventController {
     this._toggleShake(true);
 
     setTimeout(() => {
-      this._toggleShake(false)
+      this._toggleShake(false);
 
       this._eventEditorComponent.setState({
         saveButtonText: SaveButtonText.DEFAULT,
@@ -106,7 +106,7 @@ class EventController {
     });
 
     this._eventEditorComponent.setOnCancel(() => {
-      this._dispatch(this, {type: ActionType.CANCEL})
+      this._dispatch(this, {type: ActionType.CANCEL});
     });
 
     this._eventEditorComponent.setOnDelete((evt) => {
@@ -119,7 +119,7 @@ class EventController {
       this._dispatch(this, {
         type: ActionType.DELETE,
         payload: eventItem.id,
-      })
+      });
     });
 
     this._eventEditorComponent.setOnSave((evt) => {
@@ -135,7 +135,7 @@ class EventController {
       this._dispatch(this, {
         type: mode === Mode.EDIT ? ActionType.UPDATE : ActionType.CREATE,
         payload: newEvent,
-      })
+      });
     });
 
     this._eventEditorComponent.setOnFavoriteChange((evt) => {
@@ -145,7 +145,7 @@ class EventController {
       this._dispatch(this, {
         type: ActionType.ADD_TO_FAVORITE,
         payload: newEvent,
-      })
+      });
     });
   }
 
@@ -157,7 +157,7 @@ class EventController {
       this._eventCardComponent.getElement(),
     ].forEach((element) => {
       element.style.animation = animation;
-    })
+    });
   }
 
   _replaceViewToEdit() {
@@ -180,7 +180,7 @@ class EventController {
   _onEscKeyDown(evt) {
     if (isEscKey(evt)) {
       if (this._mode === Mode.ADD) {
-        this._dispatch(this, {type: ActionType.CANCEL})
+        this._dispatch(this, {type: ActionType.CANCEL});
       }
 
       this.setDefaultView();

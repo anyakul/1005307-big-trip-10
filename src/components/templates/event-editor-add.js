@@ -1,9 +1,7 @@
 import {
-  createDestinationSectionTemplate,
   createDestinationTemplate,
   createDetailsTemplate,
   createEventListTemplate,
-  createOffersTemplate,
   createPriceTemplate,
   createSaveButton,
   createScheduleTemplate,

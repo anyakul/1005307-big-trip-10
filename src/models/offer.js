@@ -1,7 +1,10 @@
+const normalizeOffer = ({title, price}) =>
+  ({title, price, isChecked: false});
+
 class Offer {
   constructor(offer) {
     this.type = offer[`type`];
-    this.offers = offer[`offers`];
+    this.offers = offer[`offers`].map(normalizeOffer);
   }
 
   static parseOffer(offer) {

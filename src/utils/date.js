@@ -6,8 +6,8 @@ const formatTimeValue = ([format, value]) =>
 const getDatesDiff = (firstDate, secondDate) => {
   return moment(firstDate) - moment(secondDate);
 };
-const formatDurationTime = (duration) =>
-  Object.entries(duration)
+const formatDurationTime = (durations) =>
+  Object.entries(durations)
     .map(formatTimeValue)
     .join(` `);
 

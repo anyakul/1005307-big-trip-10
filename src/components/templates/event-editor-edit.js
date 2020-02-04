@@ -1,10 +1,8 @@
 import {
-  createDestinationSectionTemplate,
   createDestinationTemplate,
   createDetailsTemplate,
   createEventListTemplate,
   createFavoriteButtonTemplate,
-  createOffersTemplate,
   createPriceTemplate,
   createSaveButton,
   createScheduleTemplate,

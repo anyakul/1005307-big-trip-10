@@ -78,7 +78,7 @@ const createScheduleTemplate = ({id, startDate, endDate}) => (
       id="event-start-time-${id}"
       type="text"
       name="event-start-time"
-      value="${formatDateTime(endDate)}"
+      value="${formatDateTime(startDate)}"
     >
     &mdash;
     <label class="visually-hidden" for="event-end-time-${id}">To</label>

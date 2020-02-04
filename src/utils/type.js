@@ -16,6 +16,6 @@ const prepositionTypes = new Map([
 ]);
 
 const formatTypeWithPreposition = (type) =>
-  prepositionTypes.get(type) || ``
+  prepositionTypes.get(type) || ``;
 
-export {formatTypeWithPreposition}
+export {formatTypeWithPreposition};
