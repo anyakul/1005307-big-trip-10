@@ -120,6 +120,18 @@ class EventEditorComponent extends AbstractSmartComponent {
     super.removeElement();
   }
 
+  setState(state) {
+    const element = this.getElement();
+    const {saveButtonText, deleteButtonText} = state;
+
+    if (saveButtonText) {
+      element.querySelector(`.event__save-btn`).textContent = saveButtonText;
+    }
+    if (deleteButtonText) {
+      element.querySelector(`.event__reset-btn`).textContent = deleteButtonText;
+    }
+  }
+
   getData() {
     const form = this._mode === Mode.NEW
       ? this.getElement()

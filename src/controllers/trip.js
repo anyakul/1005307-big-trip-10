@@ -61,7 +61,7 @@ class TripController {
   }
 
   renderAddEventsButton(addEventButtonComponent) {
-    this._onViewChange();
+   // this._onViewChange();
 
     this._addEventButtonComponent = addEventButtonComponent;
     this._addEventButtonComponent.setDisabled(true);
@@ -74,7 +74,7 @@ class TripController {
     );
 
     this._addEventFormController.render(
-      eventItem,
+      this._eventsModel,
       this._destinationsModel,
       this._offersModel,
       Mode.EDIT

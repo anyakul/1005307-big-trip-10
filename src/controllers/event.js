@@ -7,6 +7,16 @@ import Event from '../models/event';
 
 const SHAKE_ANIMATION_TIMEOUT = 600;
 
+const DeleteButtonText = {
+  DEFAULT: `Delete`,
+  PENDING: `Deleting...`
+};
+
+const SaveButtonText = {
+  DEFAULT: `Save`,
+  PENDING: `Saving...`,
+};
+
 class EventController {
   constructor(container, dispatch) {
     this._container = container;
@@ -47,6 +57,10 @@ class EventController {
     this._eventEditorComponent.setOnDelete((evt) => {
       evt.preventDefault();
 
+      this._eventEditorComponent.setState({
+        deleteButtonText: DeleteButtonText.PENDING,
+      });
+
       this._dispatch(this, {
         type: ActionType.DELETE,
         payload: eventItem.id,
@@ -55,6 +69,10 @@ class EventController {
 
     this._eventEditorComponent.setOnSubmit((evt) => {
       evt.preventDefault();
+
+      this._eventEditorComponent.setState({
+        saveButtonText: SaveButtonText.PENDING,
+      });
 
       const data = this._eventEditorComponent.getData();
       const newEvent = Event.parseEvent(data);
@@ -99,7 +117,14 @@ class EventController {
   shake() {
     this._toggleShake(true);
 
-    setTimeout(this._toggleShake.bind(this), SHAKE_ANIMATION_TIMEOUT, false);
+    setTimeout(() => {
+      this._toggleShake(false)
+
+      this._eventEditorComponent.setState({
+        saveButtonText: SaveButtonText.DEFAULT,
+        deleteButtonText: DeleteButtonText.DEFAULT,
+      });
+    }, SHAKE_ANIMATION_TIMEOUT);
   }
 
   _toggleShake(enable) {

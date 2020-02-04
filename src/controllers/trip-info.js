@@ -17,10 +17,10 @@ class TripInfoController {
   }
 
   render() {
-    const events = this._eventsModel.getEvents();
-    const price = calcTotalPrice(events);
+    this._events = this._eventsModel.getEvents();
+    const price = calcTotalPrice(this._events);
 
-    this._tripInfoMainComponent = new TripInfoMainComponent(events);
+    this._tripInfoMainComponent = new TripInfoMainComponent(this._events);
     this._tripInfoCostComponent = new TripInfoCostComponent(price);
 
     render(this._container, this._tripInfoMainComponent.getElement());
@@ -28,9 +28,9 @@ class TripInfoController {
   }
 
   _onDataChange() {
-    const price = calcTotalPrice(this._eventsModel.getEvents());
+    const price = calcTotalPrice(this._events);
     this._tripInfoCostComponent.update(price);
-    this._tripInfoMainComponent.update(this._eventsModel.getEvents());
+    this._tripInfoMainComponent.update(this._events);
   }
 }
 
