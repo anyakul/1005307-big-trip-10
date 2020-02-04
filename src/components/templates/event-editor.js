@@ -175,14 +175,27 @@ const createOffersTemplate = (offers) => (
   </section>`
 );
 
+const createDetailsTemplate = (destination, offers) => (
+  `<section class="event__details">
+    ${offers.length > 0 ? createOffersTemplate(offers) : ``}
+    ${createDestinationSectionTemplate(destination)}
+  </section>`
+);
+
+const createSaveButton = () => (
+  `<button class="event__save-btn btn btn--blue" type="submit">Save</button>`
+);
+
 export {
   createDestinationSectionTemplate,
   createDestinationTemplate,
+  createDetailsTemplate,
   createEventListTemplate,
   createFavoriteButtonTemplate,
   createOfferSelectorTemplates,
   createOffersTemplate,
   createPriceTemplate,
+  createSaveButton,
   createScheduleTemplate,
   createTypeTemplate,
 };

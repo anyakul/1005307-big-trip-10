@@ -1,19 +1,20 @@
 import AbstractSmartComponent from './abstract-smart';
 import {createEventEditorEditTemplate} from './templates/event-editor-edit';
-import {createEventEditorNewTemplate} from './templates/event-editor-new';
+import {createEventEditorAddTemplate} from './templates/event-editor-add';
 import {createFlatpickr} from '../utils/flatpickr';
 
 const Mode = {
-  NEW: `new`,
+  ADD: `add`,
   EDIT: `edit`,
   VIEW: `view`,
 };
 
 const ActionType = {
-  ADDED_TO_FAVORITE: `ADDED_TO_FAVORITE`,
-  CANCEL: `CANCEL`,
-  SUBMIT: `SUBMIT`,
+  CREATE: `CREATE`,
+  UPDATE: `UPDATE`,
   DELETE: `DELETE`,
+  CANCEL: `CANCEL`,
+  ADD_TO_FAVORITE: `ADD_TO_FAVORITE`,
 };
 
 const normalizeOffers = ({title, price}) =>
@@ -28,7 +29,7 @@ class EventEditorComponent extends AbstractSmartComponent {
     this._offersModel = offersModel;
     this._mode = mode;
 
-    this._onSubmit = null;
+    this._onSave = null;
     this._onDelete = null;
     this._onCancel = null;
     this._onFavoriteChange = null;
@@ -43,8 +44,8 @@ class EventEditorComponent extends AbstractSmartComponent {
   getTemplate() {
     const {type, destination} = this._event;
 
-    const template = this._mode === Mode.NEW
-      ? createEventEditorNewTemplate
+    const template = this._mode === Mode.ADD
+      ? createEventEditorAddTemplate
       : createEventEditorEditTemplate;
 
     return template(
@@ -58,8 +59,9 @@ class EventEditorComponent extends AbstractSmartComponent {
   _recoveryListeners() {
     this._subscribeOnEvents();
 
-    this.setOnSubmit(this._onSubmit);
+    this.setOnSave(this._onSave);
     this.setOnCancel(this._onCancel);
+    this.setOnDelete(this._onDelete);
     this.setOnFavoriteChange(this._onFavoriteChange);
     this.setOnRollupButtonClick(this._onRollupButtonClick);
   }
@@ -70,10 +72,10 @@ class EventEditorComponent extends AbstractSmartComponent {
     this._applyFlatpickr();
   }
 
-  setOnSubmit(handler) {
-    this._onSubmit = handler;
+  setOnSave(handler) {
+    this._onSave = handler;
 
-    if (this._mode === Mode.NEW) {
+    if (this._mode === Mode.ADD) {
       this.getElement().addEventListener(`submit`, handler);
     } else {
       this.getElement().querySelector(`form`).addEventListener(`submit`, handler);
@@ -91,7 +93,7 @@ class EventEditorComponent extends AbstractSmartComponent {
   setOnCancel(handler) {
     this._onCancel = handler;
 
-    if (this._mode === Mode.NEW) {
+    if (this._mode === Mode.ADD) {
       this.getElement().addEventListener(`reset`, handler);
     }
   }
@@ -133,7 +135,7 @@ class EventEditorComponent extends AbstractSmartComponent {
   }
 
   getData() {
-    const form = this._mode === Mode.NEW
+    const form = this._mode === Mode.ADD
       ? this.getElement()
       : this.getElement().querySelector(`form`);
 
@@ -186,7 +188,6 @@ class EventEditorComponent extends AbstractSmartComponent {
           offers: [],
         });
 
-        this._mode = Mode.EDIT;
         this.rerender();
       });
 

@@ -9,8 +9,24 @@ import TripDayComponent from '../components/trip-day';
 import {Mode, ActionType} from '../components/event-editor';
 
 import EventController from './event';
+import nanoid from 'nanoid';
 
 const HIDE_CLASS = `trip-events--hidden`;
+
+const createNewEvent = (id) => ({
+  id,
+  type: `sightseeing`,
+  startDate: new Date(),
+  endDate: new Date(),
+  destination: {
+    name: ``,
+    description: ``,
+    pictures: []
+  },
+  price: 0,
+  offers: [],
+  isFavorite: false
+});
 
 class TripController {
   constructor(container, eventsModel, destinationsModel, offersModel, api) {
@@ -61,26 +77,22 @@ class TripController {
   }
 
   renderAddEventsButton(addEventButtonComponent) {
-   // this._onViewChange();
-
     this._addEventButtonComponent = addEventButtonComponent;
     this._addEventButtonComponent.setDisabled(true);
 
-    this._newEventId = this._eventsModel.getEvents().length;
-
-    this._addEventFormController = new EventController(
+    const controller = new EventController(
       this._tripDaysListElement,
       this._dispatch,
     );
 
-    this._addEventFormController.render(
-      this._eventsModel,
+    controller.render(
+      createNewEvent(nanoid()),
       this._destinationsModel,
       this._offersModel,
-      Mode.EDIT
+      Mode.ADD,
     );
 
-    this._eventControllers.push(this._addEventFormController);
+    this._eventControllers.push(controller);
   }
 
   _getEvents() {
@@ -185,65 +197,106 @@ class TripController {
     const {type, payload} = action;
 
     switch (type) {
-      case ActionType.CANCEL:
-        controller.destroy();
-        break;
-
       case ActionType.EDIT:
         this._setDefaultViews();
         break;
-
-      case ActionType.ADDED_TO_FAVORITE:
-        return this._api.updatePoint(payload.id, payload)
-          .then((newEvent) => {
-            const isSuccess = this._eventsModel.updateEvent(newEvent.id, newEvent);
-
-            if (isSuccess) {
-              controller.render(
-                newEvent,
-                this._destinationsModel,
-                this._offersModel
-              );
-            }
-          })
-          .catch((err) => {
-            controller.shake();
-          });
-
+      case ActionType.UPDATE:
+        this._handleUpdateAction(controller, payload);
         break;
-        
-      case ActionType.SUBMIT:
-        return this._api.updatePoint(payload.id, payload)
-          .then((newEvent) => {
-            const isSuccess = this._eventsModel.updateEvent(newEvent.id, newEvent);
-
-            if (isSuccess) {
-              controller.destroy();
-              this._onSortTypeChange(this._sortType);
-            }
-          })
-          .catch((err) => {
-            controller.shake();
-          });
-        
+      case ActionType.CREATE:
+        this._handleCreateAction(controller, payload);
         break;
-        
       case ActionType.DELETE:
-        return this._api.deletePoint(payload)
-          .then((isSuccess) => {
-            if (isSuccess) {
-              this._eventsModel.removeEvent(payload);
-
-              controller.destroy();
-              this._onSortTypeChange(this._sortType);
-            }
-          })
-          .catch((err) => {
-            controller.shake();
-          });
-
+        this._handleDeleteAction(controller, payload);
+        break;
+      case ActionType.CANCEL:
+        this._handleCancelAction(controller);
+        break;
+      case ActionType.ADD_TO_FAVORITE:
+        this._handleAddToFavoriteAction(controller, payload);
         break;
     }
+  }
+
+  _handleAddToFavoriteAction(controller, eventItem) {
+    this._api.updatePoint(eventItem.id, eventItem)
+      .then((newEvent) => {
+        const isSuccess = this._eventsModel.updateEvent(newEvent.id, newEvent);
+
+        if (isSuccess) {
+          controller.render(newEvent, this._destinationsModel, this._offersModel);
+        }
+      })
+      .catch(() => {
+        controller.shake();
+      });
+  }
+
+  _handleCancelAction(controller) {
+    controller.destroy();
+
+    if (this._addEventButtonComponent !== null) {
+      this._addEventButtonComponent.setDisabled(false);
+    }
+  }
+
+  _handleUpdateAction(controller, eventItem) {
+    this._api.updatePoint(eventItem.id, eventItem)
+      .then((newEvent) => {
+        const isSuccess = this._eventsModel.updateEvent(newEvent.id, newEvent);
+
+        if (isSuccess) {
+          controller.destroy();
+          this._onSortTypeChange(this._sortType);
+        }
+      })
+      .catch(() => {
+        controller.shake();
+      });
+  }
+
+  _handleCreateAction(controller, newEvent) {
+    return this._api.createPoint(newEvent)
+      .then((newEvent) => {
+        this._eventsModel.addEvent(newEvent);
+
+        controller.destroy();
+        this._onSortTypeChange(this._sortType);
+      })
+      .catch((err) => {
+        controller.shake();
+      });
+  }
+
+  _handleUpdateAction(controller, evenItem) {
+    this._api.deletePoint(evenItem)
+      .then((isSuccess) => {
+        if (isSuccess) {
+          this._eventsModel.removeEvent(evenItem);
+
+          controller.destroy();
+          this._onSortTypeChange(this._sortType);
+        }
+      })
+      .catch(() => {
+        controller.shake();
+      });
+  }
+
+  _handleDeleteAction(controller, evenItem) {
+    this._api.deletePoint(evenItem)
+      .then((isSuccess) => {
+        console.log('isSuccess', isSuccess);
+        if (isSuccess) {
+          this._eventsModel.removeEvent(evenItem);
+
+          controller.destroy();
+          this._onSortTypeChange(this._sortType);
+        }
+      })
+      .catch(() => {
+        controller.shake();
+      });
   }
 
   _onFilterChange() {

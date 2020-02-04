@@ -1,12 +1,16 @@
 import {
+  createDestinationSectionTemplate,
   createDestinationTemplate,
+  createDetailsTemplate,
   createEventListTemplate,
+  createOffersTemplate,
   createPriceTemplate,
+  createSaveButton,
   createScheduleTemplate,
   createTypeTemplate,
 } from './event-editor';
 
-const createEventEditorNewTemplate = (eventItem, destinations) => (
+const createEventEditorAddTemplate = (eventItem, offers, destination, destinations) => (
   `<form class="trip-events__item event event--edit" action="#" method="post">
     <header class="event__header">
       <div class="event__type-wrapper">
@@ -16,10 +20,11 @@ const createEventEditorNewTemplate = (eventItem, destinations) => (
       ${createDestinationTemplate(eventItem, destinations)}
       ${createScheduleTemplate(eventItem)}
       ${createPriceTemplate(eventItem)}
-      <button class="event__save-btn btn btn--blue" type="submit">Save</button>
+      ${createSaveButton()}
       <button class="event__reset-btn" type="reset">Cancel</button>
     </header>
+    ${destination.name.length > 0 ? createDetailsTemplate(destination, offers) : ``}
   </form>`
 );
 
-export {createEventEditorNewTemplate};
+export {createEventEditorAddTemplate};

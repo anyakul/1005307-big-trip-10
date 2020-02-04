@@ -30,7 +30,7 @@ class EventController {
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
   }
 
-  render(eventItem, destinationsModel, offersModel, mode = Mode.EDIT) {
+  render(eventItem, destinationsModel, offersModel, mode = Mode.VIEW) {
     const oldEventCardComponent = this._eventCardComponent;
     const oldEventEditorComponent = this._eventEditorComponent;
 
@@ -42,62 +42,31 @@ class EventController {
       mode,
     );
 
-    this._eventCardComponent.setOnRollupButtonClick(() => {
-      this._replaceViewToEdit();
-    });
+    this._subscribeOnEvents(eventItem, mode);
 
-    this._eventEditorComponent.setOnRollupButtonClick(() => {
-      this._replaceEditToView();
-    });
+    switch (mode) {
+      case Mode.EDIT:
+        if (oldEventEditorComponent) {
+          replace(this._eventEditorComponent, oldEventEditorComponent);
+          replace(this._eventCardComponent, oldEventCardComponent);
+        } else {
+          render(this._container, this._eventCardComponent.getElement());
+        }
 
-    this._eventEditorComponent.setOnCancel(() => {
-      this._dispatch(this, {type: ActionType.CANCEL})
-    });
-    
-    this._eventEditorComponent.setOnDelete((evt) => {
-      evt.preventDefault();
+        break;
 
-      this._eventEditorComponent.setState({
-        deleteButtonText: DeleteButtonText.PENDING,
-      });
+      case Mode.ADD:
+        if (oldEventEditorComponent && oldEventCardComponent) {
+          remove(oldEventCardComponent);
+          remove(oldEventEditorComponent);
+        }
 
-      this._dispatch(this, {
-        type: ActionType.DELETE,
-        payload: eventItem.id,
-      })
-    });
+        this._eventEditorComponent.rerender();
+        render(this._container, this._eventEditorComponent.getElement(), RenderPosition.AFTERBEGIN);
+        document.addEventListener(`keydown`, this._onEscKeyDown);
 
-    this._eventEditorComponent.setOnSubmit((evt) => {
-      evt.preventDefault();
-
-      this._eventEditorComponent.setState({
-        saveButtonText: SaveButtonText.PENDING,
-      });
-
-      const data = this._eventEditorComponent.getData();
-      const newEvent = Event.parseEvent(data);
-
-      this._dispatch(this, {
-        type: ActionType.SUBMIT,
-        payload: newEvent,
-      })
-    });
-
-    this._eventEditorComponent.setOnFavoriteChange((evt) => {
-      const newEvent = Event.clone(eventItem);
-      newEvent.isFavorite = evt.target.checked;
-
-      this._dispatch(this, {
-        type: ActionType.ADDED_TO_FAVORITE,
-        payload: newEvent,
-      })
-    });
-
-    if (oldEventEditorComponent) {
-      replace(this._eventEditorComponent, oldEventEditorComponent);
-      replace(this._eventCardComponent, oldEventCardComponent);
-    } else {
-      render(this._container, this._eventCardComponent.getElement());
+        this._mode = mode;
+        break;
     }
   }
 
@@ -125,6 +94,59 @@ class EventController {
         deleteButtonText: DeleteButtonText.DEFAULT,
       });
     }, SHAKE_ANIMATION_TIMEOUT);
+  }
+
+  _subscribeOnEvents(eventItem, mode) {
+    this._eventCardComponent.setOnRollupButtonClick(() => {
+      this._replaceViewToEdit();
+    });
+
+    this._eventEditorComponent.setOnRollupButtonClick(() => {
+      this._replaceEditToView();
+    });
+
+    this._eventEditorComponent.setOnCancel(() => {
+      this._dispatch(this, {type: ActionType.CANCEL})
+    });
+
+    this._eventEditorComponent.setOnDelete((evt) => {
+      evt.preventDefault();
+
+      this._eventEditorComponent.setState({
+        deleteButtonText: DeleteButtonText.PENDING,
+      });
+
+      this._dispatch(this, {
+        type: ActionType.DELETE,
+        payload: eventItem.id,
+      })
+    });
+
+    this._eventEditorComponent.setOnSave((evt) => {
+      evt.preventDefault();
+
+      this._eventEditorComponent.setState({
+        saveButtonText: SaveButtonText.PENDING,
+      });
+
+      const data = this._eventEditorComponent.getData();
+      const newEvent = Event.parseEvent(data);
+
+      this._dispatch(this, {
+        type: mode === Mode.EDIT ? ActionType.UPDATE : ActionType.CREATE,
+        payload: newEvent,
+      })
+    });
+
+    this._eventEditorComponent.setOnFavoriteChange((evt) => {
+      const newEvent = Event.clone(eventItem);
+      newEvent.isFavorite = evt.target.checked;
+
+      this._dispatch(this, {
+        type: ActionType.ADD_TO_FAVORITE,
+        payload: newEvent,
+      })
+    });
   }
 
   _toggleShake(enable) {
@@ -157,7 +179,12 @@ class EventController {
 
   _onEscKeyDown(evt) {
     if (isEscKey(evt)) {
-      this._replaceEditToView();
+      if (this._mode === Mode.ADD) {
+        this._dispatch(this, {type: ActionType.CANCEL})
+      }
+
+      this.setDefaultView();
+
       document.removeEventListener(`keydown`, this._onEscKeyDown);
     }
   }

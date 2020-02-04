@@ -1,10 +1,12 @@
 import {
   createDestinationSectionTemplate,
   createDestinationTemplate,
+  createDetailsTemplate,
   createEventListTemplate,
   createFavoriteButtonTemplate,
   createOffersTemplate,
   createPriceTemplate,
+  createSaveButton,
   createScheduleTemplate,
   createTypeTemplate,
 } from './event-editor';
@@ -20,17 +22,14 @@ const createEventEditorEditTemplate = (eventItem, offers, destination, destinati
         ${createDestinationTemplate(eventItem, destinations)}
         ${createScheduleTemplate(eventItem)}
         ${createPriceTemplate(eventItem)}
-        <button class="event__save-btn btn btn--blue" type="submit">Save</button>
+        ${createSaveButton()}
         <button class="event__reset-btn" type="reset">Delete</button>
         ${createFavoriteButtonTemplate(eventItem)}
         <button class="event__rollup-btn" type="button">
           <span class="visually-hidden">Open event</span>
         </button>
       </header>
-      <section class="event__details">
-        ${offers.length > 0 ? createOffersTemplate(offers) : ``}
-        ${destination.name.length > 0 ? createDestinationSectionTemplate(destination) : ``}
-      </section>
+      ${destination.name.length > 0 ? createDetailsTemplate(destination, offers) : ``}
     </form>
   </li>`
 );
