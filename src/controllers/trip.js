@@ -276,8 +276,8 @@ class TripController {
 
   _handleCreateAction(controller, newEvent) {
     return this._api.createPoint(newEvent)
-      .then(() => {
-        this._eventsModel.addEvent(newEvent);
+      .then((eventItem) => {
+        this._eventsModel.addEvent(eventItem);
 
         controller.destroy();
         this._onSortTypeChange(this._sortType);
