@@ -26,7 +26,7 @@ const formatRoute = (sortedEvents) => {
 
 const formatDates = (sortedEvents) => {
   const startDate = getFirstItem(sortedEvents).startDate;
-  const endDate = getLastItem(sortedEvents).startDate;
+  const endDate = getLastItem(sortedEvents).endDate;
 
   return `${formatMonthDay(startDate)} ${Separator.DASH} ${formatMonthDay(endDate)}`;
 };

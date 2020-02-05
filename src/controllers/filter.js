@@ -7,7 +7,6 @@ class FilterController {
     this._eventsModel = eventsModel;
     this._activeFilterType = FilterType.EVERYTHING;
     this._filterComponent = null;
-    this._tripFilters = this._container.querySelector(`.trip-filters`);
     this._onFilterChange = this._onFilterChange.bind(this);
   }
 

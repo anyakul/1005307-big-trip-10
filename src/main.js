@@ -1,5 +1,4 @@
-import 'flatpickr/dist/flatpickr.min.css';
-import {render} from './utils/render';
+import {render, remove} from './utils/render';
 import TripController from './controllers/trip';
 import TripInfoController from './controllers/trip-info';
 import FilterController from './controllers/filter';
@@ -10,6 +9,7 @@ import OffersModel from './models/offers';
 import StatsController from './controllers/stats';
 import API from './api';
 import AddEventButtonComponent from './components/add-event-button';
+import LoadingComponent from './components/loading';
 
 const MenuTab = {
   TABLE: `table`,
@@ -17,7 +17,7 @@ const MenuTab = {
 };
 
 const AUTHORIZATION = `Basic er883jdzbdw`;
-const END_POINT = `https://htmlacademy-es-10.appspot.com/big-trip/`;
+const END_POINT = `https://htmlacademy-es-10.appspot.com/big-trip`;
 const api = new API(END_POINT, AUTHORIZATION);
 
 const eventsModel = new EventsModel();
@@ -37,6 +37,10 @@ const tripController = new TripController(tripEvents, eventsModel, destinationsM
 const statsController = new StatsController(pageBodyContainer, eventsModel);
 
 const filterController = new FilterController(tripControls, eventsModel);
+
+const loadingComponent = new LoadingComponent();
+render(tripEvents, loadingComponent.getElement());
+
 const addEventButtonComponent = new AddEventButtonComponent();
 render(tripMain, addEventButtonComponent.getElement());
 
@@ -44,29 +48,34 @@ const tripInfoController = new TripInfoController(tripInfo, eventsModel);
 const siteMenuComponent = new SiteMenuComponent();
 render(tripControls, siteMenuComponent.getElement());
 
-Promise.all([api.getPoints(), api.getDestinations(), api.getOffers()]).then(([points, destinations, offers]) => {
-  eventsModel.setEvents(points);
-  destinationsModel.setDestinations(destinations);
-  offersModel.setOffers(offers);
+Promise.all([api.getPoints(), api.getDestinations(), api.getOffers()])
+  .then(([points, destinations, offers]) => {
+    remove(loadingComponent);
 
-  siteMenuComponent.setOnTabChange((menuTab) => {
-    if (menuTab === MenuTab.TABLE) {
-      tripController.show();
-      statsController.hide();
-      filterController.show();
-      addEventButtonComponent.show();
-    } else {
-      statsController.show();
-      tripController.hide();
-      filterController.hide();
-      addEventButtonComponent.hide();
-    }
+    eventsModel.setEvents(points);
+    destinationsModel.setDestinations(destinations);
+    offersModel.setOffers(offers);
+
+    siteMenuComponent.setOnTabChange((menuTab) => {
+      if (menuTab === MenuTab.TABLE) {
+        tripController.show();
+        statsController.hide();
+        filterController.show();
+        addEventButtonComponent.show();
+      } else {
+        statsController.show();
+        tripController.hide();
+        filterController.hide();
+        addEventButtonComponent.hide();
+      }
+    });
+
+    tripInfoController.render();
+    filterController.render();
+    statsController.render();
+    tripController.render();
+
+    addEventButtonComponent.setOnClick(() => {
+      tripController.renderAddEventsButton(addEventButtonComponent);
+    });
   });
-  tripInfoController.render();
-  filterController.render();
-  statsController.render();
-  tripController.render();
-  addEventButtonComponent.setOnClick(() =>
-    tripController.renderAddEventsButton(addEventButtonComponent));
-  statsController.hide();
-});

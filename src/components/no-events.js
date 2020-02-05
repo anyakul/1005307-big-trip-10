@@ -1,4 +1,3 @@
-// Сообщение об отсутствии точек маршрута
 import AbstractComponent from './abstract';
 import {createNoEventsTemplate} from './templates/no-events';
 

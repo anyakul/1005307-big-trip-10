@@ -9,7 +9,7 @@ const getSortedByTime = ([...events]) => events
 const getSortedByPrice = ([...events]) => events
   .sort((a, b) => b.price - a.price);
 
-export const getEventsBySorter = (events, sortType) => {
+const getEventsBySorter = (events, sortType) => {
   switch (sortType) {
     case SortType.EVENT:
       return getSortedByEvent(events);
@@ -21,3 +21,5 @@ export const getEventsBySorter = (events, sortType) => {
 
   return events;
 };
+
+export {getEventsBySorter};

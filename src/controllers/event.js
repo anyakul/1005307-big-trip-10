@@ -89,6 +89,7 @@ class EventController {
     setTimeout(() => {
       this._toggleShake(false);
 
+      this._eventEditorComponent.unblock();
       this._eventEditorComponent.setState({
         saveButtonText: SaveButtonText.DEFAULT,
         deleteButtonText: DeleteButtonText.DEFAULT,
@@ -112,6 +113,7 @@ class EventController {
     this._eventEditorComponent.setOnDelete((evt) => {
       evt.preventDefault();
 
+      this._eventEditorComponent.block();
       this._eventEditorComponent.setState({
         deleteButtonText: DeleteButtonText.PENDING,
       });
@@ -125,12 +127,13 @@ class EventController {
     this._eventEditorComponent.setOnSave((evt) => {
       evt.preventDefault();
 
+      const data = this._eventEditorComponent.getData();
+      const newEvent = Event.parseEvent(data);
+
+      this._eventEditorComponent.block();
       this._eventEditorComponent.setState({
         saveButtonText: SaveButtonText.PENDING,
       });
-
-      const data = this._eventEditorComponent.getData();
-      const newEvent = Event.parseEvent(data);
 
       this._dispatch(this, {
         type: mode === Mode.EDIT ? ActionType.UPDATE : ActionType.CREATE,
@@ -142,6 +145,7 @@ class EventController {
       const newEvent = Event.clone(eventItem);
       newEvent.isFavorite = evt.target.checked;
 
+      this._eventEditorComponent.block();
       this._dispatch(this, {
         type: ActionType.ADD_TO_FAVORITE,
         payload: newEvent,

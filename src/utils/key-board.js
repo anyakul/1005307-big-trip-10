@@ -3,6 +3,8 @@ const KeyboardKey = {
   ESCAPE_IE: `Escape`,
 };
 
-export const isEscKey = ({key}) =>
+const isEscKey = ({key}) =>
   key === KeyboardKey.ESCAPE ||
   key === KeyboardKey.ESCAPE_IE;
+
+export {isEscKey};

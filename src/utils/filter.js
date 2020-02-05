@@ -6,7 +6,7 @@ const getFutureEvents = (events, nowDate) =>
 const getPastEvents = (events, nowDate) =>
   events.filter(({startDate}) => startDate < nowDate);
 
-export const getEventsByFilter = (events, filterType) => {
+const getEventsByFilter = (events, filterType) => {
   switch (filterType) {
     case FilterType.FUTURE:
       return getFutureEvents(events, Date.now());
@@ -16,3 +16,5 @@ export const getEventsByFilter = (events, filterType) => {
 
   return events;
 };
+
+export {getEventsByFilter};

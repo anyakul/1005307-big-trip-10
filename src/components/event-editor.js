@@ -2,6 +2,7 @@ import AbstractSmartComponent from './abstract-smart';
 import {createEventEditorEditTemplate} from './templates/event-editor-edit';
 import {createEventEditorAddTemplate} from './templates/event-editor-add';
 import {createFlatpickr} from '../utils/flatpickr';
+import {setDisabled, unsetDisabled} from '../utils/dom';
 
 const Mode = {
   ADD: `add`,
@@ -121,6 +122,14 @@ class EventEditorComponent extends AbstractSmartComponent {
     super.removeElement();
   }
 
+  block() {
+    this.getElement().querySelectorAll(`input, button`).forEach(setDisabled);
+  }
+
+  unblock() {
+    this.getElement().querySelectorAll(`input, button`).forEach(unsetDisabled);
+  }
+
   setState(state) {
     const element = this.getElement();
     const {saveButtonText, deleteButtonText} = state;
@@ -128,7 +137,7 @@ class EventEditorComponent extends AbstractSmartComponent {
     if (saveButtonText) {
       element.querySelector(`.event__save-btn`).textContent = saveButtonText;
     }
-    if (deleteButtonText) {
+    if (this._mode === Mode.EDIT && deleteButtonText) {
       element.querySelector(`.event__reset-btn`).textContent = deleteButtonText;
     }
   }

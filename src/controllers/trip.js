@@ -56,7 +56,6 @@ class TripController {
     this._api = api;
 
     this._addEventButtonComponent = null;
-    this._creatingEvent = null;
     this._eventSorterComponent = null;
 
     this._thipDays = [];
@@ -97,7 +96,7 @@ class TripController {
 
   renderAddEventsButton(addEventButtonComponent) {
     this._addEventButtonComponent = addEventButtonComponent;
-    this._addEventButtonComponent.setDisabled(true);
+    this._setDisabledNewEventButton(true);
 
     const controller = new EventController(
         this._tripDaysListElement,
@@ -112,6 +111,12 @@ class TripController {
     );
 
     this._eventControllers.push(controller);
+  }
+
+  _setDisabledNewEventButton(value) {
+    if (this._addEventButtonComponent !== null) {
+      this._addEventButtonComponent.setDisabled(value);
+    }
   }
 
   _getEvents() {
@@ -254,9 +259,7 @@ class TripController {
   _handleCancelAction(controller) {
     controller.destroy();
 
-    if (this._addEventButtonComponent !== null) {
-      this._addEventButtonComponent.setDisabled(false);
-    }
+    this._setDisabledNewEventButton(false);
   }
 
   _handleUpdateAction(controller, eventItem) {
@@ -281,6 +284,7 @@ class TripController {
 
         controller.destroy();
         this._onSortTypeChange(this._sortType);
+        this._setDisabledNewEventButton(false);
       })
       .catch(() => {
         controller.shake();

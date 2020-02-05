@@ -1,12 +1,11 @@
 import {FilterType} from '../components/event-filter';
 import {getEventsByFilter} from '../utils/filter';
 
-export default class EventsModel {
+class EventsModel {
   constructor() {
     this._events = [];
 
     this._filterChangeHandlers = [];
-    this._sorterChangeHandlers = [];
     this._dataChangeHandlers = [];
 
     this._activeFilterType = FilterType.EVERYTHING;
@@ -93,3 +92,5 @@ export default class EventsModel {
     return this._events.findIndex((eventItem) => eventItem.id === id);
   }
 }
+
+export default EventsModel;
