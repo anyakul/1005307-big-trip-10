@@ -6,6 +6,7 @@
   "scripts": {
     "eslint": "eslint src/**/*.js",
     "test": "npm run eslint",
+    "deploy": "gh-pages -d build",
     "build": "webpack",
     "start": "webpack-dev-server --open"
   },
@@ -26,6 +27,8 @@
     "chart.js": "2.9.3",
     "chartjs-plugin-datalabels": "0.7.0",
     "flatpickr": "4.6.3",
+    "gh-pages": "^3.0.0",
+    "gh-pages-webpack-plugin": "^1.0.2",
     "moment": "2.24.0",
     "nanoid": "2.1.11"
   }
